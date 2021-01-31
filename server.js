@@ -12,6 +12,10 @@ app.use(cors());
 // body-parser
 app.use(bodyParser.json());
 
+// test get req
+app.get('/', (req, res, next) => {
+    res.status(200).send();
+})
 
 // server 
 app.listen(PORT, () => {
