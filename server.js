@@ -9,13 +9,18 @@ const PORT = process.env.PORT || 3000;
 
 // cors
 app.use(cors());
+
 // body-parser
 app.use(bodyParser.json());
+app.use(
+    bodyParser.urlencoded({
+        extended: true,
+    })
+);
 
-// test get req
-app.get('/', (req, res, next) => {
-    res.status(200).send();
-})
+// API ROUTER MOUNT
+const apiRouter = require('./server_ops/api');
+app.use('/api', apiRouter);
 
 // server 
 app.listen(PORT, () => {
