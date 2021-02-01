@@ -13,8 +13,9 @@ describe('API', () => {
     })
 })
 
-// Users
+// Customers
 describe('Customers', () => {
+    // GET CUSTOMER BY ID
     describe('GET api/customer/:id', () => {
         
         it('Returns a cutomer object', () => {
@@ -64,22 +65,114 @@ describe('Customers', () => {
         });
 
     });
-/*
-    describe('POST /api/customer', () => {
-        it('Adds the new cutomer to the database if supplied information is present and correct', () => {
+
+    // GET CUSTOMER BY USERNAME
+    describe('GET /api/customer_un/:username', ()=> {
+
+        it('Returns a customer object', () => {
+            return request(app)
+                .get('/api/customer_un/Ezayji')
+                .expect(200)
+                .then((response) => {
+                    const user = response.body;
+                    expect(user).to.be.an.instanceOf(Object);
+                    expect(user).to.not.be.an.instanceOf(Array);
+                });
+        });
+
+        it('Returns a customer object without password and address', () => {
+            return request(app)
+                .get('/api/customer_un/Ezayji')
+                .expect(200)
+                .then((response) => {
+                    const user = response.body;
+                    expect(user).to.have.ownProperty('id');
+                    expect(user).to.have.ownProperty('username');
+                    expect(user).to.have.ownProperty('first_name');
+                    expect(user).to.have.ownProperty('last_name');
+                    expect(user).to.have.ownProperty('email');
+                    expect(user).to.have.ownProperty('phone');
+                    expect(user).to.have.ownProperty('registered');
+                    expect(user).to.not.have.ownProperty('password');
+                    expect(user).to.not.have.ownProperty('appartment_nr');
+                    expect(user).to.not.have.ownProperty('street');
+                    expect(user).to.not.have.ownProperty('city');
+                    expect(user).to.not.have.ownProperty('province');
+                    expect(user).to.not.have.ownProperty('zip');
+                    expect(user).to.not.have.ownProperty('country');
+                })    
+        });
+
+        it('Returns 404 if customer does not exist', () => {
+            return request(app)
+                .get('/api/customer_un/icantexist@666')
+                .expect(404);
+        });
+
+        it('Returns 400 if called with numeric value', () => {
+            return request(app)
+                .get('/api/customer_un/1')
+                .expect(400)
+        });
+
+    });
+
+    // REGISTER CUSTOMER
+    describe('POST /api/register', () => {
+        it('Adds new cutomer to the database if supplied information is correct', () => {
             let newCustomer = {
-                id: nextval('customer_sequence'),
                 username: 'Revarz',
                 first_name: 'Selna',
                 last_name: 'Kaszk',
                 email: 'selnakxd@testapi.com',
                 phone: '+372 11111111',
-                password: crypt('selnapassword', gen_salt('bf')),
-                registered: current_timestamp
+                password: 'selnapw',
+                registered: new Date()
             }
+            return request(app)
+                .post('/api/register')
+                .send(newCustomer)
+                .expect(201)
+                .then(() => {
+                    return request(app)
+                        .get('/api/customer_un/Revarz')
+                        .expect(200)
+                        .then((response) => {
+                            const user = response.body;
+                            expect(user).to.be.an.instanceOf(Object);
+                            expect(user).to.not.be.an.instanceOf(Array);
+                        });
+                });
+        });
 
+        it('Returns 400 if customer with username already exists', () => {
+            let newCustomer = {
+                username: 'Revarz',
+                first_name: 'Selna',
+                last_name: 'Kaszk',
+                email: 'selna@testapi.com',
+                phone: '+372 22222222',
+                password: 'selnapw',
+                registered: new Date()
+            }
+            return request(app)
+                .post('/api/register')
+                .send(newCustomer)
+                .expect(400);
+        });
+/*
+        it('Returns 400 if some field is empty', () => {
+            let newCustomer = {
+                username: 'Revarz',
+                first_name: '',
+                last_name: 'Kaszk',
+                email: 'selnakxd@testapi.com',
+                phone: '+372 11111111',
+                password: 'selnapw',
+                registered: new Date()
+            }
+        });
+*/        
+    });
 
-        })
-    })
-*/
 });

@@ -1,6 +1,8 @@
 const express = require('express');
 const apiRouter = express.Router();
-const {getCustomerById} = require('./queries');
+const {getCustomerById, 
+       getCustomerByUsername,
+       addNewCustomer} = require('./queries');
 
 // test get req
 apiRouter.get('/', (req, res, next) => {
@@ -10,6 +12,10 @@ apiRouter.get('/', (req, res, next) => {
 // get customer by ID
 apiRouter.get('/customer/:id', getCustomerById);
 
-// register a new user
+// get customer by USERNAME
+apiRouter.get('/customer_un/:username', getCustomerByUsername);
+
+// register a new customer
+apiRouter.post('/register', addNewCustomer);
 
 module.exports = apiRouter;
