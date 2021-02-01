@@ -9,8 +9,8 @@ const pool = new Pool({
 });
 
 
-// get user by id
-const getUserById = (request, response) => {
+// get customer by id
+const getCustomerById = (request, response) => {
     const id = parseInt(request.params.id);
     const text = 'SELECT id, username, first_name, last_name, email, phone, registered FROM customer WHERE id = $1';
 
@@ -27,4 +27,7 @@ const getUserById = (request, response) => {
     
 };
 
-module.exports = {getUserById};
+// register a new customer
+
+
+module.exports = {getCustomerById};

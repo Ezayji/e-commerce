@@ -64,4 +64,22 @@ describe('Customers', () => {
         });
 
     });
+/*
+    describe('POST /api/customer', () => {
+        it('Adds the new cutomer to the database if supplied information is present and correct', () => {
+            let newCustomer = {
+                id: nextval('customer_sequence'),
+                username: 'Revarz',
+                first_name: 'Selna',
+                last_name: 'Kaszk',
+                email: 'selnakxd@testapi.com',
+                phone: '+372 11111111',
+                password: crypt('selnapassword', gen_salt('bf')),
+                registered: current_timestamp
+            }
+
+
+        })
+    })
+*/
 });
