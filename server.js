@@ -1,7 +1,13 @@
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config()
+}
+
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const session = require('express-session');
+const passport = require('passport');
 
 module.exports = app;
 
@@ -17,6 +23,15 @@ app.use(
         extended: true,
     })
 );
+
+// session
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // API ROUTER MOUNT
 const apiRouter = require('./server_ops/api');

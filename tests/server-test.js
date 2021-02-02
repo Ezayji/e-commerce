@@ -240,5 +240,27 @@ describe('Customers', () => {
                 .expect(200);
         });
 
+        it('Returns 404 if username is not registered', () => {
+            let user = {
+                username: 'minapolekasutaja666',
+                password: 'selnapw'
+            }
+            return request(app)
+                .post('/api/login')
+                .send(user)
+                .expect(404);
+        });
+
+        it('Returns 400 if username exists but supplied password is incorrect', () => {
+            let user = {
+                username: 'Revarz',
+                password: 'notherpassword'
+            };
+            return request(app)
+                .post('/api/login')
+                .send(user)
+                .expect(400);
+        });
+
     });
 });

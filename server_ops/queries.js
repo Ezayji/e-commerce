@@ -131,9 +131,9 @@ const checkUserName = (request, response, next) => {
     });
 };
 
-//check if username and password match
-const checkUserAndPw = (request, response, next) => {
-    const text = 'SELECT id, password FROM customer WHERE username = $1';
+//check if password is correct
+const checkUserPw = (request, response, next) => {
+    const text = 'SELECT password FROM customer WHERE username = $1';
     const {username, password} = request.body;
 
     pool.query(text, [username], async (error, results) => {
@@ -145,4 +145,16 @@ const checkUserAndPw = (request, response, next) => {
     });
 };
 
-module.exports = {getCustomerById, getCustomerByUsername, addNewCustomer, checkNewCustomerInfo, checkIfUniqueEmail, checkIfUniquePhone, checkIfUniqueUsername};
+//find user by username for passport
+const getCustomer = (username) => {
+    const text = 'SELECT username, password FROM customer WHERE username = $1';
+    
+    pool.query(text, [username], (error, results) => {
+        if(results.rows[0]){
+            return results.rows[0];
+        };
+    });
+
+};
+
+module.exports = {getCustomerById, getCustomerByUsername, addNewCustomer, checkNewCustomerInfo, checkIfUniqueEmail, checkIfUniquePhone, checkIfUniqueUsername, checkUserName, checkUserPw, getCustomer};
