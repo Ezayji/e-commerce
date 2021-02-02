@@ -7,6 +7,8 @@ const pool = new Pool({
     password: 'postgres',
     port: 5432,
 });
+// crypting pw
+const bcrypt = require('bcrypt');
 
 
 // GETTING CUSTOMER INFO
@@ -98,11 +100,11 @@ const checkIfUniquePhone = (request, response, next) => {
 
 
 // register a new customer
-const addNewCustomer = (request, response) => {
-    const text = "INSERT INTO customer (id, username, first_name, last_name, email, phone, password, registered) VALUES (setval('customer_sequence', (SELECT MAX(id) FROM customer)+1), $1, $2, $3, $4, $5, crypt($6, gen_salt('bf')), $7)";
+const addNewCustomer = async (request, response) => {
+    const text = "INSERT INTO customer (id, username, first_name, last_name, email, phone, password, registered) VALUES (setval('customer_sequence', (SELECT MAX(id) FROM customer)+1), $1, $2, $3, $4, $5, $6, $7)";
     const {username, first_name, last_name, email, phone, password, registered} = request.body;
-    
-    pool.query(text, [username, first_name, last_name, email, phone, password, registered], (error, results) => {
+    const cryptedPw = await bcrypt.hash(password, 10);
+    pool.query(text, [username, first_name, last_name, email, phone, cryptedPw, registered], (error, results) => {
         if(error){
             response.status(400).send();
         } else {
@@ -112,5 +114,35 @@ const addNewCustomer = (request, response) => {
     });
 };
 
+
+// LOGIN
+
+//check if username is registered
+const checkUserName = (request, response, next) => {
+    const text = 'SELECT id FROM customer WHERE username = $1';
+    const {username} = request.body;
+
+    pool.query(text, [username], (error, results) => {
+        if(results.rows[0] === undefined){
+            response.status(404).send('User not found');
+        } else {
+            next();
+        };
+    });
+};
+
+//check if username and password match
+const checkUserAndPw = (request, response, next) => {
+    const text = 'SELECT id, password FROM customer WHERE username = $1';
+    const {username, password} = request.body;
+
+    pool.query(text, [username], async (error, results) => {
+        if(await bcrypt.compare(password, results.rows[0].password)){
+            next();
+        } else {
+            response.status(400).send('Wrong password');
+        };
+    });
+};
 
 module.exports = {getCustomerById, getCustomerByUsername, addNewCustomer, checkNewCustomerInfo, checkIfUniqueEmail, checkIfUniquePhone, checkIfUniqueUsername};

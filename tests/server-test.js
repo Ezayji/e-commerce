@@ -226,4 +226,19 @@ describe('Customers', () => {
         });
     });
 
+    // LOGIN 
+    describe('POST /api/login', () => {
+
+        it('Logs the user in if correct username and password is supplied', () => {
+            let user = {
+                username: 'Revarz',
+                password: 'selnapw'
+            };
+            return request(app)
+                .post('/api/login')
+                .send(user)
+                .expect(200);
+        });
+
+    });
 });

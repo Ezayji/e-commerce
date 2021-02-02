@@ -10,6 +10,7 @@
   "author": "Ezayji",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "chai": "^4.2.0",
     "cors": "^2.8.5",
@@ -18,6 +19,7 @@
   },
   "devDependencies": {
     "chai": "*",
+    "dotenv": "^8.2.0",
     "jsdom": "^16.4.0",
     "mocha": "^8.2.1",
     "nodemon": "^2.0.7",
