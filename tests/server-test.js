@@ -160,19 +160,70 @@ describe('Customers', () => {
                 .send(newCustomer)
                 .expect(400);
         });
-/*
-        it('Returns 400 if some field is empty', () => {
+
+        it('Returns 400 if customer with email already exists', () => {
             let newCustomer = {
-                username: 'Revarz',
-                first_name: '',
+                username: 'DAMNZ',
+                first_name: 'Selna',
                 last_name: 'Kaszk',
                 email: 'selnakxd@testapi.com',
+                phone: '+372 22222222',
+                password: 'selnapw',
+                registered: new Date()
+            }
+            return request(app)
+                .post('/api/register')
+                .send(newCustomer)
+                .expect(400);
+        });
+
+        it('Returns 400 if customer with phone already exists', () => {
+            let newCustomer = {
+                username: 'NAZZMHR',
+                first_name: 'Selna',
+                last_name: 'Kaszk',
+                email: 'tester@testapi.com',
                 phone: '+372 11111111',
                 password: 'selnapw',
                 registered: new Date()
             }
+            return request(app)
+                .post('/api/register')
+                .send(newCustomer)
+                .expect(400);
         });
-*/        
+
+        it('Returns 400 if some field is empty', () => {
+            let newCustomer = {
+                username: 'UNUNUN',
+                first_name: '',
+                last_name: 'Kaszk',
+                email: 'ddddddd@testapi.com',
+                phone: '+372 55555555',
+                password: 'selnapw',
+                registered: new Date()
+            }
+            return request(app)
+                .post('/api/register')
+                .send(newCustomer)
+                .expect(400);
+        });
+        
+        it('Returns 400 if some field is not represented in the body', () => {
+            let newCustomer = {
+                username: 'NEBETGAA',
+                first_name: '',
+                last_name: 'Kaszk',
+                phone: '+372 99999999',
+                password: 'selnapw',
+                registered: new Date()
+            }
+
+            return request(app)
+                .post('/api/register')
+                .send(newCustomer)
+                .expect(400);
+        });
     });
 
 });
