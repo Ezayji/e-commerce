@@ -1,5 +1,4 @@
 const LocalStrategy = require('passport-local').Strategy;
-const {getCustomer} = require('./queries');
 
 const initialize = (passport) => {
     
@@ -12,7 +11,8 @@ const initialize = (passport) => {
     }));
 
     passport.serializeUser((user, done) => done(null, user.username));
-    passport.deserializeUser((username, done) => done(null, getCustomer(username)));
+    passport.deserializeUser((username, done) => done(null, username));
 };
 
 module.exports = initialize;
+/*getCustomer(username)*/

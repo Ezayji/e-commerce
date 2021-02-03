@@ -12,6 +12,16 @@ const bcrypt = require('bcrypt');
 
 
 // GETTING CUSTOMER INFO
+
+// verify access
+const checkAuthenticated = (req, res, next) => {
+    if (req.isAuthenticated() && req.user === req.params.username){
+        next();
+    } else {
+        res.status(400).send('Access not verified');
+    };
+};
+
 // get customer by id
 const getCustomerById = (request, response) => {
     const id = parseInt(request.params.id);
@@ -31,13 +41,15 @@ const getCustomerById = (request, response) => {
 // get customer by username
 const getCustomerByUsername = (request, response) => {
     const username = request.params.username;
+
+    if(!isNaN(parseInt(username))){
+        response.status(400).send();
+    }
+
     const text = 'SELECT id, username, first_name, last_name, email, phone, registered FROM customer WHERE username = $1';
-    
-    console.log(request.isAuthenticated());
+
     pool.query(text, [username], (error, results) => {
-        if(!isNaN(parseInt(username))){
-            response.status(400).send();
-        } else if (results.rows[0] === undefined) {
+        if (results.rows[0] === undefined) {
             response.status(404).send();
         } else {
             response.status(200).json(results.rows[0]);
@@ -146,16 +158,14 @@ const checkUserPw = (request, response, next) => {
     });
 };
 
-//find user by username for passport
-const getCustomer = (username) => {
-    const text = 'SELECT username, password FROM customer WHERE username = $1';
-    
-    pool.query(text, [username], (error, results) => {
-        if(results.rows[0]){
-            return results.rows[0];
-        };
-    });
 
-};
-
-module.exports = {getCustomerById, getCustomerByUsername, addNewCustomer, checkNewCustomerInfo, checkIfUniqueEmail, checkIfUniquePhone, checkIfUniqueUsername, checkUserName, checkUserPw, getCustomer};
+module.exports = {getCustomerById, 
+                getCustomerByUsername, 
+                addNewCustomer, 
+                checkNewCustomerInfo, 
+                checkIfUniqueEmail, 
+                checkIfUniquePhone, 
+                checkIfUniqueUsername, 
+                checkUserName, 
+                checkUserPw,
+                checkAuthenticated};

@@ -9,7 +9,8 @@ const {getCustomerById,
        checkIfUniqueUsername,
        checkIfUniquePhone,
        checkUserName,
-       checkUserPw} = require('./queries');
+       checkUserPw,
+       checkAuthenticated} = require('./queries');
 
 const initializePassport = require('./passport-config');
 initializePassport(passport);
@@ -24,17 +25,20 @@ apiRouter.get('/', (req, res, next) => {
 apiRouter.get('/customer/:id', getCustomerById);
 
 // get customer by USERNAME
-apiRouter.get('/customer_un/:username', getCustomerByUsername);
+apiRouter.get('/customer_un/:username', checkAuthenticated, getCustomerByUsername);
 
 // register a new customer
 apiRouter.post('/register', checkNewCustomerInfo, checkIfUniqueEmail, checkIfUniqueUsername, checkIfUniquePhone, addNewCustomer);
 
 // post login
 apiRouter.post('/login', checkUserName, checkUserPw, passport.authenticate('local'), (req, res) => {
-    console.log(req.user);
-    console.log(req.isAuthenticated());
-    //console.log(res);
     res.status(200).send({user: req.user});
 });
+
+// logout
+apiRouter.get('/logout', (req, res) => {
+    req.logout();
+    res.status(200).send();
+})
 
 module.exports = apiRouter;

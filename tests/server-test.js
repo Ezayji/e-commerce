@@ -1,9 +1,14 @@
 const {assert, expect} = require('chai');
 const request = require('supertest');
 const {jsdom} = require('jsdom');
+const httpMocks = require('node-mocks-http');
 
 const app = require('../server');
 const { response } = require('express');
+
+const server = request.agent(app);
+
+const {getCustomerByUsername} = require('../server_ops/queries');
 
 describe('API', () => {
     it('Sends OK status', async () => {
@@ -32,7 +37,17 @@ describe('Customers', () => {
                 .send(newCustomer)
                 .expect(201)
                 .then(() => {
-                    return request(app)
+                    return server
+                        .post('/api/login')
+                        .send({username: newCustomer.username, password: newCustomer.password})
+                        .expect(200, {
+                            user: {
+                                username: 'Revarz'
+                            }
+                        });
+                })
+                .then(() => {
+                    return server
                         .get('/api/customer_un/Revarz')
                         .expect(200)
                         .then((response) => {
@@ -40,6 +55,11 @@ describe('Customers', () => {
                             expect(user).to.be.an.instanceOf(Object);
                             expect(user).to.not.be.an.instanceOf(Array);
                         });
+                })
+                .then(() => {
+                    return server
+                        .get('/api/logout')
+                        .expect(200)
                 });
         });
     
@@ -127,21 +147,6 @@ describe('Customers', () => {
     // LOGIN 
     describe('POST /api/login', () => {
     
-        it('Logs the user in and returns username if correct username and password is supplied', () => {
-            let user = {
-                username: 'Revarz',
-                password: 'selnapw'
-            };
-            return request(app)
-                .post('/api/login')
-                .send(user)
-                .expect(200, {
-                    user: {
-                        username: 'Revarz'
-                    }
-                });
-        });
-    
         it('Returns 404 if username is not registered', () => {
             let user = {
                 username: 'minapolekasutaja666',
@@ -163,7 +168,31 @@ describe('Customers', () => {
                 .send(user)
                 .expect(400);
         });
+
+        it('Logs the user in and returns username if correct username and password is supplied', () => {
+            let user = {
+                username: 'Revarz',
+                password: 'selnapw'
+            };
+            return server
+                .post('/api/login')
+                .send(user)
+                .expect(200, {
+                    user: {
+                        username: 'Revarz'
+                    }
+                });
+        });
     
+    });
+
+    // LOGOUT
+    describe('GET /api/logout', () => {
+        it('Logs out the user and returns 200', () => {
+            return server
+                .get('/api/logout')
+                .expect(200)
+        });
     });
 
 
@@ -221,20 +250,19 @@ describe('Customers', () => {
     // GET CUSTOMER BY USERNAME
     describe('GET /api/customer_un/:username', ()=> {
 
-        it('Returns 400 if user is not authenticated', () => {
-            return request(app)
+        it('Returns 400 if customer is not logged in', () => {
+            return server
                 .get('/api/customer_un/Revarz')
                 .expect(400);
         })
 
         describe('Authenticated requests', () => {
-            /*
-            beforeEach(() => {
+            it('Log user back in', () => {
                 let user = {
                     username: 'Revarz',
                     password: 'selnapw'
                 };
-                return request(app)
+                return server
                     .post('/api/login')
                     .send(user)
                     .expect(200, {
@@ -242,10 +270,10 @@ describe('Customers', () => {
                             username: 'Revarz'
                         }
                     });
-            })
-            */
+            });
+            
             it('Returns a customer object', () => {
-                return request(app)
+                return server
                     .get('/api/customer_un/Revarz')
                     .expect(200)
                     .then((response) => {
@@ -256,7 +284,7 @@ describe('Customers', () => {
             });
 
             it('Returns a customer object without password and address', () => {
-                return request(app)
+                return server
                     .get('/api/customer_un/Revarz')
                     .expect(200)
                     .then((response) => {
@@ -278,18 +306,36 @@ describe('Customers', () => {
                     })    
             });
 
-            it('Returns 404 if customer does not exist', () => {
-                return request(app)
-                    .get('/api/customer_un/icantexist@666')
-                    .expect(404);
+            it('Returns 400 if asked for info about other user', () => {
+                return server
+                    .get('/api/customer_un/Ezayji')
+                    .expect(400);
             });
 
-            it('Returns 400 if called with numeric value', () => {
-                return request(app)
-                    .get('/api/customer_un/1')
-                    .expect(400)
-            });
+            describe('getCustomerByUsername', () => {
 
+                it('Returns 404 if customer does not exist', () => {
+                    const req = httpMocks.createRequest({
+                        params: {username: 'icantexist@666'}
+                    });
+                    const res = httpMocks.createResponse();
+
+                    getCustomerByUsername(req, res);
+                    assert.equal(404, res.statusCode);
+
+                });
+
+                it('Returns 400 if called with numeric value', () => {
+                    const req = httpMocks.createRequest({
+                        params: {username: '1'}
+                    });
+                    const res = httpMocks.createResponse();
+
+                    getCustomerByUsername(req, res);
+                    assert.equal(400, res.statusCode);
+
+                });
+            });
         });
     });
 
