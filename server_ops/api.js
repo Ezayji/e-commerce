@@ -31,7 +31,10 @@ apiRouter.post('/register', checkNewCustomerInfo, checkIfUniqueEmail, checkIfUni
 
 // post login
 apiRouter.post('/login', checkUserName, checkUserPw, passport.authenticate('local'), (req, res) => {
-    res.status(200).send();
+    console.log(req.user);
+    console.log(req.isAuthenticated());
+    //console.log(res);
+    res.status(200).send({user: req.user});
 });
 
 module.exports = apiRouter;

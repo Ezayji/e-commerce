@@ -33,6 +33,7 @@ const getCustomerByUsername = (request, response) => {
     const username = request.params.username;
     const text = 'SELECT id, username, first_name, last_name, email, phone, registered FROM customer WHERE username = $1';
     
+    console.log(request.isAuthenticated());
     pool.query(text, [username], (error, results) => {
         if(!isNaN(parseInt(username))){
             response.status(400).send();

@@ -7,7 +7,6 @@ const initialize = (passport) => {
     function(username, password, done){
         const user = {
             username,
-            password
         };
         return done(null, user);
     }));

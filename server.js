@@ -24,7 +24,7 @@ app.use(
     })
 );
 
-// session
+// session and passport
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
