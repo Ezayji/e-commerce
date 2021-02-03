@@ -50,7 +50,7 @@ const getCustomerByUsername = (request, response) => {
 
     pool.query(text, [username], (error, results) => {
         if (results.rows[0] === undefined) {
-            response.status(404).send();
+            response.status(404).send('No user with that username');
         } else {
             response.status(200).json(results.rows[0]);
         };

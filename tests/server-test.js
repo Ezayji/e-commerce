@@ -19,7 +19,7 @@ describe('API', () => {
 })
 
 // Customers
-describe('Customers', () => {
+describe('Customer Routes', () => {
     // REGISTER CUSTOMER
     describe('POST /api/register', () => {
         it('Adds new cutomer to the database if supplied information is correct', () => {
@@ -169,7 +169,7 @@ describe('Customers', () => {
                 .expect(400);
         });
 
-        it('Logs the user in and returns username if correct username and password is supplied', () => {
+        it('Logs the customer in and returns username if correct username and password is supplied', () => {
             let user = {
                 username: 'Revarz',
                 password: 'selnapw'
@@ -188,7 +188,7 @@ describe('Customers', () => {
 
     // LOGOUT
     describe('GET /api/logout', () => {
-        it('Logs out the user and returns 200', () => {
+        it('Logs out the customer and returns 200', () => {
             return server
                 .get('/api/logout')
                 .expect(200)
@@ -306,21 +306,26 @@ describe('Customers', () => {
                     })    
             });
 
-            it('Returns 400 if asked for info about other user', () => {
+            it('Returns 400 if asked for info about other customer', () => {
                 return server
                     .get('/api/customer_un/Ezayji')
                     .expect(400);
             });
-
+/*
             describe('getCustomerByUsername', () => {
 
                 it('Returns 404 if customer does not exist', () => {
                     const req = httpMocks.createRequest({
-                        params: {username: 'icantexist@666'}
+                        method: 'GET',
+                        url: '/api/customer_un/fuckyouidontexistlolbede@',
+                        params: {username: 'fuckyouidontexistlolbede@'}
                     });
-                    const res = httpMocks.createResponse();
+                    const res = httpMocks.createResponse({
+                        eventEmitter: require('events').EventEmitter
+                    });
 
                     getCustomerByUsername(req, res);
+                    console.log(res);
                     assert.equal(404, res.statusCode);
 
                 });
@@ -335,6 +340,37 @@ describe('Customers', () => {
                     assert.equal(400, res.statusCode);
 
                 });
+            });
+*/      
+        });
+    });
+
+    describe('POST /api/customer_un', () => {
+        it('Returns 400 if customer is not logged in', () => {
+            const updatedUser = {
+                username: 'Revarz',
+                first_name: 'Relna',
+                last_name: 'Kaszk',
+                email: 'selnakxd@testapi.com',
+                phone: '+372 11111111',
+                password: 'selnapw'
+            }
+            
+            return request(app)
+                .get('/api/logout')
+                .expect(200)
+                .then(() => {
+                    return server
+                        .post('/api/customer_un/Revarz')
+                        .send(updatedUser)
+                        .expect(400);
+                });
+                
+        });
+
+        describe('Authenticated updates', () => {
+            it('Updates the customer is all supplied information is correct', () => {
+                
             });
         });
     });
