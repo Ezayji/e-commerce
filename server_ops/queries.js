@@ -22,22 +22,6 @@ const checkAuthenticated = (req, res, next) => {
     };
 };
 
-// get customer by id
-const getCustomerById = (request, response) => {
-    const id = parseInt(request.params.id);
-    const text = 'SELECT id, username, first_name, last_name, email, phone, registered FROM customer WHERE id = $1';
-
-    pool.query(text, [id], (error, results) => {
-        if(isNaN(id)){
-            response.status(400).send()
-        } else if(results.rows[0] === undefined){
-            response.status(404).send();
-        } else {
-            response.status(200).json(results.rows[0]);
-        };
-    });
-};
-
 // get customer by username
 const getCustomerByUsername = (request, response) => {
     const username = request.params.username;
@@ -65,7 +49,7 @@ const checkNewCustomerInfo = (request, response, next) => {
     const {username, first_name, last_name, email, phone, password, registered} = request.body;
     
     if(username === undefined || username === '' || first_name === undefined || first_name === '' || last_name === undefined || last_name === '' || email === undefined || email === '' || phone === undefined || phone === '' || password === undefined || password === '' || registered === undefined || registered === ''){
-        response.status(400).send();
+        response.status(400).send('Some field(s) not represented');
     } else {
         next();
     };
@@ -159,8 +143,88 @@ const checkUserPw = (request, response, next) => {
 };
 
 
-module.exports = {getCustomerById, 
-                getCustomerByUsername, 
+// UPDATE customer info
+
+// chekc for empty and unnecessary fields in update request
+const checkUpdatedInfo = (request, response, next) => {
+    const {first_name, last_name, email, phone, password} = request.body;
+    const body = request.body;
+
+    if(first_name === '' || first_name === undefined || last_name === '' || last_name === undefined || email === '' || email === undefined || phone === '' || phone === undefined || password === '' || password === undefined){
+        response.status(404).send('Some field(s) missing');
+    } else if (body.registered !== undefined || body.appartment_nr !== undefined || body.street !== undefined || body.city !== undefined || body.province !== undefined || body.zip !== undefined || body.country !== undefined){
+        response.status(400).send('Too much information');
+    } else {
+        next();
+    };
+};
+
+// update query
+const updateCustomer = async (request, response, next) => {
+    const text = 'UPDATE customer SET first_name = $1, last_name = $2, email = $3, phone = $4, password = $5 WHERE username = $6';
+    const {first_name, last_name, email, phone, password} = request.body;
+    const username = request.params.username;
+    const cryptedPw = await bcrypt.hash(password, 10);
+
+    pool.query(text, [first_name, last_name, email, phone, cryptedPw, username], (error, results) => {
+        if(error){
+            throw error;
+        } else {
+            next();
+        };
+    });
+};
+
+
+// CUSTOMER ADDRESS
+
+// GET customer address
+const getCustomerAddress = (request, response) => {
+    const text = 'SELECT username, appartment_nr, street, city, province, zip, country FROM customer WHERE username = $1';
+    const username = request.params.username;
+
+    pool.query(text, [username], (error, results) => {
+        if(error){
+            throw error;
+        } else {
+            response.status(200).send(results.rows[0])
+        };
+    });
+};
+
+//check for empty and unnecessary fields in the update request
+const checkUpdatedAddress = (request, response, next) => {
+    const {appartment_nr, street, city, province, zip, country} = request.body;
+    const body = request.body;
+
+    if(appartment_nr === undefined || appartment_nr === '' || street === undefined || street === '' || city === undefined || city === '' || province === undefined || province === '' || zip === undefined || zip === '' || country === undefined || country === ''){
+        response.status(404).send('Some field(s) missing');
+    } else if (isNaN(zip)) {
+        response.status(400).send('Not a valid zip')
+    } else if(body.id !== undefined || body.username !== undefined || body.first_name !== undefined || body.last_name !== undefined || body.email !== undefined || body.phone !== undefined || body.password !== undefined || body.registered !== undefined){
+        response.status(400).send('Too much information');
+    } else {
+        next();
+    };
+};
+
+//Update customer address
+const updateCustomerAddress = (request, response, next) => {
+    const text = 'UPDATE customer SET appartment_nr = $1, street = $2, city = $3, province = $4, zip = $5, country = $6 WHERE username = $7';
+    const {appartment_nr, street, city, province, zip, country} = request.body;
+    const username = request.params.username;
+
+    pool.query(text, [appartment_nr, street, city, province, zip, country, username], (error, results) => {
+        if(error){
+            throw error;
+        } else {
+            next();
+        };
+    });
+};
+
+
+module.exports = {getCustomerByUsername, 
                 addNewCustomer, 
                 checkNewCustomerInfo, 
                 checkIfUniqueEmail, 
@@ -168,4 +232,9 @@ module.exports = {getCustomerById,
                 checkIfUniqueUsername, 
                 checkUserName, 
                 checkUserPw,
-                checkAuthenticated};
+                checkAuthenticated,
+                updateCustomer,
+                checkUpdatedInfo,
+                getCustomerAddress,
+                updateCustomerAddress,
+                checkUpdatedAddress};
