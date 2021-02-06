@@ -15,4 +15,3 @@ const initialize = (passport) => {
 };
 
 module.exports = initialize;
-/*getCustomer(username)*/

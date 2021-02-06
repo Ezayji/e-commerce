@@ -22,6 +22,15 @@ const checkAuthenticated = (req, res, next) => {
     };
 };
 
+// check if not authenticated
+const checkNotAuthenticated = (req, res, next) => {
+    if(!req.isAuthenticated()){
+        next();
+    } else {
+        res.status(400).send('You are already authenticated');
+    };
+};
+
 // get customer by username
 const getCustomerByUsername = (request, response) => {
     const username = request.params.username;
@@ -233,6 +242,7 @@ module.exports = {getCustomerByUsername,
                 checkUserName, 
                 checkUserPw,
                 checkAuthenticated,
+                checkNotAuthenticated,
                 updateCustomer,
                 checkUpdatedInfo,
                 getCustomerAddress,

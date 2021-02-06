@@ -10,11 +10,14 @@ const {getCustomerByUsername,
        checkUserName,
        checkUserPw,
        checkAuthenticated,
+       checkNotAuthenticated,
        updateCustomer,
        checkUpdatedInfo,
        updateCustomerAddress,
        getCustomerAddress,
-       checkUpdatedAddress} = require('./queries');
+       checkUpdatedAddress} = require('./customer_queries');
+
+const {getProductsByGenderAndCategory} = require('./product_queries');
 
 const initializePassport = require('./passport-config');
 initializePassport(passport);
@@ -24,15 +27,19 @@ initializePassport(passport);
 apiRouter.get('/', (req, res, next) => {
     res.status(200).send();
 })
-/*
-// get customer by ID
-apiRouter.get('/customer/:id', getCustomerById);
-*/
-// get customer by USERNAME
-apiRouter.get('/customer_un/:username', checkAuthenticated, getCustomerByUsername);
+
+// PRODUCTS
+
+// get products by gender and category
+apiRouter.get('/products', getProductsByGenderAndCategory);
+
+// CUSTOMERS
 
 // register a new customer
-apiRouter.post('/register', checkNewCustomerInfo, checkIfUniqueEmail, checkIfUniqueUsername, checkIfUniquePhone, addNewCustomer);
+apiRouter.post('/register', checkNotAuthenticated, checkNewCustomerInfo, checkIfUniqueEmail, checkIfUniqueUsername, checkIfUniquePhone, addNewCustomer);
+
+// get customer by USERNAME
+apiRouter.get('/customer_un/:username', checkAuthenticated, getCustomerByUsername);
 
 // update customer profile info
 apiRouter.put('/customer_un/:username', checkAuthenticated, checkUpdatedInfo, checkIfUniqueEmail, checkIfUniquePhone, updateCustomer, getCustomerByUsername);
@@ -44,7 +51,7 @@ apiRouter.get('/customer_address/:username', checkAuthenticated, getCustomerAddr
 apiRouter.put('/customer_address/:username', checkAuthenticated, checkUpdatedAddress, updateCustomerAddress, getCustomerAddress);
 
 // post login
-apiRouter.post('/login', checkUserName, checkUserPw, passport.authenticate('local'), (req, res) => {
+apiRouter.post('/login', checkNotAuthenticated, checkUserName, checkUserPw, passport.authenticate('local'), (req, res) => {
     res.status(200).send({user: req.user});
 });
 
@@ -52,6 +59,10 @@ apiRouter.post('/login', checkUserName, checkUserPw, passport.authenticate('loca
 apiRouter.get('/logout', (req, res) => {
     req.logout();
     res.status(200).send();
-})
+});
+
+// PRODUCTS
+
+
 
 module.exports = apiRouter;

@@ -8,7 +8,7 @@ const { response } = require('express');
 
 const server = request.agent(app);
 
-const {getCustomerByUsername} = require('../server_ops/queries');
+const {getCustomerByUsername} = require('../server_ops/customer_queries');
 
 describe('API', () => {
     it('Sends OK status', async () => {
@@ -22,6 +22,7 @@ describe('API', () => {
 describe('Customer Routes', () => {
     // REGISTER CUSTOMER
     describe('POST CUSTOMER /api/register', () => {
+        // log customer in and out for checking the database
         it('Adds new cutomer to the database if supplied information is correct', () => {
             let newCustomer = {
                 username: 'Revarz',
@@ -142,6 +143,43 @@ describe('Customer Routes', () => {
                 .send(newCustomer)
                 .expect(400);
         });
+
+        // log customer in and out for test
+        it('Does not let authenticated customer to register', () => {
+            let newCustomer = {
+                username: 'Kaztan',
+                first_name: 'Selna',
+                last_name: 'Kaszk',
+                email: 'selnakkaztan123@testapi.com',
+                phone: '+372 00000000',
+                password: 'selnapw',
+                registered: new Date()
+            };
+            
+            let user = {
+                username: 'Revarz',
+                password: 'selnapw'
+            };
+            return server
+                .post('/api/login')
+                .send(user)
+                .expect(200, {
+                    user: {
+                        username: 'Revarz'
+                    }
+                })
+                .then(() => {
+                    return server
+                        .post('/api/register')
+                        .send(newCustomer)
+                        .expect(400);
+                })
+                .then(() => {
+                    return server
+                        .get('/api/logout')
+                        .expect(200);
+                });
+        });
     });
     
     // LOGIN 
@@ -183,6 +221,18 @@ describe('Customer Routes', () => {
                     }
                 });
         });
+
+        it('Returns 400 if customer is already authenticated', () => {
+            let user = {
+                username: 'Revarz',
+                password: 'selnapw'
+            };
+
+            return server
+                .post('/api/login')
+                .send(user)
+                .expect(400);
+        });
     
     });
 
@@ -193,6 +243,13 @@ describe('Customer Routes', () => {
                 .get('/api/logout')
                 .expect(200)
         });
+/*
+        it('It returns 400 if customer is not authenticated', () => {
+            return server
+                .get('/api/logout')
+                .expect(400);
+        });
+*/
     });
 
 
@@ -296,6 +353,7 @@ describe('Customer Routes', () => {
 
     // UPDATE CUSTOMER PROFILE
     describe('PUT CUSTOMER /api/customer_un/:username', () => {
+        // Log customer out in the beggining
         it('Returns 400 if customer is not logged in', () => {
             const updatedUser = {
                 first_name: 'Selna',
@@ -317,6 +375,7 @@ describe('Customer Routes', () => {
                 
         });
 
+        // Log customer in at the beggining and out in the end for next test
         describe('* Authenticated updates *', () => {
             it('Updates the customer if all supplied information is correct and returns the updated object with all properties except address and password', () => {
                 const customerLogin = {
@@ -492,6 +551,7 @@ describe('Customer Routes', () => {
     describe('Customer Address', () => {
         describe('* Unauthenticated request *', () => {
 
+            // Log customer out in the beggining
             it('To update customer address fails', () => {
                 const address = {
                     appartment_nr: 1,
@@ -514,6 +574,7 @@ describe('Customer Routes', () => {
             
             });
 
+            // Log customer in at the end for next tests
             it('To recieve cutomer address fails', () => {
                 const user = {
                     username: 'Revarz',
@@ -684,13 +745,157 @@ describe('Customer Routes', () => {
                         });
                 });
 
+                // Log customer out in the end
                 it('Customer can not recieve other customer address', () => {
                     return server
                         .get('/api/customer_address/Ezayji')
-                        .expect(400);
+                        .expect(400)
+                        .then(() => {
+                            return server
+                                .get('/api/logout')
+                                .expect(200);
+                        });
                 });
             });
         });
     });
 
+});
+
+
+// PRODUCTS 
+describe('PRODUCTS', () => {
+    describe('* GET ALL PRODUCTS BY gender *', () => {
+        describe('GET /api/products?gender={gender}', () => {
+            it('Unauthenticated customer can access products', () => {
+                return request(app)
+                    .get('/api/products?gender=men')
+                    .expect(200)
+                    .then(() => {
+                        return request(app)
+                            .get('/api/products?gender=women')
+                            .expect(200);
+                    });
+                
+            });
+
+            // Log customer in and out
+            it('Authenticated user can access products', () => {
+                const user = {
+                    username: 'Revarz',
+                    password: 'karnaz123'
+                };
+                
+                return server
+                    .post('/api/login')
+                    .send(user)
+                    .expect(200, {
+                        user: {
+                            username: 'Revarz'
+                        }
+                    })
+                    .then(() => {
+                        return server
+                            .get('/api/products?gender=men')
+                            .expect(200);
+                    })
+                    .then(() => {
+                        return server
+                            .get('/api/products?gender=women')
+                            .expect(200);
+                    })
+                    .then(() => {
+                        return server
+                            .get('/api/logout')
+                            .expect(200);
+                    });
+            });
+
+            it('Returns an array of products', () => {
+                return request(app)
+                    .get('/api/products?gender=men')
+                    .expect(200)
+                    .then((response) => {
+                        let products = response.body;
+                        expect(products).to.be.an.instanceOf(Array);
+                    })
+                    .then(() => {
+                        return request(app)
+                            .get('/api/products?gender=women')
+                            .expect(200)
+                            .then((response) => {
+                                let products = response.body;
+                                expect(products).to.be.an.instanceOf(Array);
+                            });
+                    });
+            });
+        });
+    });
+
+    describe('* GET ALL PRODUCTS BY gender and category *', () => {
+        describe('GET /api/products?gender={gender}&categoryid={categoryid}', () => {
+            it('Unauthenticated customer can access products', () => {
+                return request(app)
+                    .get('/api/products?gender=men&categoryid=3')
+                    .expect(200)
+                    .then(() => {
+                        return request(app)
+                            .get('/api/products?gender=women&categoryid=1')
+                            .expect(200);
+                    });
+                
+            });
+
+            // Log customer in and out
+            it('Authenticated user can access products', () => {
+                const user = {
+                    username: 'Revarz',
+                    password: 'karnaz123'
+                };
+                
+                return server
+                    .post('/api/login')
+                    .send(user)
+                    .expect(200, {
+                        user: {
+                            username: 'Revarz'
+                        }
+                    })
+                    .then(() => {
+                        return server
+                            .get('/api/products?gender=men&categoryid=3')
+                            .expect(200);
+                    })
+                    .then(() => {
+                        return server
+                            .get('/api/products?gender=women&categoryid=1')
+                            .expect(200);
+                    })
+                    .then(() => {
+                        return server
+                            .get('/api/logout')
+                            .expect(200);
+                    });
+            });
+
+            it('Returns an array of products', () => {
+                return request(app)
+                    .get('/api/products?gender=men&categoryid=1')
+                    .expect(200)
+                    .then((response) => {
+                        let products = response.body;
+                        expect(products).to.be.an.instanceOf(Array);
+                    })
+                    .then(() => {
+                        return request(app)
+                            .get('/api/products?gender=women&categoryid=3')
+                            .expect(200)
+                            .then((response) => {
+                                let products = response.body;
+                                expect(products).to.be.an.instanceOf(Array);
+                            });
+                    });
+            });
+        });
+    });
 });
