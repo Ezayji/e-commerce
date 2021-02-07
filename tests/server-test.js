@@ -317,6 +317,7 @@ describe('Customer Routes', () => {
                     .get('/api/customer_un/Ezayji')
                     .expect(400);
             });
+
 /*
             describe('getCustomerByUsername', () => {
 
@@ -1020,6 +1021,23 @@ describe('PRODUCTS', () => {
                         expect(product_1).to.have.ownProperty('manufacturer');
                     });
             });
+
+            it('Returns 400 if called with non-numeric ID', () => {
+                return request(app)
+                    .get('/api/manufacturer/notID')
+                    .expect(400);
+            });
+
+            it('Returns 404 if no manufacturer exists with selected ID', () => {
+                return request(app)
+                    .get('/api/manufacturer/100000')
+                    .expect(404);
+            });
         });
     });
+/*
+    describe('GET /api/products/:product_id', () => {
+
+    })
+*/
 });

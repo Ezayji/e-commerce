@@ -46,26 +46,23 @@ const getProductsByGenderAndCategory = (request, response) => {
 const getProductsByManufacturerId = (request, response) => {
     const text = "SELECT product.id, product.category_id, product.title, product.unit_price_eur, product.thumbnail_url, manufacturer.title AS manufacturer FROM product LEFT JOIN manufacturer ON product.manufacturer_id = manufacturer.id WHERE manufacturer_id = $1 ORDER BY product.id DESC";
     const man_id = request.params.manufacturer_id;
-
     if(isNaN(man_id)){
         response.status(400).send('Faulty manufacturer ID');
-    };
-
-    pool.query(text, [man_id], (error, results) => {
-        if(error){
-            throw error;
-        } else if (results.rows[0] === undefined){
-            response.status(404).send('No manufacturer found');
-        } else {
-            manufacturer = results.rows[0].manufacturer;
-            products = results.rows;
-            const result = {
-                manufacturer,
-                products
+    } else {
+        pool.query(text, [man_id], (error, results) => {
+            if (results.rows[0] === undefined){
+                response.status(404).send('No manufacturer found');
+            } else {
+                manufacturer = results.rows[0].manufacturer;
+                products = results.rows;
+                const result = {
+                    manufacturer,
+                    products
+                };
+                response.status(200).send(result);
             };
-            response.status(200).send(result);
-        };
-    });
+        });
+    };
 };
 
 module.exports = {getProductsByGenderAndCategory, getProductsByManufacturerId};

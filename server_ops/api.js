@@ -37,6 +37,7 @@ apiRouter.get('/products', getProductsByGenderAndCategory);
 // get products by manufacturer id
 apiRouter.get('/manufacturer/:manufacturer_id', getProductsByManufacturerId);
 
+
 // CUSTOMERS
 
 // register a new customer
