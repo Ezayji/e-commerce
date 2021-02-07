@@ -957,9 +957,9 @@ describe('PRODUCTS', () => {
             });
         });
     });
-
-    describe('GET /api/manufacturer/:manufacturer_id', () => {
-        describe('* GET ALL PRODUCTS BY MANUFACTURER *', () => {
+    
+    describe('* GET ALL PRODUCTS BY MANUFACTURER *', () => {
+        describe('GET /api/manufacturer/:manufacturer_id', () => {
             it('Unauthenticated customer can access products', () => {
                 return request(app)
                     .get('/api/manufacturer/2')
@@ -1035,9 +1035,211 @@ describe('PRODUCTS', () => {
             });
         });
     });
-/*
-    describe('GET /api/products/:product_id', () => {
+    
+    describe('* GET PRODUCT BY ID WITH PICTURES AND SIZES *', () => {
+        describe('GET /api/products/:product_id', () => {
+            it('Unauthenticated customer can access product', () => {
+                return request(app)
+                    .get('/api/products/11')
+                    .expect(200);
+            });
 
-    })
-*/
+            // log customer in and out
+            it('Authenticated customer can access product', () => {
+                const user = {
+                    username: 'Revarz',
+                    password: 'karnaz123'
+                };
+            
+                return server
+                    .post('/api/login')
+                    .send(user)
+                    .expect(200, {
+                        user: {
+                            username: 'Revarz'
+                        }
+                    })
+                    .then(() => {
+                        return server
+                            .get('/api/products/11')
+                            .expect(200);
+                    })
+                    .then(() => {
+                        return server
+                            .get('/api/logout')
+                            .expect(200);
+                    });
+            });
+
+            it('Returns an object with product object, image url array and sizes array', () => {
+                return request(app)
+                    .get('/api/products/12')
+                    .expect(200)
+                    .then((response) => {
+                        let result = response.body;
+                        let images = response.body.images;
+                        let product = response.body.product;
+                        let sizes = response.body.sizes;
+                        expect(result).to.be.an.instanceOf(Object);
+                        expect(result).to.have.ownProperty('product');
+                        expect(result).to.have.ownProperty('images');
+                        expect(result).to.have.ownProperty('sizes');
+                        expect(images).to.be.an.instanceOf(Array);
+                        expect(sizes).to.be.an.instanceOf(Array);
+                        expect(product).to.be.an.instanceOf(Object);
+                    });
+            });
+
+            it('Returned product object includes Product ID, Category ID, Title, Description, Color, Price, Gender, Material and Manufacturer', () => {
+                return request(app)
+                    .get('/api/products/12')
+                    .expect(200)
+                    .then((response) => {
+                        let product = response.body.product;
+                        expect(product).to.have.ownProperty('id');
+                        expect(product).to.have.ownProperty('category_id');
+                        expect(product).to.have.ownProperty('title');
+                        expect(product).to.have.ownProperty('description');
+                        expect(product).to.have.ownProperty('color');
+                        expect(product).to.have.ownProperty('unit_price_eur');
+                        expect(product).to.have.ownProperty('gender');
+                        expect(product).to.have.ownProperty('material');
+                        expect(product).to.have.ownProperty('manufacturer');
+                    });
+            });
+
+            it('Returns 400 if called with non-numeric value', () => {
+                return request(app)
+                    .get('/api/products/notID')
+                    .expect(400);
+            });
+
+            it('Returns 404 if the product does not exist', () => {
+                return request(app)
+                    .get('/api/products/1000000')
+                    .expect(404);
+            });
+        });
+    });
+
+    describe('* GET ALL MANUFACTURERS *', () => {
+        describe('GET /api/manufacturers', () => {
+            it('Unauthenticated customer can access manufacturers', () => {
+                return request(app)
+                    .get('/api/manufacturers')
+                    .expect(200);
+            });
+
+            // log customer in and out
+            it('Authenticated customer can access manufacturers', () => {
+                const user = {
+                    username: 'Revarz',
+                    password: 'karnaz123'
+                };
+            
+                return server
+                    .post('/api/login')
+                    .send(user)
+                    .expect(200, {
+                        user: {
+                            username: 'Revarz'
+                        }
+                    })
+                    .then(() => {
+                        return server
+                            .get('/api/manufacturers')
+                            .expect(200);
+                    })
+                    .then(() => {
+                        return server
+                            .get('/api/logout')
+                            .expect(200);
+                    });
+            });
+            
+            it('Returns an array of manufacturers', () => {
+                return request(app)
+                    .get('/api/manufacturers')
+                    .expect(200)
+                    .then((response) => {
+                        let result = response.body;
+                        expect(result).to.be.an.instanceOf(Array);
+                    });
+            });
+
+            it('Returned manufacturers have ID, Title, Description and Logo url', () => {
+                return request(app)
+                .get('/api/manufacturers')
+                .expect(200)
+                .then((response) => {
+                    let man_1 = response.body[0];
+                    expect(man_1).to.have.ownProperty('id');
+                    expect(man_1).to.have.ownProperty('title');
+                    expect(man_1).to.have.ownProperty('description');
+                    expect(man_1).to.have.ownProperty('logo_url');
+                });
+            });
+
+        });
+    });
+
+    describe('* GET ALL CATEGORIES *', () => {
+        describe('GET /api/categories', () => {
+            it('Unauthenticated customer can access categories', () => {
+                return request(app)
+                    .get('/api/categories')
+                    .expect(200);
+            });
+
+            // log customer in and out
+            it('Authenticated customer can access categories', () => {
+                const user = {
+                    username: 'Revarz',
+                    password: 'karnaz123'
+                };
+            
+                return server
+                    .post('/api/login')
+                    .send(user)
+                    .expect(200, {
+                        user: {
+                            username: 'Revarz'
+                        }
+                    })
+                    .then(() => {
+                        return server
+                            .get('/api/categories')
+                            .expect(200);
+                    })
+                    .then(() => {
+                        return server
+                            .get('/api/logout')
+                            .expect(200);
+                    });
+            });
+            
+            it('Returns an array of categories', () => {
+                return request(app)
+                    .get('/api/categories')
+                    .expect(200)
+                    .then((response) => {
+                        let result = response.body;
+                        expect(result).to.be.an.instanceOf(Array);
+                    });
+            });
+
+            it('Returned categories have ID and Title', () => {
+                return request(app)
+                    .get('/api/categories')
+                    .expect(200)
+                    .then((response) => {
+                        let cat_1 = response.body[0];
+                        expect(cat_1).to.have.ownProperty('id');
+                        expect(cat_1).to.have.ownProperty('title');
+                    });
+            });
+
+        });
+    });
+
 });

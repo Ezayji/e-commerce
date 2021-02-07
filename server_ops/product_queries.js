@@ -8,6 +8,33 @@ const pool = new Pool({
     port: 5432,
 });
 
+// GET ALL MANUFACTURERS
+const getManufacturers = (request, response) => {
+    const text = 'SELECT * FROM manufacturer ORDER BY id ASC';
+
+    pool.query(text, (error, results) => {
+        if(error){
+            throw error;
+        } else {
+            response.status(200).send(results.rows);
+        };
+    });
+};
+
+// GET ALL CATEGORIES
+const getCategories = (request, response) => {
+    const text = 'SELECT * FROM category ORDER BY id ASC'
+
+    pool.query(text, (error, results) => {
+        if(error){
+            throw error;
+        } else {
+            response.status(200).send(results.rows);
+        };
+    });
+};
+
+
 // GET ALL PRODUCTS by GENDER or GENDER AND CATEGORY
 
 const getProductsByGenderAndCategory = (request, response) => {
@@ -53,8 +80,8 @@ const getProductsByManufacturerId = (request, response) => {
             if (results.rows[0] === undefined){
                 response.status(404).send('No manufacturer found');
             } else {
-                manufacturer = results.rows[0].manufacturer;
-                products = results.rows;
+                let manufacturer = results.rows[0].manufacturer;
+                let products = results.rows;
                 const result = {
                     manufacturer,
                     products
@@ -65,4 +92,71 @@ const getProductsByManufacturerId = (request, response) => {
     };
 };
 
-module.exports = {getProductsByGenderAndCategory, getProductsByManufacturerId};
+
+// GET PRODUCT by ID with PICTURES and SIZES
+
+//get product by id
+const getProductById = (request, response, next) => {
+    const text = 'SELECT product.id, product.category_id, product.title, product.description, product.color, product.unit_price_eur, product.gender, product.material, manufacturer.title AS manufacturer FROM product LEFT JOIN manufacturer ON product.manufacturer_id = manufacturer.id WHERE product.id = $1'
+    const product_id = request.params.product_id;
+
+    if(isNaN(product_id)){
+        response.status(400).send('Request must be called with a number');
+    } else {
+        pool.query(text, [product_id], (error, results) => {
+            if(results.rows[0] === undefined){
+                response.status(404).send('No product with called ID');
+            } else if (error) {
+                throw error;
+            } else {
+                response.locals.product = results.rows[0];
+                next();
+            };
+        });
+    };
+};
+
+//get product images by id
+const getProductImages = (request, response, next) => {
+    const text = 'SELECT url FROM picture WHERE product_id = $1';
+    const product_id = request.params.product_id;
+
+    pool.query(text, [product_id], (error, results) => {
+        if(error){
+            throw error;
+        } else {
+            response.locals.images = results.rows;
+            next();
+        };
+    });
+};
+
+//get product sizes by id and return object with product object, images array and sizes array
+const getProductSizes = (request, response) => {
+    const text = 'SELECT size, quantity FROM size WHERE product_id = $1';
+    const product_id = request.params.product_id;
+
+    pool.query(text, [product_id], (error, results) => {
+        if(error){
+            throw error;
+        } else {
+            let product = response.locals.product;
+            let images = response.locals.images;
+            let sizes = results.rows;
+            const result = {
+                product,
+                images,
+                sizes
+            };
+            response.status(200).send(result);
+        };
+    });
+};
+
+module.exports = {getProductsByGenderAndCategory, 
+                getProductsByManufacturerId, 
+                getProductById, 
+                getProductImages, 
+                getProductSizes,
+                getManufacturers,
+                getCategories};
