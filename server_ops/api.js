@@ -17,7 +17,8 @@ const {getCustomerByUsername,
        getCustomerAddress,
        checkUpdatedAddress} = require('./customer_queries');
 
-const {getProductsByGenderAndCategory} = require('./product_queries');
+const {getProductsByGenderAndCategory,
+       getProductsByManufacturerId} = require('./product_queries');
 
 const initializePassport = require('./passport-config');
 initializePassport(passport);
@@ -30,8 +31,11 @@ apiRouter.get('/', (req, res, next) => {
 
 // PRODUCTS
 
-// get products by gender and category
+// get products by gender or gender and category
 apiRouter.get('/products', getProductsByGenderAndCategory);
+
+// get products by manufacturer id
+apiRouter.get('/manufacturer/:manufacturer_id', getProductsByManufacturerId);
 
 // CUSTOMERS
 

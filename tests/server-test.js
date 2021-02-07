@@ -765,94 +765,213 @@ describe('Customer Routes', () => {
 
 // PRODUCTS 
 describe('PRODUCTS', () => {
-    describe('* GET ALL PRODUCTS BY gender *', () => {
-        describe('GET /api/products?gender={gender}', () => {
-            it('Unauthenticated customer can access products', () => {
-                return request(app)
-                    .get('/api/products?gender=men')
-                    .expect(200)
-                    .then(() => {
-                        return request(app)
-                            .get('/api/products?gender=women')
-                            .expect(200);
-                    });
+    describe('GET /api/products', () => {
+        describe('* GET ALL PRODUCTS BY gender *', () => {
+            describe('GET /api/products?gender={gender}', () => {
+                it('Unauthenticated customer can access products', () => {
+                    return request(app)
+                        .get('/api/products?gender=men')
+                        .expect(200)
+                        .then(() => {
+                            return request(app)
+                                .get('/api/products?gender=women')
+                                .expect(200);
+                        });
                 
-            });
+                });
 
-            // Log customer in and out
-            it('Authenticated user can access products', () => {
-                const user = {
-                    username: 'Revarz',
-                    password: 'karnaz123'
-                };
+                // Log customer in and out
+                it('Authenticated customer can access products', () => {
+                    const user = {
+                        username: 'Revarz',
+                        password: 'karnaz123'
+                    };
                 
-                return server
-                    .post('/api/login')
-                    .send(user)
-                    .expect(200, {
-                        user: {
-                            username: 'Revarz'
-                        }
-                    })
-                    .then(() => {
-                        return server
-                            .get('/api/products?gender=men')
-                            .expect(200);
-                    })
-                    .then(() => {
-                        return server
-                            .get('/api/products?gender=women')
-                            .expect(200);
-                    })
-                    .then(() => {
-                        return server
-                            .get('/api/logout')
-                            .expect(200);
-                    });
-            });
+                    return server
+                        .post('/api/login')
+                        .send(user)
+                        .expect(200, {
+                            user: {
+                                username: 'Revarz'
+                            }
+                        })
+                        .then(() => {
+                            return server
+                                .get('/api/products?gender=men')
+                                .expect(200);
+                        })
+                        .then(() => {
+                            return server
+                                .get('/api/products?gender=women')
+                                .expect(200);
+                        })
+                        .then(() => {
+                            return server
+                                .get('/api/logout')
+                                .expect(200);
+                        });
+                });
 
-            it('Returns an array of products', () => {
-                return request(app)
-                    .get('/api/products?gender=men')
-                    .expect(200)
-                    .then((response) => {
-                        let products = response.body;
-                        expect(products).to.be.an.instanceOf(Array);
-                    })
-                    .then(() => {
-                        return request(app)
-                            .get('/api/products?gender=women')
-                            .expect(200)
-                            .then((response) => {
-                                let products = response.body;
-                                expect(products).to.be.an.instanceOf(Array);
-                            });
-                    });
+                it('Returns an array of products', () => {
+                    return request(app)
+                        .get('/api/products?gender=men')
+                        .expect(200)
+                        .then((response) => {
+                            let products = response.body;
+                            expect(products).to.be.an.instanceOf(Array);
+                        })
+                        .then(() => {
+                            return request(app)
+                                .get('/api/products?gender=women')
+                                .expect(200)
+                                .then((response) => {
+                                    let products = response.body;
+                                    expect(products).to.be.an.instanceOf(Array);
+                                });
+                        });
+                });
+
+                it('Returns Product ID, Category ID, Title, Price, Thumbnail URL and Manufacturer per Product', () => {
+                    return request(app)
+                        .get('/api/products?gender=women')
+                        .expect(200)
+                        .then((response) => {
+                            let product_1 = response.body[0];
+                            expect(product_1).to.have.ownProperty('id');
+                            expect(product_1).to.have.ownProperty('category_id');
+                            expect(product_1).to.have.ownProperty('title');
+                            expect(product_1).to.have.ownProperty('unit_price_eur');
+                            expect(product_1).to.have.ownProperty('thumbnail_url');
+                            expect(product_1).to.have.ownProperty('manufacturer');
+                        });
+                });
+
+                it('Returns 400 if called with invalid gender', () => {
+                    return request(app)
+                        .get('/api/products?gender=notgender')
+                        .expect(400);
+                });
+
+            });
+        });
+
+        describe('* GET ALL PRODUCTS BY gender and category *', () => {
+            describe('GET /api/products?gender={gender}&categoryid={categoryid}', () => {
+                it('Unauthenticated customer can access products', () => {
+                    return request(app)
+                        .get('/api/products?gender=men&categoryid=3')
+                        .expect(200)
+                        .then(() => {
+                            return request(app)
+                                .get('/api/products?gender=women&categoryid=1')
+                                .expect(200);
+                        });
+                    
+                });
+
+                // Log customer in and out
+                it('Authenticated customer can access products', () => {
+                    const user = {
+                        username: 'Revarz',
+                        password: 'karnaz123'
+                    };
+                
+                    return server
+                        .post('/api/login')
+                        .send(user)
+                        .expect(200, {
+                            user: {
+                                username: 'Revarz'
+                            }
+                        })
+                        .then(() => {
+                            return server
+                                .get('/api/products?gender=men&categoryid=3')
+                                .expect(200);
+                        })
+                        .then(() => {
+                            return server
+                                .get('/api/products?gender=women&categoryid=1')
+                                .expect(200);
+                        })
+                        .then(() => {
+                            return server
+                                .get('/api/logout')
+                                .expect(200);
+                        });
+                });
+
+                it('Returns an array of products', () => {
+                    return request(app)
+                        .get('/api/products?gender=men&categoryid=1')
+                        .expect(200)
+                        .then((response) => {
+                            let products = response.body;
+                            expect(products).to.be.an.instanceOf(Array);
+                        })
+                        .then(() => {
+                            return request(app)
+                                .get('/api/products?gender=women&categoryid=3')
+                                .expect(200)
+                                .then((response) => {
+                                    let products = response.body;
+                                    expect(products).to.be.an.instanceOf(Array);
+                                });
+                        });
+                });
+
+                it('Returns Product ID, Category ID, Title, Price, Thumbnail URL and Manufacturer per Product', () => {
+                    return request(app)
+                        .get('/api/products?gender=women&categoryid=4')
+                        .expect(200)
+                        .then((response) => {
+                            let product_1 = response.body[0];
+                            expect(product_1).to.have.ownProperty('id');
+                            expect(product_1).to.have.ownProperty('category_id');
+                            expect(product_1).to.have.ownProperty('title');
+                            expect(product_1).to.have.ownProperty('unit_price_eur');
+                            expect(product_1).to.have.ownProperty('thumbnail_url');
+                            expect(product_1).to.have.ownProperty('manufacturer');
+                        });
+                });
+
+                it('Return 400 if category id is not numeric', () => {
+                    return request(app)
+                        .get('/api/products?gender=men&categoryid=hats')
+                        .expect(400);
+                });
+
+                it('Returns 404 if category does not exist', () => {
+                    return request(app)
+                        .get('/api/products?gender=women&categoryid=200')
+                        .expect(404);
+                });
+
+                it('Returns 400 if called with only category', () => {
+                    return request(app)
+                        .get('/api/products?categoryid=2')
+                        .expect(400);
+                });
+
             });
         });
     });
 
-    describe('* GET ALL PRODUCTS BY gender and category *', () => {
-        describe('GET /api/products?gender={gender}&categoryid={categoryid}', () => {
+    describe('GET /api/manufacturer/:manufacturer_id', () => {
+        describe('* GET ALL PRODUCTS BY MANUFACTURER *', () => {
             it('Unauthenticated customer can access products', () => {
                 return request(app)
-                    .get('/api/products?gender=men&categoryid=3')
-                    .expect(200)
-                    .then(() => {
-                        return request(app)
-                            .get('/api/products?gender=women&categoryid=1')
-                            .expect(200);
-                    });
-                
+                    .get('/api/manufacturer/2')
+                    .expect(200);
             });
 
-            // Log customer in and out
-            it('Authenticated user can access products', () => {
+            // log customer in and out
+            it('Authenticated customer can access products', () => {
                 const user = {
                     username: 'Revarz',
                     password: 'karnaz123'
                 };
-                
+            
                 return server
                     .post('/api/login')
                     .send(user)
@@ -863,12 +982,7 @@ describe('PRODUCTS', () => {
                     })
                     .then(() => {
                         return server
-                            .get('/api/products?gender=men&categoryid=3')
-                            .expect(200);
-                    })
-                    .then(() => {
-                        return server
-                            .get('/api/products?gender=women&categoryid=1')
+                            .get('/api/manufacturer/2')
                             .expect(200);
                     })
                     .then(() => {
@@ -878,22 +992,32 @@ describe('PRODUCTS', () => {
                     });
             });
 
-            it('Returns an array of products', () => {
+            it('Returns an object with the manufacturer name and an array of products', () => {
                 return request(app)
-                    .get('/api/products?gender=men&categoryid=1')
+                    .get('/api/manufacturer/3')
                     .expect(200)
                     .then((response) => {
-                        let products = response.body;
+                        let result = response.body;
+                        let products = response.body.products;
+                        expect(result).to.be.an.instanceOf(Object);
+                        expect(result).to.have.ownProperty('manufacturer');
+                        expect(result).to.have.ownProperty('products');
                         expect(products).to.be.an.instanceOf(Array);
-                    })
-                    .then(() => {
-                        return request(app)
-                            .get('/api/products?gender=women&categoryid=3')
-                            .expect(200)
-                            .then((response) => {
-                                let products = response.body;
-                                expect(products).to.be.an.instanceOf(Array);
-                            });
+                    });
+            });
+
+            it('Returns Product ID, Category ID, Title, Price, Thumbnail URL and Manufacturer per Product', () => {
+                return request(app)
+                    .get('/api/manufacturer/4')
+                    .expect(200)
+                    .then((response) => {
+                        let product_1 = response.body.products[0];
+                        expect(product_1).to.have.ownProperty('id');
+                        expect(product_1).to.have.ownProperty('category_id');
+                        expect(product_1).to.have.ownProperty('title');
+                        expect(product_1).to.have.ownProperty('unit_price_eur');
+                        expect(product_1).to.have.ownProperty('thumbnail_url');
+                        expect(product_1).to.have.ownProperty('manufacturer');
                     });
             });
         });
