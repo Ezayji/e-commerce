@@ -1533,8 +1533,161 @@ describe('CARTS', () => {
                         });
                 });
 
+                // log customer out in the end
+                it('Customer can not access other customer cart', () => {
+                    return server
+                        .get('/api/cart/Ezayji')
+                        .expect(400)
+                        .then(() => {
+                            return server
+                                .get('/api/logout')
+                                .expect(200);
+                        });
+                });
+
             });    
         });
     });
+/*
+    describe('UPDATE CART ITEM QUANTITY FOR USER', () => {
+        describe('* Unauthenticated requests *', () => {
+            it('Unauthenticated customer can not update cart log', () => {
+                const updatedQty = {
+                    product_id: 18,
+                    quantity: 3
+                };
 
+                return request(app)
+                    .put('/api/cart/Revarz')
+                    .send(updatedQty)
+                    .expect(400);
+            });
+        });
+
+        describe('* Authenticated requests *', () => {
+            describe('PUT CART LOG /api/cart/:username', () => {
+                //log customer in
+                it('Updates item quantity if all information is correct and returns updated cart object', () => {
+                    const updatedQty = {
+                        product_id: 18,
+                        quantity: 1
+                    };
+
+                    const user = {
+                        username: 'Revarz',
+                        password: 'karnaz123'
+                    };
+
+                    return server
+                        .post('/api/login')
+                        .send(user)
+                        .expect(200, {
+                            user: {
+                                username: 'Revarz'
+                            }
+                        })
+                        .then(() => {
+                            return server
+                                .put('/api/cart/Revarz')
+                                .send(updatedQty)
+                                .expect(200)
+                                .then((response) => {
+                                    const result = response.body
+                                    const qty = response.body.products[1].quantity;
+                                    expect(result).to.be.an.instanceOf(Object);
+                                    expect(qty).to.eql(updatedQty.quantity);
+                                });
+                        });
+                });
+
+                it('Returns 404 if item does not exist in cart', () => {
+                    const updatedQty = {
+                        product_id: 20,
+                        quantity: 1
+                    };
+
+                    return server
+                        .put('/api/cart/Revarz')
+                        .send(updatedQty)
+                        .expect(404);
+                });
+
+                it('Returns 404 if any field is not present', () => {
+                    const updatedQty = {
+                        product_id: 18,
+                    };
+
+                    return server
+                        .put('/api/cart/Revarz')
+                        .send(updatedQty)
+                        .expect(404);
+                });
+
+                it('Returns 404 if any field is empty', () => {
+                    const updatedQty = {
+                        product_id: '',
+                        quantity: 1
+                    };
+
+                    return server
+                        .put('/api/cart/Revarz')
+                        .send(updatedQty)
+                        .expect(404);
+                });
+
+                it('Returns 400 if too many fields are sent', () => {
+                    const updatedQty = {
+                        id: 3,
+                        product_id: 18,
+                        quantity: 1,
+                        size: 'Universal',
+                        customer_username: 'Revarz'
+                    };
+
+                    return server
+                        .put('/api/cart/Revarz')
+                        .send(updatedQty)
+                        .expect(400);
+                });
+
+                it('Returns 400 if the selected quantity is not in stock', () => {
+                    const updatedQty = {
+                        product_id: 18,
+                        quantity: 1000
+                    };
+
+                    return server
+                        .put('/api/cart/Revarz')
+                        .send(updatedQty)
+                        .expect(400);
+                });
+
+                it('Returns 400 if Product ID is non-numeric', () => {
+                    const updatedQty = {
+                        product_id: 'eightteen',
+                        quantity: 2
+                    };
+
+                    return server
+                        .put('/api/cart/Revarz')
+                        .send(updatedQty)
+                        .expect(400);
+                });
+
+                it('Returns 400 if Quantity is non-numeric', () => {
+                    const updatedQty = {
+                        product_id: 18,
+                        quantity: 'two'
+                    };
+
+                    return server
+                        .put('/api/cart/Revarz')
+                        .send(updatedQty)
+                        .expect(400);
+                });
+
+            });
+        });
+    });
+*/
 });

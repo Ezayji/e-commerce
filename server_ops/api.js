@@ -26,7 +26,7 @@ const {getProductsByGenderAndCategory,
        getManufacturers} = require('./product_queries');
 
 const {newCartLog,
-       checkIfInCart,
+       checkIfNotInCart,
        checkNewCartLog,
        checkIfCartExists,
        getCustomerCart} = require('./cart-queries');
@@ -91,7 +91,7 @@ apiRouter.get('/logout', (req, res) => {
 // CART
 
 // add new cart log to customer
-apiRouter.post('/cart/:username', checkAuthenticated, checkNewCartLog, checkIfInCart, newCartLog);
+apiRouter.post('/cart/:username', checkAuthenticated, checkNewCartLog, checkIfNotInCart, newCartLog);
 
 // get customer cart with total price
 apiRouter.get('/cart/:username', checkAuthenticated, checkIfCartExists, getCustomerCart);

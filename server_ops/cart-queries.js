@@ -36,7 +36,7 @@ const checkNewCartLog = (request, response, next) => {
 };
 
 // check if in cart
-const checkIfInCart = (request, response, next) => {
+const checkIfNotInCart = (request, response, next) => {
     const {product_id} = request.body;
     const username = request.params.username;
     const text = 'SELECT id FROM cart WHERE product_id = $1 AND customer_username = $2';
@@ -107,9 +107,13 @@ const getCustomerCart = (request, response) => {
     });
 };
 
+
+// UPDATE PRODUCT QUANTITY IN CART
+
+
 module.exports = {
                 checkNewCartLog,
-                checkIfInCart,
+                checkIfNotInCart,
                 newCartLog,
                 checkIfCartExists,
                 getCustomerCart};
