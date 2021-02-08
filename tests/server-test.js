@@ -1548,13 +1548,14 @@ describe('CARTS', () => {
             });    
         });
     });
-/*
+
     describe('UPDATE CART ITEM QUANTITY FOR USER', () => {
         describe('* Unauthenticated requests *', () => {
             it('Unauthenticated customer can not update cart log', () => {
                 const updatedQty = {
                     product_id: 18,
-                    quantity: 3
+                    quantity: 3,
+                    size: 'Universal'
                 };
 
                 return request(app)
@@ -1570,7 +1571,8 @@ describe('CARTS', () => {
                 it('Updates item quantity if all information is correct and returns updated cart object', () => {
                     const updatedQty = {
                         product_id: 18,
-                        quantity: 1
+                        quantity: 1,
+                        size: 'Universal'
                     };
 
                     const user = {
@@ -1603,7 +1605,8 @@ describe('CARTS', () => {
                 it('Returns 404 if item does not exist in cart', () => {
                     const updatedQty = {
                         product_id: 20,
-                        quantity: 1
+                        quantity: 1,
+                        size: 'Universal'
                     };
 
                     return server
@@ -1614,7 +1617,7 @@ describe('CARTS', () => {
 
                 it('Returns 404 if any field is not present', () => {
                     const updatedQty = {
-                        product_id: 18,
+                        product_id: 18
                     };
 
                     return server
@@ -1627,6 +1630,19 @@ describe('CARTS', () => {
                     const updatedQty = {
                         product_id: '',
                         quantity: 1
+                    };
+
+                    return server
+                        .put('/api/cart/Revarz')
+                        .send(updatedQty)
+                        .expect(404);
+                });
+
+                it('Returns 404 if the selected quantity is not in stock', () => {
+                    const updatedQty = {
+                        product_id: 18,
+                        quantity: 1000,
+                        size: 'Universal'
                     };
 
                     return server
@@ -1650,22 +1666,11 @@ describe('CARTS', () => {
                         .expect(400);
                 });
 
-                it('Returns 400 if the selected quantity is not in stock', () => {
-                    const updatedQty = {
-                        product_id: 18,
-                        quantity: 1000
-                    };
-
-                    return server
-                        .put('/api/cart/Revarz')
-                        .send(updatedQty)
-                        .expect(400);
-                });
-
                 it('Returns 400 if Product ID is non-numeric', () => {
                     const updatedQty = {
                         product_id: 'eightteen',
-                        quantity: 2
+                        quantity: 2,
+                        size: 'Universal'
                     };
 
                     return server
@@ -1677,7 +1682,8 @@ describe('CARTS', () => {
                 it('Returns 400 if Quantity is non-numeric', () => {
                     const updatedQty = {
                         product_id: 18,
-                        quantity: 'two'
+                        quantity: 'two',
+                        size: 'Universal'
                     };
 
                     return server
@@ -1686,8 +1692,27 @@ describe('CARTS', () => {
                         .expect(400);
                 });
 
+                // log customer out in the end
+                it('Customer can not update other customer cart', () => {
+                    const updatedQty = {
+                        product_id: 1,
+                        quantity: 2,
+                        size: 'S/M'
+                    };
+
+                    return server
+                        .put('/api/cart/Ezayji')
+                        .send(updatedQty)
+                        .expect(400)
+                        .then(() => {
+                            return server
+                                .get('/api/logout')
+                                .expect(200);
+                        });
+                });
+
             });
         });
     });
-*/
+
 });

@@ -10,8 +10,8 @@ const pool = new Pool({
 
 // POST NEW CART LOG
 
-// check new cart log fields and if the product is in stock
-const checkNewCartLog = (request, response, next) => {
+// check new / updated cart log fields and if the product is in stock
+const checkCartLog = (request, response, next) => {
     const {product_id, quantity, size} = request.body;
     const body = request.body;
     const text = 'SELECT id FROM size WHERE product_id = $1 AND quantity >= $2 AND size = $3';
@@ -35,7 +35,7 @@ const checkNewCartLog = (request, response, next) => {
     };
 };
 
-// check if in cart
+// check if not in cart
 const checkIfNotInCart = (request, response, next) => {
     const {product_id} = request.body;
     const username = request.params.username;
@@ -110,10 +110,45 @@ const getCustomerCart = (request, response) => {
 
 // UPDATE PRODUCT QUANTITY IN CART
 
+// check if in cart
+const checkIfInCart = (request, response, next) => {
+    const {product_id} = request.body;
+    const username = request.params.username;
+    const text = 'SELECT id FROM cart WHERE product_id = $1 AND customer_username = $2';
+
+    pool.query(text, [product_id, username], (error, results) => {
+        if(error){
+            throw error;
+        } else if (results.rows[0] === undefined){
+            response.status(404).send('Item Not In Cart');
+        } else {
+            next();
+        };
+    });
+};
+
+// update cart log
+const updateCartLogQty = (request, response, next) => {
+    const {product_id, quantity, size} = request.body;
+    const username = request.params.username;
+    const text = 'UPDATE cart SET quantity = $1 WHERE product_id = $2 AND size = $3 AND customer_username = $4';
+
+    pool.query(text, [quantity, product_id, size, username], (error, results) => {
+        if(error){
+            throw error;
+        } else {
+            next();
+        };
+    });
+};
+
+
 
 module.exports = {
-                checkNewCartLog,
+                checkCartLog,
                 checkIfNotInCart,
                 newCartLog,
                 checkIfCartExists,
-                getCustomerCart};
+                getCustomerCart,
+                checkIfInCart,
+                updateCartLogQty};

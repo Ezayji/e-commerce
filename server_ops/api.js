@@ -27,9 +27,11 @@ const {getProductsByGenderAndCategory,
 
 const {newCartLog,
        checkIfNotInCart,
-       checkNewCartLog,
+       checkCartLog,
        checkIfCartExists,
-       getCustomerCart} = require('./cart-queries');
+       getCustomerCart,
+       checkIfInCart,
+       updateCartLogQty} = require('./cart-queries');
 
 const initializePassport = require('./passport-config');
 initializePassport(passport);
@@ -91,11 +93,13 @@ apiRouter.get('/logout', (req, res) => {
 // CART
 
 // add new cart log to customer
-apiRouter.post('/cart/:username', checkAuthenticated, checkNewCartLog, checkIfNotInCart, newCartLog);
+apiRouter.post('/cart/:username', checkAuthenticated, checkCartLog, checkIfNotInCart, newCartLog);
 
 // get customer cart with total price
 apiRouter.get('/cart/:username', checkAuthenticated, checkIfCartExists, getCustomerCart);
 
+// update quantity in cart log and return updated customer cart
+apiRouter.put('/cart/:username', checkAuthenticated, checkCartLog, checkIfInCart, updateCartLogQty, getCustomerCart);
 
 
 module.exports = apiRouter;
