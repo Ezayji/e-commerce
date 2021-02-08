@@ -19,7 +19,7 @@ describe('API', () => {
 })
 
 // Customers
-describe('Customer Routes', () => {
+describe('CUSTOMERS', () => {
     // REGISTER CUSTOMER
     describe('POST CUSTOMER /api/register', () => {
         // log customer in and out for checking the database
@@ -1239,6 +1239,301 @@ describe('PRODUCTS', () => {
                     });
             });
 
+        });
+    });
+
+});
+
+// CART 
+
+describe('CARTS', () => {
+    describe('POST NEW CART ITEM', () => {
+
+        describe('* Unauthenticated requests *', () => {
+            it('Not auhtenticated customer can not post cart items', () => {
+                const newCartItem = {
+                    product_id: 1,
+                    quantity: 1,
+                    size: 'S/M'
+                };
+
+                return request(app)
+                    .post('/api/cart/Revarz')
+                    .send(newCartItem)
+                    .expect(400);
+            });
+        });
+
+        describe('* Authenticated requests *', () => {
+            describe('POST CART ITEM /api/cart/:username', () => {
+                // Log customer in
+                it('Customer can add new cart items to the database if all the fields are correct', () => {
+                    const newCartItem = {
+                        product_id: 1,
+                        quantity: 1,
+                        size: 'S/M'
+                    };
+
+                    const user = {
+                        username: 'Revarz',
+                        password: 'karnaz123'
+                    };
+    
+                    return server
+                        .post('/api/login')
+                        .send(user)
+                        .expect(200, {
+                            user: {
+                                username: 'Revarz'
+                            }
+                        })
+                        .then(() => {
+                            return server
+                                .post('/api/cart/Revarz')
+                                .send(newCartItem)
+                                .expect(201);
+                        });
+                        
+                });
+
+                it('Returns 400 if requested to add already existing item to cart', () => {
+                    const newCartItem = {
+                        product_id: 1,
+                        quantity: 1,
+                        size: 'S/M'
+                    };
+
+                    return server
+                        .post('/api/cart/Revarz')
+                        .send(newCartItem)
+                        .expect(400);
+                });
+
+                it('Returns 400 if too many fields are sent', () => {
+                    const newCartItem = {
+                        id: 2,
+                        product_id: 1,
+                        quantity: 1,
+                        size: 'S/M',
+                        customer_username: 'Revarz'
+                    };
+
+                    return server
+                        .post('/api/cart/Revarz')
+                        .send(newCartItem)
+                        .expect(400);
+                });
+
+                it('Returns 400 if requested Product ID is less than 1', () => {
+                    const newCartItem = {
+                        product_id: -1,
+                        quantity: 1,
+                        size: 'Universal'
+                    };
+
+                    return server
+                        .post('/api/cart/Revarz')
+                        .send(newCartItem)
+                        .expect(400);
+                });
+
+                it('Returns 400 if requested Product ID is not numeric', () => {
+                    const newCartItem = {
+                        product_id: 'four',
+                        quantity: 1,
+                        size: 'Universal'
+                    };
+
+                    return server
+                        .post('/api/cart/Revarz')
+                        .send(newCartItem)
+                        .expect(400);
+                });
+
+                it('Returns 400 if requested Quantity is less than 1', () => {
+                    const newCartItem = {
+                        product_id: 4,
+                        quantity: -1,
+                        size: 'Universal'
+                    };
+
+                    return server
+                        .post('/api/cart/Revarz')
+                        .send(newCartItem)
+                        .expect(400);
+                });
+
+                it('Returns 400 if requested Quantity is not numeric', () => {
+                    const newCartItem = {
+                        product_id: 4,
+                        quantity: 'one',
+                        size: 'Universal'
+                    };
+
+                    return server
+                        .post('/api/cart/Revarz')
+                        .send(newCartItem)
+                        .expect(400);
+                });
+
+                it('Returns 404 if any field is empty', () => {
+                    const newCartItem = {
+                        product_id: 1,
+                        quantity: '',
+                        size: 'S/M'
+                    };
+
+                    return server
+                        .post('/api/cart/Revarz')
+                        .send(newCartItem)
+                        .expect(404);
+                });
+
+                it('Returns 404 if any field is not present', () => {
+                    const newCartItem = {
+                        product_id: 1,
+                        quantity: 1
+                    };
+
+                    return server
+                        .post('/api/cart/Revarz')
+                        .send(newCartItem)
+                        .expect(404);
+                });
+
+                it('Returns 404 if the requested product does not exist', () => {
+                    const newCartItem = {
+                        product_id: 1000000,
+                        quantity: 1,
+                        size: 'S/M'
+                    };
+
+                    return server
+                        .post('/api/cart/Revarz')
+                        .send(newCartItem)
+                        .expect(404);
+                });
+
+                it('Returns 404 if the selected product size is not in stock', () => {
+                    const newCartItem = {
+                        product_id: 11,
+                        quantity: 1,
+                        size: 'XXXL'
+                    };
+
+                    return server
+                        .post('/api/cart/Revarz')
+                        .send(newCartItem)
+                        .expect(404);
+                });
+
+                it('Returns 404 if there is not enough products of the selected size in stock', () => {
+                    const newCartItem = {
+                        product_id: 1,
+                        quantity: 10000,
+                        size: 'S/M'
+                    };
+
+                    return server
+                        .post('/api/cart/Revarz')
+                        .send(newCartItem)
+                        .expect(404);
+                });
+
+                // log customer out in the end
+                it('Customer can not add cart items to other customers', () => {
+                    const newCartItem = {
+                        product_id: 4,
+                        quantity: 1,
+                        size: 'Universal'
+                    };
+
+                    return server
+                        .post('/api/cart/Ezayji')
+                        .send(newCartItem)
+                        .expect(400)
+                        .then(() => {
+                            return server
+                                .get('/api/logout')
+                                .expect(200);
+                        });
+                });
+            });
+        });
+
+    });
+
+    describe('GET ALL CART ITEMS FOR CUSTOMER', () => {
+        describe('* Unauthenticated requests *', () => {
+            it('Not auhtenticated customer can not access cart items', () => {
+                return request(app)
+                    .get('/api/cart/Revarz')
+                    .expect(400);
+            });
+        });
+
+        describe('* Authenticated requests *', () => {
+            describe('GET CART ITEMS /api/cart/:username', () => {
+                // log customer in
+                it('Customer can access their cart items', () => {
+                    const user = {
+                        username: 'Revarz',
+                        password: 'karnaz123'
+                    };
+
+                    return server
+                        .post('/api/login')
+                        .send(user)
+                        .expect(200, {
+                            user: {
+                                username: 'Revarz'
+                            }
+                        })
+                        .then(() => {
+                            return server
+                                .get('/api/cart/Revarz')
+                                .expect(200);
+                        });
+                });
+
+                it('Returns a Cart object with Products array[Cart ID, Product ID, Quantity, Size, Product Title, Manufacturer, Product Color, Product Unit Price and Product Thumbnail URL - per Product] and Total price', () => {
+                    const newCartItem = {
+                        product_id: 18,
+                        quantity: 2,
+                        size: 'Universal'
+                    };
+
+                    return server
+                        .post('/api/cart/Revarz')
+                        .send(newCartItem)
+                        .expect(201)
+                        .then(() => {
+                            return server
+                                .get('/api/cart/Revarz')
+                                .expect(200)
+                                .then((response) => {
+                                    let result = response.body;
+                                    let products = response.body.products;
+                                    let product_1 = response.body.products[0];
+                                    expect(result).to.have.ownProperty('products');
+                                    expect(result).to.have.ownProperty('total');
+                                    expect(result).to.be.an.instanceOf(Object);
+                                    expect(products).to.be.an.instanceOf(Array);
+                                    expect(product_1).to.be.an.instanceOf(Object);
+                                    expect(product_1).to.have.ownProperty('cart_id');
+                                    expect(product_1).to.have.ownProperty('product_id');
+                                    expect(product_1).to.have.ownProperty('quantity');
+                                    expect(product_1).to.have.ownProperty('size');
+                                    expect(product_1).to.have.ownProperty('product_title');
+                                    expect(product_1).to.have.ownProperty('manufacturer');
+                                    expect(product_1).to.have.ownProperty('color');
+                                    expect(product_1).to.have.ownProperty('unit_price_eur');
+                                    expect(product_1).to.have.ownProperty('thumbnail_url');
+                                });
+                        });
+                });
+
+            });    
         });
     });
 

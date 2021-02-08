@@ -159,7 +159,7 @@ const checkUpdatedInfo = (request, response, next) => {
 
     if(first_name === '' || first_name === undefined || last_name === '' || last_name === undefined || email === '' || email === undefined || phone === '' || phone === undefined || password === '' || password === undefined){
         response.status(404).send('Some field(s) missing');
-    } else if (body.registered !== undefined || body.appartment_nr !== undefined || body.street !== undefined || body.city !== undefined || body.province !== undefined || body.zip !== undefined || body.country !== undefined){
+    } else if (body.id !== undefined || body.username !== undefined || body.registered !== undefined || body.appartment_nr !== undefined || body.street !== undefined || body.city !== undefined || body.province !== undefined || body.zip !== undefined || body.country !== undefined){
         response.status(400).send('Too much information');
     } else {
         next();

@@ -25,6 +25,12 @@ const {getProductsByGenderAndCategory,
        getCategories,
        getManufacturers} = require('./product_queries');
 
+const {newCartLog,
+       checkIfInCart,
+       checkNewCartLog,
+       checkIfCartExists,
+       getCustomerCart} = require('./cart-queries');
+
 const initializePassport = require('./passport-config');
 initializePassport(passport);
 
@@ -33,6 +39,7 @@ initializePassport(passport);
 apiRouter.get('/', (req, res, next) => {
     res.status(200).send();
 })
+
 
 // PRODUCTS
 
@@ -80,7 +87,14 @@ apiRouter.get('/logout', (req, res) => {
     res.status(200).send();
 });
 
-// PRODUCTS
+
+// CART
+
+// add new cart log to customer
+apiRouter.post('/cart/:username', checkAuthenticated, checkNewCartLog, checkIfInCart, newCartLog);
+
+// get customer cart with total price
+apiRouter.get('/cart/:username', checkAuthenticated, checkIfCartExists, getCustomerCart);
 
 
 
