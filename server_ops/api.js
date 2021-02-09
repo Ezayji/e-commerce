@@ -107,4 +107,12 @@ apiRouter.put('/cart/:username', checkAuthenticated, checkCartLog, checkIfInCart
 apiRouter.delete('/cart/:username', checkAuthenticated, checkQueryItem, deleteFromCart);
 
 
+// CHECKOUT
+
+
+
+// ORDERS
+
+
+
 module.exports = apiRouter;

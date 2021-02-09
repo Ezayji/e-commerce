@@ -1,12 +1,4 @@
-// Initialize Postgres pool
-const Pool = require('pg').Pool;
-const pool = new Pool({
-    user: 'postgres',
-    host: 'localhost',
-    database: 'e-commerce',
-    password: 'postgres',
-    port: 5432,
-});
+const pool = require('./postgres_pool');
 
 // GET ALL MANUFACTURERS
 const getManufacturers = (request, response) => {
