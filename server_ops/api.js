@@ -31,7 +31,9 @@ const {newCartLog,
        checkIfCartExists,
        getCustomerCart,
        checkIfInCart,
-       updateCartLogQty} = require('./cart-queries');
+       updateCartLogQty,
+       checkQueryItem,
+       deleteFromCart} = require('./cart-queries');
 
 const initializePassport = require('./passport-config');
 initializePassport(passport);
@@ -100,6 +102,9 @@ apiRouter.get('/cart/:username', checkAuthenticated, checkIfCartExists, getCusto
 
 // update quantity in cart log and return updated customer cart
 apiRouter.put('/cart/:username', checkAuthenticated, checkCartLog, checkIfInCart, updateCartLogQty, getCustomerCart);
+
+// delete item from cart
+apiRouter.delete('/cart/:username', checkAuthenticated, checkQueryItem, deleteFromCart);
 
 
 module.exports = apiRouter;

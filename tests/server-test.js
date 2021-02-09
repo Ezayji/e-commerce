@@ -1715,4 +1715,98 @@ describe('CARTS', () => {
         });
     });
 
+    describe('DELETE CUSTOMER CART ITEM', () => {
+        describe('* Unauthenticated requests *', () => {
+            it('Unauthenticated customer can not delete cart items', () => {
+                
+                return request(app)
+                    .delete('/api/cart/Revarz?product_id=18&size=Universal')
+                    .expect(400);
+
+            });
+        });
+
+        describe('* Authenticated requests *', () => {
+            describe('DELETE CART LOG /api/cart/:username?product_id={product_id}&size={size}', () => {
+                // log customer in
+                it('Authenticated customer can delete an item from their cart', () => {
+                    const user = {
+                        username: 'Revarz',
+                        password: 'karnaz123'
+                    };
+                    
+                    return server
+                        .post('/api/login')
+                        .send(user)
+                        .expect(200, {
+                            user: {
+                                username: 'Revarz'
+                            }
+                        })
+                        .then(() => {
+                            return server
+                                .delete('/api/cart/Revarz?product_id=18&size=Universal')
+                                .expect(204)
+                        })
+                        .then(() => {
+                            return server
+                                .get('/api/cart/Revarz')
+                                .expect(200)
+                                .then((response) => {
+                                    const result = response.body.products;
+                                    expect(result.length).to.eql(1);
+                                });
+                        });
+                });
+
+                it('Returns 400 if Product ID is not sent', () => {
+                    return server
+                        .delete('/api/cart/Revarz?size=S_M')
+                        .expect(400);
+                });
+
+                it('Returns 400 if Size is not sent', () => {
+                    return server
+                        .delete('/api/cart/Revarz?product_id=1')
+                        .expect(400);
+                });
+
+                it('Returns 400 if no Request Query is sent', () => {
+                    return server
+                        .delete('/api/cart/Revarz')
+                        .expect(400);
+                });
+
+                it('Returns 400 if called with non-numeric Product ID', () => {
+                    return server
+                        .delete('/api/cart/Revarz?product_id=one&size=S_M')
+                        .expect(400);
+                });
+
+                it('Returns 404 if requested item is not in cart', () => {
+                    return server
+                        .delete('/api/cart/Revarz?product_id=20&size=Universal')
+                        .expect(404);
+                });
+
+                it('Customer can not delete other customer log', () => {
+                    return server
+                        .delete('/api/cart/Ezayji?product_id=1&size=S_M')
+                        .expect(400); 
+                });
+
+                it('Deletes item from cart if Size includes "/" and is replaced with "_" in query', () => {
+                    return server
+                        .delete('/api/cart/Revarz?product_id=1&size=S_M')
+                        .expect(204)
+                        .then(() => {
+                            return server
+                                .get('/api/cart/Revarz')
+                                .expect(404);
+                        });
+                });
+            });
+        });
+    });
+
 });
