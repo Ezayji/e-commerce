@@ -109,6 +109,14 @@ apiRouter.delete('/cart/:username', checkAuthenticated, checkQueryItem, deleteFr
 
 // CHECKOUT
 
+// route for handling payments and creating shippment
+    // <---- should be implemented here ---->
+    // <-- * in order to post Order Items this section must create a Shippment row in Postgres if the Payment Succeeds.
+    // <-- * it should also remove items from stock after a succesful payment.
+
+    // * after this request is succesful the front end should make a post request with the recieved Shippment ID. *
+
+// post order items
 
 
 // ORDERS

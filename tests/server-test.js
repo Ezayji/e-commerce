@@ -1795,6 +1795,7 @@ describe('CARTS', () => {
                         .expect(400); 
                 });
 
+                // log customer out in the end
                 it('Deletes item from cart if Size includes "/" and is replaced with "_" in query', () => {
                     return server
                         .delete('/api/cart/Revarz?product_id=1&size=S_M')
@@ -1803,6 +1804,11 @@ describe('CARTS', () => {
                             return server
                                 .get('/api/cart/Revarz')
                                 .expect(404);
+                        })
+                        .then(() => {
+                            return server
+                                .get('/api/logout')
+                                .expect(200);
                         });
                 });
             });
@@ -1810,3 +1816,36 @@ describe('CARTS', () => {
     });
 
 });
+/*
+const pool = require('../server_ops/postgres_pool');
+describe('CHECKOUT (ASSUMING ACCEPTED PAYMENT)', () => {
+    describe('* Unauthenticated requests *', () => {
+        it('Unauthenticated user can not post checkout', () => {
+            const shippment = {
+                shippment_id: 1000000
+            };
+            const text = 'INSERT INTO shippment VALUES (1000000, current_timestamp, 662, $1, $2, 1, $3, $4, $5, 75607, $6)';
+            const un = 'Revarz';
+            const street = 'somestreet';
+            const city = 'somecity';
+            const province = 'someprovince';
+            const country = 'highrise';
+
+            pool.query(text, [un, street, city, province, country], (error, results) => {
+                if(error){
+                    throw error;
+                }
+            });
+
+            return request(app)
+                .post('/api/cart/Revarz/checkout')
+                .send(shippment)
+                .expect(400);
+        });
+    });
+
+    describe('* Authenticated requests *', () => {
+
+    });
+});
+*/
