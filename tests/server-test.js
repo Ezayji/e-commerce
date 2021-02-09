@@ -1816,22 +1816,23 @@ describe('CARTS', () => {
     });
 
 });
-/*
+
 const pool = require('../server_ops/postgres_pool');
-describe('CHECKOUT (ASSUMING ACCEPTED PAYMENT)', () => {
+describe('CHECKOUT (ASSUMING ACCEPTED PAYMENT AND UPDATED STOCK QUANTITY)', () => {
     describe('* Unauthenticated requests *', () => {
         it('Unauthenticated user can not post checkout', () => {
             const shippment = {
                 shippment_id: 1000000
             };
             const text = 'INSERT INTO shippment VALUES (1000000, current_timestamp, 662, $1, $2, 1, $3, $4, $5, 75607, $6)';
+            const payment = true;
             const un = 'Revarz';
             const street = 'somestreet';
             const city = 'somecity';
             const province = 'someprovince';
             const country = 'highrise';
 
-            pool.query(text, [un, street, city, province, country], (error, results) => {
+            pool.query(text, [payment, un, street, city, province, country], (error, results) => {
                 if(error){
                     throw error;
                 }
@@ -1845,7 +1846,105 @@ describe('CHECKOUT (ASSUMING ACCEPTED PAYMENT)', () => {
     });
 
     describe('* Authenticated requests *', () => {
+        describe('POST CHECKOUT /api/cart/:username/checkout', () => {
+            // log user in
+            it('Authenticated user succesfully calls checkout', () => {
+                const shippment = {
+                    shippment_id: 1000000
+                };
 
+                const user = {
+                    username: 'Revarz',
+                    password: 'karnaz123'
+                };
+
+                const item1 = {
+                    product_id: 12,
+                    size: 'L',
+                    quantity: 1
+                };
+
+                const item2 = {
+                    product_id: 14,
+                    size: 'XL',
+                    quantity: 1
+                };
+
+                return server
+                    .post('/api/login')
+                    .send(user)
+                    .expect(200, {
+                        user: {
+                            username: 'Revarz'
+                        }
+                    })
+                    .then(() => {
+                        return server
+                            .post('/api/cart/Revarz')
+                            .send(item1)
+                            .expect(201);
+                    })
+                    .then(() => {
+                        return server
+                            .post('/api/cart/Revarz')
+                            .send(item2)
+                            .expect(201);
+                    })
+                    .then(() => {
+                        return server
+                            .post('/api/cart/Revarz/checkout')
+                            .send(shippment)
+                            .expect(201);
+                    })
+                    .then(() => {
+                        return server
+                            .get('/api/cart/Revarz')
+                            .expect(404);
+                    });
+
+            });
+
+            it('Returns 404 if shippment does not exist for user', () => {
+                const shippment = {
+                    shippment_id: 1000
+                };
+
+                return server
+                    .post('/api/cart/Revarz/checkout')
+                    .send(shippment)
+                    .expect(404);
+            });
+
+            it('Returns 400 if requested Shippment ID is non-numeric', () => {
+                const shippment = {
+                    shippment_id: 'million'
+                };
+
+                return server
+                    .post('/api/cart/Revarz/checkout')
+                    .send(shippment)
+                    .expect(400);
+            });
+
+            it('Returns 400 if Shippment ID is missing from the request', () => {
+                const shippment = {};
+                
+                return server
+                    .post('/api/cart/Revarz/checkout')
+                    .send(shippment)
+                    .expect(400);
+            });
+
+            it('Returns 400 if shippment id field is empty', () => {
+                const shippment = {
+                    shippment_id: ''
+                };
+
+                return server
+                    .post('/api/cart/Revarz/checkout')
+                    .send(shippment)
+                    .expect(400);
+            });
+        });
     });
 });
-*/

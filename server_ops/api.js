@@ -35,6 +35,10 @@ const {newCartLog,
        checkQueryItem,
        deleteFromCart} = require('./cart-queries');
 
+const {checkShippment,
+       getCheckoutCart,
+       createOrderItems} = require('./checkout_queries');
+
 const initializePassport = require('./passport-config');
 initializePassport(passport);
 
@@ -109,17 +113,20 @@ apiRouter.delete('/cart/:username', checkAuthenticated, checkQueryItem, deleteFr
 
 // CHECKOUT
 
-// route for handling payments and creating shippment
+// route for handling payments, creating shippment and converting cart items into order items
     // <---- should be implemented here ---->
     // <-- * in order to post Order Items this section must create a Shippment row in Postgres if the Payment Succeeds.
     // <-- * it should also remove items from stock after a succesful payment.
 
-    // * after this request is succesful the front end should make a post request with the recieved Shippment ID. *
+    // * after previous request is succesful the Middleware in the Following Route should be called to convert 
+    //   cart items into order items *
 
 // post order items
-
+apiRouter.post('/cart/:username/checkout', checkAuthenticated, checkShippment, checkIfCartExists, getCheckoutCart, createOrderItems);
 
 // ORDERS
+
+// get all customer orders
 
 
 

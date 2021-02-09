@@ -6,15 +6,30 @@ const pool = require('./postgres_pool');
 // check if shippment exists
 const checkShippment = (request, response, next) => {
     const username = request.params.username;
-    const shippment_id = request.body.shippment_id;
+    const shippment = request.body.shippment_id;
+    const text = 'SELECT total_eur FROM shippment WHERE id = $1 AND customer_username = $2';
 
-    
+    if(shippment === undefined || shippment === ''){
+        response.status(400).send('No Shippment ID included');
+    } else if (isNaN(shippment)) {
+        response.status(400).send('Shippment ID must be a number');
+    } else {
+        pool.query(text, [shippment, username], (error, results) => {
+            if(error){
+                throw error;
+            } else if(results.rows[0] === undefined){
+                response.status(404).send('No shippment for user with the requested ID');
+            } else {
+                next();
+            };
+        });
+    };
 };
 
 // get customer cart 
 const getCheckoutCart = (request, response, next) => {
     const username = request.params.username;
-    const text = "SELECT product_id, quantity, size FROM cart WHERE customer_username = $1";
+    const text = "SELECT id, product_id, quantity, size FROM cart WHERE customer_username = $1";
 
     pool.query(text, [username], (error, results) => {
         if(error){
@@ -26,9 +41,34 @@ const getCheckoutCart = (request, response, next) => {
     });
 };
 
-// insert items into order items
-const createOrderItems = (request, response, next) => {
-    const shippment_id = request.body.shippment_id;
+// insert items into order items and delete from cart
+const createOrderItems = (request, response) => {
+    const username = request.params.username;
+    const shippment = request.body.shippment_id;
+    const cart = response.locals.cart;
+    const text = "INSERT INTO order_item VALUES (setval('order_item_sequence', (SELECT MAX(id) FROM order_item)+1), $1, $2, $3, $4)";
+    const text2 = 'DELETE FROM cart WHERE id = $1 AND customer_username = $2';
 
+    cart.forEach((item) => {
+        const {id, product_id, quantity, size} = item;
+        pool.query(text, [shippment, product_id, quantity, size], (error, results) => {
+            if(error){
+                throw error;
+            } else {
+                pool.query(text2, [id, username], (error, results) => {
+                    if(error){
+                        throw error;
+                    }
+                });
+            };
+        });
+    });
 
+    response.status(201).send();
+};
+
+module.exports = {
+    checkShippment,
+    getCheckoutCart,
+    createOrderItems
 };
