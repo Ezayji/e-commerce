@@ -29,7 +29,7 @@ const checkShippment = (request, response, next) => {
 // get customer cart 
 const getCheckoutCart = (request, response, next) => {
     const username = request.params.username;
-    const text = "SELECT id, product_id, quantity, size FROM cart WHERE customer_username = $1";
+    const text = "SELECT cart.id, cart.product_id, cart.quantity, cart.size, product.unit_price_eur FROM cart LEFT JOIN product ON cart.product_id = product.id WHERE customer_username = $1";
 
     pool.query(text, [username], (error, results) => {
         if(error){
@@ -46,12 +46,12 @@ const createOrderItems = (request, response) => {
     const username = request.params.username;
     const shippment = request.body.shippment_id;
     const cart = response.locals.cart;
-    const text = "INSERT INTO order_item VALUES (setval('order_item_sequence', (SELECT MAX(id) FROM order_item)+1), $1, $2, $3, $4)";
+    const text = "INSERT INTO order_item VALUES (setval('order_item_sequence', (SELECT MAX(id) FROM order_item)+1), $1, $2, $3, $4, $5)";
     const text2 = 'DELETE FROM cart WHERE id = $1 AND customer_username = $2';
 
     cart.forEach((item) => {
-        const {id, product_id, quantity, size} = item;
-        pool.query(text, [shippment, product_id, quantity, size], (error, results) => {
+        const {id, product_id, quantity, size, unit_price_eur} = item;
+        pool.query(text, [shippment, product_id, quantity, size, unit_price_eur], (error, results) => {
             if(error){
                 throw error;
             } else {

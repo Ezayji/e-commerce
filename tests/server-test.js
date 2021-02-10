@@ -1817,14 +1817,18 @@ describe('CARTS', () => {
 
 });
 
+
+// CHECKOUT
+
 const pool = require('../server_ops/postgres_pool');
 describe('CHECKOUT (ASSUMING ACCEPTED PAYMENT AND UPDATED STOCK QUANTITY)', () => {
     describe('* Unauthenticated requests *', () => {
+        // also post a shippment item for next test
         it('Unauthenticated user can not post checkout', () => {
             const shippment = {
                 shippment_id: 1000000
             };
-            const text = 'INSERT INTO shippment VALUES (1000000, current_timestamp, 662, $1, $2, 1, $3, $4, $5, 75607, $6)';
+            const text = 'INSERT INTO shippment VALUES (1000000, current_timestamp, 362, $1, $2, 1, $3, $4, $5, 75607, $6)';
             const payment = true;
             const un = 'Revarz';
             const street = 'somestreet';
@@ -1847,7 +1851,7 @@ describe('CHECKOUT (ASSUMING ACCEPTED PAYMENT AND UPDATED STOCK QUANTITY)', () =
 
     describe('* Authenticated requests *', () => {
         describe('POST CHECKOUT /api/cart/:username/checkout', () => {
-            // log user in
+            // log user in and add two items to cart
             it('Authenticated user succesfully calls checkout', () => {
                 const shippment = {
                     shippment_id: 1000000
@@ -1882,26 +1886,26 @@ describe('CHECKOUT (ASSUMING ACCEPTED PAYMENT AND UPDATED STOCK QUANTITY)', () =
                         return server
                             .post('/api/cart/Revarz')
                             .send(item1)
-                            .expect(201);
-                    })
-                    .then(() => {
-                        return server
-                            .post('/api/cart/Revarz')
-                            .send(item2)
-                            .expect(201);
+                            .expect(201)
+                            .then(() => {
+                                return server
+                                    .post('/api/cart/Revarz')
+                                    .send(item2)
+                                    .expect(201);
+                            });
                     })
                     .then(() => {
                         return server
                             .post('/api/cart/Revarz/checkout')
                             .send(shippment)
-                            .expect(201);
-                    })
-                    .then(() => {
-                        return server
-                            .get('/api/cart/Revarz')
-                            .expect(404);
+                            .expect(201)
                     });
+            });
 
+            it('Customer cart items are removed after checkout', () => {
+                return server
+                    .get('/api/cart/Revarz')
+                    .expect(404)
             });
 
             it('Returns 404 if shippment does not exist for user', () => {
@@ -1935,6 +1939,7 @@ describe('CHECKOUT (ASSUMING ACCEPTED PAYMENT AND UPDATED STOCK QUANTITY)', () =
                     .expect(400);
             });
 
+            // log customer out
             it('Returns 400 if shippment id field is empty', () => {
                 const shippment = {
                     shippment_id: ''
@@ -1943,7 +1948,112 @@ describe('CHECKOUT (ASSUMING ACCEPTED PAYMENT AND UPDATED STOCK QUANTITY)', () =
                 return server
                     .post('/api/cart/Revarz/checkout')
                     .send(shippment)
+                    .expect(400)
+                    .then(() => {
+                        return server
+                            .get('/api/logout')
+                            .expect(200);
+                    });
+            });
+        });
+    });
+});
+
+
+// ORDERS
+describe('ORDERS', () => {
+    describe('GET ALL CUSTOMER ORDERS', () => {
+        describe('* Unauthenticated requests *', () => {
+            it('Unauthenticated customer can not access orders', () => {
+                return request(app)
+                    .get('/api/orders/Revarz')
                     .expect(400);
+            });
+        });
+
+        describe('* Authenticated requests *', () => {
+            describe('GET ORDERS /api/orders/:username', () => {
+                // log customer in
+                it('Authenticated user can request all their orders as an array of objects that also include order products', () => {
+                    const user = {
+                        username: 'Revarz',
+                        password: 'karnaz123'
+                    };
+
+                    return server
+                        .post('/api/login')
+                        .send(user)
+                        .expect(200)
+                        .then(() => {
+                            return server
+                                .get('/api/orders/Revarz')
+                                .expect(200)
+                                .then((response) => {
+                                    const result = response.body;
+                                    //console.log(result);
+                                    expect(result).to.be.an.instanceOf(Array);
+
+                                    const order_1 = result[0]
+                                    expect(order_1).to.have.ownProperty('products');
+                                    expect(order_1).to.have.ownProperty('id');
+                                    expect(order_1).to.have.ownProperty('date_utc');
+                                    expect(order_1).to.have.ownProperty('total_eur');
+                                    expect(order_1).to.have.ownProperty('payment');
+                                    expect(order_1).to.have.ownProperty('to_appartment');
+                                    expect(order_1).to.have.ownProperty('to_street');
+                                    expect(order_1).to.have.ownProperty('to_city');
+                                    expect(order_1).to.have.ownProperty('to_province');
+                                    expect(order_1).to.have.ownProperty('to_zip');
+                                    expect(order_1).to.have.ownProperty('to_country');
+
+                                    const product_1 = result[0].products[0];
+                                    expect(product_1).to.be.an.instanceOf(Object);
+                                    expect(product_1).to.have.ownProperty('product_id');
+                                    expect(product_1).to.have.ownProperty('quantity');
+                                    expect(product_1).to.have.ownProperty('size');
+                                    expect(product_1).to.have.ownProperty('unit_price_eur');
+                                    expect(product_1).to.have.ownProperty('product_title');
+                                    expect(product_1).to.have.ownProperty('manufacturer');
+                                    expect(product_1).to.have.ownProperty('color');
+                                });
+                        });
+                });
+
+                it('Customer can not access other customer orders', () => {
+                    return server
+                        .get('/api/orders/Ezayji')
+                        .expect(400);
+                });
+
+                // remove order items and shippment for last test
+                it('Returns 400 if requested username is a number', () => {
+                    const text = 'DELETE FROM order_item WHERE shippment_id = 1000000';
+                    const text2 = 'DELETE FROM shippment WHERE id = 1000000';
+
+                    pool.query(text, (error, results) => {
+                        if(error){
+                            throw error;
+                        };
+                    });
+
+                    pool.query(text2, (error, results) => {
+                        if(error){
+                            throw error;
+                        }
+                    });
+
+                    return server
+                        .get('/api/orders/100000')
+                        .expect(400);
+                });
+
+                // remove order items and shippment from db for following test
+                it('Return 404 if there are no confirmed orders for customer', () => {
+                    return server   
+                        .get('/api/orders/Revarz')
+                        .expect(404);
+                });
+
             });
         });
     });

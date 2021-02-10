@@ -39,6 +39,9 @@ const {checkShippment,
        getCheckoutCart,
        createOrderItems} = require('./checkout_queries');
 
+const {getUserOrders,
+       getOrderItems} = require('./order_queries');
+
 const initializePassport = require('./passport-config');
 initializePassport(passport);
 
@@ -127,7 +130,7 @@ apiRouter.post('/cart/:username/checkout', checkAuthenticated, checkShippment, c
 // ORDERS
 
 // get all customer orders
-
+apiRouter.get('/orders/:username', checkAuthenticated, getUserOrders, getOrderItems);
 
 
 module.exports = apiRouter;
