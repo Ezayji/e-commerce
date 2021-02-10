@@ -7,7 +7,7 @@ const pool = require('./postgres_pool');
 // check if any shippemnts and pass them to next middleware as an array
 const getUserOrders = (request, response, next) => {
     const username = request.params.username;
-    const text = 'SELECT id, date_utc, total_eur, payment, to_appartment, to_street, to_city, to_province, to_zip, to_country FROM shippment WHERE customer_username = $1';
+    const text = 'SELECT id, date_utc, total_eur, payment, to_appartment, to_street, to_city, to_province, to_zip, to_country FROM shippment WHERE customer_username = $1 ORDER BY id DESC';
     
     pool.query(text, [username], (error, results) => {
         if(error){
@@ -37,9 +37,7 @@ const getOrderItems = (request, response) => {
                 orders[i].products = results.rows;
             }
         });
-        
     });
-
     response.status(200).send(orders);
 };
 
