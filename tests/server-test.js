@@ -1902,10 +1902,10 @@ describe('CHECKOUT (ASSUMING ACCEPTED PAYMENT AND UPDATED STOCK QUANTITY)', () =
                     });
             });
 
-            it('Customer cart items are removed after checkout', () => {
+            it('Customer cart is empty after checkout', () => {
                 return server
                     .get('/api/cart/Revarz')
-                    .expect(404)
+                    .expect(404);
             });
 
             it('Returns 404 if shippment does not exist for user', () => {
@@ -1939,7 +1939,7 @@ describe('CHECKOUT (ASSUMING ACCEPTED PAYMENT AND UPDATED STOCK QUANTITY)', () =
                     .expect(400);
             });
 
-            // log customer out
+            // log customer out in the end            
             it('Returns 400 if shippment id field is empty', () => {
                 const shippment = {
                     shippment_id: ''
@@ -1955,6 +1955,7 @@ describe('CHECKOUT (ASSUMING ACCEPTED PAYMENT AND UPDATED STOCK QUANTITY)', () =
                             .expect(200);
                     });
             });
+
         });
     });
 });
