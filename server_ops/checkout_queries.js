@@ -1,4 +1,3 @@
-const { response } = require('express');
 const pool = require('./postgres_pool');
 
 // POST ORDER ITEMS

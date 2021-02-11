@@ -1820,27 +1820,18 @@ describe('CARTS', () => {
 
 // CHECKOUT
 
-const pool = require('../server_ops/postgres_pool');
+// fucntions for interacting with postgres for the tests to work
+const {insertOrder, deleteItems, deleteOrder} = require('./test-support/sup_queries');
+
 describe('CHECKOUT (ASSUMING ACCEPTED PAYMENT AND UPDATED STOCK QUANTITY)', () => {
     describe('* Unauthenticated requests *', () => {
         // also post a shippment item for next test
-        it('Unauthenticated user can not post checkout', () => {
+        it('Unauthenticated user can not post checkout', async () => {
             const shippment = {
                 shippment_id: 1000000
             };
-            const text = 'INSERT INTO shippment VALUES (1000000, current_timestamp, 362, $1, $2, 1, $3, $4, $5, 75607, $6)';
-            const payment = true;
-            const un = 'Revarz';
-            const street = 'somestreet';
-            const city = 'somecity';
-            const province = 'someprovince';
-            const country = 'highrise';
 
-            pool.query(text, [payment, un, street, city, province, country], (error, results) => {
-                if(error){
-                    throw error;
-                }
-            });
+            await insertOrder();
 
             return request(app)
                 .post('/api/cart/Revarz/checkout')
@@ -1991,7 +1982,6 @@ describe('ORDERS', () => {
                                 .expect(200)
                                 .then((response) => {
                                     const result = response.body;
-                                    //console.log(result);
                                     expect(result).to.be.an.instanceOf(Array);
 
                                     const order_1 = result[0]
@@ -2026,30 +2016,17 @@ describe('ORDERS', () => {
                         .expect(400);
                 });
 
-                // remove order items and shippment for last test
                 it('Returns 400 if requested username is a number', () => {
-                    const text = 'DELETE FROM order_item WHERE shippment_id = 1000000';
-                    const text2 = 'DELETE FROM shippment WHERE id = 1000000';
-
-                    pool.query(text, (error, results) => {
-                        if(error){
-                            throw error;
-                        };
-                    });
-
-                    pool.query(text2, (error, results) => {
-                        if(error){
-                            throw error;
-                        }
-                    });
-
                     return server
                         .get('/api/orders/100000')
                         .expect(400);
                 });
 
-                // remove order items and shippment from db for following test
-                it('Return 404 if there are no confirmed orders for customer', () => {
+                // remove order items and shippment for the test to pass
+                it('Return 404 if there are no confirmed orders for customer', async () => {
+                    await deleteItems();
+                    await deleteOrder();
+
                     return server   
                         .get('/api/orders/Revarz')
                         .expect(404);

@@ -127,6 +127,7 @@ apiRouter.delete('/cart/:username', checkAuthenticated, checkQueryItem, deleteFr
 // post order items
 apiRouter.post('/cart/:username/checkout', checkAuthenticated, checkShippment, checkIfCartExists, getCheckoutCart, createOrderItems);
 
+
 // ORDERS
 
 // get all customer orders
