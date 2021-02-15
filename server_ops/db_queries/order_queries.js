@@ -1,4 +1,3 @@
-const request = require('superagent');
 const pool = require('./postgres_pool');
 
 // Get all orders for customer

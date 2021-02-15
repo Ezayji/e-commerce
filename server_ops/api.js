@@ -15,7 +15,7 @@ const {getCustomerByUsername,
        checkUpdatedInfo,
        updateCustomerAddress,
        getCustomerAddress,
-       checkUpdatedAddress} = require('./customer_queries');
+       checkUpdatedAddress} = require('./db_queries/customer_queries');
 
 const {getProductsByGenderAndCategory,
        getProductsByManufacturerId,
@@ -23,7 +23,7 @@ const {getProductsByGenderAndCategory,
        getProductImages,
        getProductSizes,
        getCategories,
-       getManufacturers} = require('./product_queries');
+       getManufacturers} = require('./db_queries/product_queries');
 
 const {newCartLog,
        checkIfNotInCart,
@@ -33,14 +33,14 @@ const {newCartLog,
        checkIfInCart,
        updateCartLogQty,
        checkQueryItem,
-       deleteFromCart} = require('./cart-queries');
+       deleteFromCart} = require('./db_queries/cart-queries');
 
 const {checkShippment,
        getCheckoutCart,
-       createOrderItems} = require('./checkout_queries');
+       createOrderItems} = require('./db_queries/checkout_queries');
 
 const {getUserOrders,
-       getOrderItems} = require('./order_queries');
+       getOrderItems} = require('./db_queries/order_queries');
 
 const initializePassport = require('./passport-config');
 initializePassport(passport);
@@ -48,11 +48,11 @@ initializePassport(passport);
 
 // test get req
 apiRouter.get('/', (req, res, next) => {
-    res.status(200).send();
-})
+    res.status(200).send('Api Is Running');
+});
 
 
-// PRODUCTS
+// ----- PRODUCTS -----
 
 // get products by gender or gender and category
 apiRouter.get('/products', getProductsByGenderAndCategory);
@@ -70,7 +70,7 @@ apiRouter.get('/manufacturers', getManufacturers);
 apiRouter.get('/categories', getCategories);
 
 
-// CUSTOMERS
+// ----- CUSTOMERS -----
 
 // register a new customer
 apiRouter.post('/register', checkNotAuthenticated, checkNewCustomerInfo, checkIfUniqueEmail, checkIfUniqueUsername, checkIfUniquePhone, addNewCustomer);
@@ -99,7 +99,7 @@ apiRouter.get('/logout', (req, res) => {
 });
 
 
-// CART
+// ----- CART -----
 
 // add new cart log to customer
 apiRouter.post('/cart/:username', checkAuthenticated, checkCartLog, checkIfNotInCart, newCartLog);
@@ -114,7 +114,7 @@ apiRouter.put('/cart/:username', checkAuthenticated, checkCartLog, checkIfInCart
 apiRouter.delete('/cart/:username', checkAuthenticated, checkQueryItem, deleteFromCart);
 
 
-// CHECKOUT
+// ----- CHECKOUT -----
 
 // route for handling payments, creating shippment and converting cart items into order items
     // <---- should be implemented here ---->
@@ -128,7 +128,7 @@ apiRouter.delete('/cart/:username', checkAuthenticated, checkQueryItem, deleteFr
 apiRouter.post('/cart/:username/checkout', checkAuthenticated, checkShippment, checkIfCartExists, getCheckoutCart, createOrderItems);
 
 
-// ORDERS
+// ----- ORDERS -----
 
 // get all customer orders
 apiRouter.get('/orders/:username', checkAuthenticated, getUserOrders, getOrderItems);

@@ -1,4 +1,4 @@
-const pool = require('../../server_ops/postgres_pool');
+const pool = require('../../server_ops/db_queries/postgres_pool');
 
 // insert shippment into postgres
 

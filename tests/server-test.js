@@ -8,8 +8,6 @@ const { response } = require('express');
 
 const server = request.agent(app);
 
-const {getCustomerByUsername} = require('../server_ops/customer_queries');
-
 describe('API', () => {
     it('Sends OK status', async () => {
         const response = await request(app).get('/api/')
@@ -317,38 +315,7 @@ describe('CUSTOMERS', () => {
                     .get('/api/customer_un/Ezayji')
                     .expect(400);
             });
-
-/*
-            describe('getCustomerByUsername', () => {
-
-                it('Returns 404 if customer does not exist', () => {
-                    const req = httpMocks.createRequest({
-                        method: 'GET',
-                        url: '/api/customer_un/fuckyouidontexistlolbede@',
-                        params: {username: 'fuckyouidontexistlolbede@'}
-                    });
-                    const res = httpMocks.createResponse({
-                        eventEmitter: require('events').EventEmitter
-                    });
-
-                    getCustomerByUsername(req, res);
-                    console.log(res);
-                    assert.equal(404, res.statusCode);
-
-                });
-
-                it('Returns 400 if called with numeric value', () => {
-                    const req = httpMocks.createRequest({
-                        params: {username: '1'}
-                    });
-                    const res = httpMocks.createResponse();
-
-                    getCustomerByUsername(req, res);
-                    assert.equal(400, res.statusCode);
-
-                });
-            });
-*/      
+   
         });
     });
 
