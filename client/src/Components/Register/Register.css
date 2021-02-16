@@ -1,0 +1,35 @@
+/* REGISTER FORM */
+
+.register_div{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.register_div form{
+    margin-top: 20vh;
+    width: 65vh;
+    max-width: 90%;
+    display: flex;
+    flex-direction: column;
+}
+
+.register_div input{
+    height: 35px;
+    margin-top: 10px;
+}
+
+.register_div p {
+    margin-top: 20px;
+}
+
+.register_sub{
+    color: white;
+    background-color: black;
+    border: none;
+    cursor: pointer;
+}
+
+.register_sub:hover{
+    background-color: rgba(0, 0, 0, 0.89);
+}

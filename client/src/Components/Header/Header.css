@@ -14,7 +14,7 @@
 .header {
     height: 100px;
     width: 100%;
-    border-bottom: 2px dashed black;
+/*    border-bottom: 2px dashed black; */
     font-family: 'Teko';
     display: flex;
 }
@@ -41,6 +41,7 @@
 /* NAV AND LOGIN DIV */
 
 .selection{
+    font-size: 2.5em;
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -53,13 +54,15 @@ nav {
     justify-content: space-evenly;
 }
 
+
+
 /* USER ACTIONS (LOGIN or USER options) */
 
 .user_actions{
-    margin-right: 30px;
+    margin-right: 32px;
 }
 
 .user_actions a {
-    color: black;
+    color:black;
     text-decoration: none;
 }
