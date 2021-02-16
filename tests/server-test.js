@@ -328,8 +328,8 @@ describe('CUSTOMERS', () => {
                 last_name: 'Kaszk',
                 email: 'selnaknewemail@testapi.com',
                 phone: '+372 99999999',
-                password: 'selnapw'
             }
+            //password: 'karnaz123'
             
             return server
                 .get('/api/logout')
@@ -343,7 +343,7 @@ describe('CUSTOMERS', () => {
                 
         });
 
-        // Log customer in at the beggining and out in the end for next test
+        // Log customer in at the beggining
         describe('* Authenticated updates *', () => {
             it('Updates the customer if all supplied information is correct and returns the updated object with all properties except address and password', () => {
                 const customerLogin = {
@@ -356,8 +356,8 @@ describe('CUSTOMERS', () => {
                     last_name: 'Kaszk',
                     email: 'selnaknewemail@testapi.com',
                     phone: '+372 99999999',
-                    password: 'karnaz123'
                 }
+                //password: 'karnaz123'
 
                 return server
                     .post('/api/login')
@@ -395,14 +395,16 @@ describe('CUSTOMERS', () => {
                                 expect(user.email).to.eql(updatedCustomer.email);
                                 expect(user.phone).to.eql(updatedCustomer.phone);
                             });
-                    })
+                    });
+                    /*
                     .then(() => {
                         return server
                         .get('/api/logout')
                         .expect(200)
                     });
+                    */
             });
-
+/*
             it('User can log in with the new hashed password', () => {
                 const user = {
                     username: 'Revarz',
@@ -418,15 +420,15 @@ describe('CUSTOMERS', () => {
                         }
                     });
             });
-
+*/
             it('Returns 400 if updated email already exists in the database', () => {
                 const updatedCustomer = {
                     first_name: 'Selna',
                     last_name: 'Kaszk',
                     email: 'selnaknewemail@testapi.com',
                     phone: '+372 77777777',
-                    password: 'karnaz123'
                 }
+                //password: 'karnaz123'
 
                 return server
                     .put('/api/customer_un/Revarz')
@@ -440,8 +442,8 @@ describe('CUSTOMERS', () => {
                     last_name: 'Kaszk',
                     email: 'selnaknewemail2@testapi.com',
                     phone: '+372 99999999',
-                    password: 'karnaz123'
                 };
+                //password: 'karnaz123'
 
                 return server
                     .put('/api/customer_un/Revarz')
@@ -474,8 +476,8 @@ describe('CUSTOMERS', () => {
                     last_name: 'Kaszk',
                     email: '',
                     phone: '',
-                    password: 'karnaz123'
                 };
+                //password: 'karnaz123'
 
                 return server
                     .put('/api/customer_un/Revarz')
@@ -502,9 +504,8 @@ describe('CUSTOMERS', () => {
                     last_name: 'Kaszk',
                     email: 'selnaknewemail@testapi.com',
                     phone: '+372 99999999',
-                    password: 'karnaz123'
                 };
-
+                //password: 'karnaz123'
 
                 return server
                     .put('/api/customer_un/Ezayji')
@@ -513,6 +514,156 @@ describe('CUSTOMERS', () => {
             });
 
         });
+    });
+
+    //CUSTOMER PASSWORD
+    describe('Customer Password Change', () => {
+        describe('* Unauthenticated requests *', () => {
+            // log customer out in the beggining
+            it('Not authenticated customer can not update password', () => {
+                const updatedPw = {
+                    username: 'Revarz',
+                    password: 'selnapw',
+                    new_password: 'karnaz123'
+                };
+                
+                return server
+                    .get('/api/logout')
+                    .expect(200)
+                    .then(() => {
+                        return server
+                            .put('/api/customer_un/Revarz/password')
+                            .send(updatedPw)
+                            .expect(400);
+                    });
+            });
+        });
+
+        describe('* Authenticated requests *', () => {
+            describe('PUT /api/customer_un/:username/password', () => {
+                // log customer in and out
+                it('Customer can update their password if all fields are correct', () => {
+                    const user = {
+                        username: 'Revarz',
+                        password: 'selnapw'
+                    };
+                
+                    const updatedPw = {
+                        password: 'selnapw',
+                        new_password: 'karnaz123'
+                    };
+
+                    return server
+                        .post('/api/login')
+                        .send(user)
+                        .expect(200, {
+                            user: {
+                                username: 'Revarz'
+                            }
+                        })
+                        .then(() => {
+                            return server
+                                .put('/api/customer_un/Revarz/password')
+                                .send(updatedPw)
+                                .expect(200);
+                        })
+                        .then(() => {
+                            return server
+                                .get('/api/logout')
+                                .expect(200);
+                        });
+
+                });
+
+                // log customer in
+                it('Customer can login with the new password', () => {
+                    const user = {
+                        username: 'Revarz',
+                        password: 'karnaz123'
+                    };
+
+                    return server
+                        .post('/api/login')
+                        .send(user)
+                        .expect(200, {
+                            user: {
+                                username: 'Revarz'
+                            }
+                        });
+                });
+
+                it('Returns 400 if the supplied old password is incorrect', () => {
+                    const updatedPw = {
+                        password: 'selnapw',
+                        new_password: 'timomees'
+                    };
+
+                    return server
+                        .put('/api/customer_un/Revarz/password')
+                        .send(updatedPw)
+                        .expect(400);
+                });
+
+                it('Return 404 if old password is not present', () => {
+                    const updatedPw = {
+                        new_password: 'timomees'
+                    };
+
+                    return server
+                        .put('/api/customer_un/Revarz/password')
+                        .send(updatedPw)
+                        .expect(404);
+                });
+
+                it('Returns 404 if new password is not present', () => {
+                    const updatedPw = {
+                        password: 'karnaz123'
+                    };
+
+                    return server
+                        .put('/api/customer_un/Revarz/password')
+                        .send(updatedPw)
+                        .expect(404);
+                });
+
+                it('Return 404 if old password field is empty', () => {
+                    const updatedPw = {
+                        password: '',
+                        new_password: 'timomees'
+                    };
+
+                    return server
+                        .put('/api/customer_un/Revarz/password')
+                        .send(updatedPw)
+                        .expect(404);
+                });
+
+                it('Returns 404 if new password field is empty', () => {
+                    const updatedPw = {
+                        password: 'karnaz123',
+                        new_password: ''
+                    };
+
+                    return server
+                        .put('/api/customer_un/Revarz/password')
+                        .send(updatedPw)
+                        .expect(404);
+                });
+
+                it('Customer can not update other customer password', () => {
+                    const updatedPw = {
+                        password: 'doesntmatter',
+                        new_password: 'mypassword'
+                    };
+
+                    return server
+                        .put('/api/customer_un/Ezayji/password')
+                        .send(updatedPw)
+                        .expect(400);
+                });
+
+            });
+        });    
     });
 
     // CUSTOMER ADDRESS

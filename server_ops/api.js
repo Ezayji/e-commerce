@@ -12,6 +12,8 @@ const {getCustomerByUsername,
        checkAuthenticated,
        checkNotAuthenticated,
        updateCustomer,
+       checkOldPw,
+       updatePw,
        checkUpdatedInfo,
        updateCustomerAddress,
        getCustomerAddress,
@@ -80,6 +82,9 @@ apiRouter.get('/customer_un/:username', checkAuthenticated, getCustomerByUsernam
 
 // update customer profile info
 apiRouter.put('/customer_un/:username', checkAuthenticated, checkUpdatedInfo, checkIfUniqueEmail, checkIfUniquePhone, updateCustomer, getCustomerByUsername);
+
+// update customer password
+apiRouter.put('/customer_un/:username/password', checkAuthenticated, checkOldPw, updatePw);
 
 // get customer address
 apiRouter.get('/customer_address/:username', checkAuthenticated, getCustomerAddress);

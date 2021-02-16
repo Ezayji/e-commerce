@@ -144,14 +144,14 @@ const checkUserPw = (request, response, next) => {
 
 // UPDATE customer info
 
-// chekc for empty and unnecessary fields in update request
+// check for empty and unnecessary fields in update request
 const checkUpdatedInfo = (request, response, next) => {
-    const {first_name, last_name, email, phone, password} = request.body;
+    const {first_name, last_name, email, phone} = request.body;
     const body = request.body;
 
-    if(first_name === '' || first_name === undefined || last_name === '' || last_name === undefined || email === '' || email === undefined || phone === '' || phone === undefined || password === '' || password === undefined){
+    if(first_name === '' || first_name === undefined || last_name === '' || last_name === undefined || email === '' || email === undefined || phone === '' || phone === undefined){
         response.status(404).send('Some field(s) missing');
-    } else if (body.id !== undefined || body.username !== undefined || body.registered !== undefined || body.appartment_nr !== undefined || body.street !== undefined || body.city !== undefined || body.province !== undefined || body.zip !== undefined || body.country !== undefined){
+    } else if (body.id !== undefined || body.username !== undefined || body.password !== undefined || body.registered !== undefined || body.appartment_nr !== undefined || body.street !== undefined || body.city !== undefined || body.province !== undefined || body.zip !== undefined || body.country !== undefined){
         response.status(400).send('Too much information');
     } else {
         next();
@@ -160,16 +160,54 @@ const checkUpdatedInfo = (request, response, next) => {
 
 // update query
 const updateCustomer = async (request, response, next) => {
-    const text = 'UPDATE customer SET first_name = $1, last_name = $2, email = $3, phone = $4, password = $5 WHERE username = $6';
-    const {first_name, last_name, email, phone, password} = request.body;
+    const text = 'UPDATE customer SET first_name = $1, last_name = $2, email = $3, phone = $4 WHERE username = $5';
+    const {first_name, last_name, email, phone} = request.body;
     const username = request.params.username;
-    const cryptedPw = await bcrypt.hash(password, 10);
-
-    pool.query(text, [first_name, last_name, email, phone, cryptedPw, username], (error, results) => {
+    
+    pool.query(text, [first_name, last_name, email, phone, username], (error, results) => {
         if(error){
             throw error;
         } else {
             next();
+        };
+    });
+};
+
+// UPDATE CUSTOMER PASSWORD
+
+// check old password and request body
+const checkOldPw = (request, response, next) => {
+    const {password, new_password} = request.body;
+    const username = request.params.username;
+    const text = 'SELECT password FROM customer WHERE username = $1';
+
+    if(password === undefined || password === '' || new_password === undefined || new_password === ''){
+        response.status(404).send('Some Field(s) not present');
+    } else {
+        pool.query(text, [username], async (error, results) => {
+            if(error){
+                throw error;
+            } else if(await bcrypt.compare(password, results.rows[0].password)){
+                next();
+            } else {
+                response.status(400).send('Wrong Password Provided');
+            };
+        });
+    };
+};
+
+// password update quey
+const updatePw = async (request, response) => {
+    const text = 'UPDATE customer SET password = $1 WHERE username = $2';
+    const {password, new_password} = request.body;
+    const username = request.params.username;
+    const cryptedPw = await bcrypt.hash(new_password, 10);
+
+    pool.query(text, [cryptedPw, username], (error, results) => {
+        if(error){
+            throw error;
+        } else {
+            response.status(200).send('Password Updated Succesfully');
         };
     });
 };
@@ -234,6 +272,8 @@ module.exports = {getCustomerByUsername,
                 checkAuthenticated,
                 checkNotAuthenticated,
                 updateCustomer,
+                checkOldPw,
+                updatePw,
                 checkUpdatedInfo,
                 getCustomerAddress,
                 updateCustomerAddress,
