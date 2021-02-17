@@ -9,67 +9,55 @@ import GenderHeader from './ProdHeaders/GenderHeader';
 import BrandHeader from './ProdHeaders/BrandHeader';
 
 const Products = ({ match }) => {
-    let brand
-    if(match.params.brand_id){
-        brand = parseInt(match.params.brand_id);
-    } else {
-        brand = null;
-    };
-    let gender;
-    if(match.params.gender){
-        gender = match.params.gender;
-    } else {
-        gender = null;
-    };
-    let category;
-    if(match.params.category){
-        category = parseInt(match.params.categoryid);
-    } else {
-        category = null;
-    };
-
     const prodState = useSelector(state => state.products.status);
     const products = useSelector(state => state.products.list);
 
     useEffect(() => {
-        if(category !== null && gender !== null && brand === null){
+        if(match.params.categoryid !== undefined && match.params.gender !== undefined && match.params.brand_id === undefined){
+            const category = parseInt(match.params.categoryid)
+            const gender = match.params.gender;
             store.dispatch(genderAdded(gender))
             store.dispatch(categoryIdAdded(category));
             store.dispatch(brandIdAdded(0));
             store.dispatch(fetchProducts());
-        } else if(category === null && gender !== null && brand === null){
+        } else if(match.params.categoryid === undefined && match.params.gender !== undefined && match.params.brand_id === undefined){
+            const gender = match.params.gender;
             store.dispatch(genderAdded(gender));
             store.dispatch(categoryIdAdded(0));
             store.dispatch(brandIdAdded(0));
             store.dispatch(fetchProducts());
-        } else if(category === null && gender === null && brand !== null){
+        } else if(match.params.categoryid === undefined && match.params.gender === undefined && match.params.brand_id !== undefined){
+            const brand = parseInt(match.params.brand_id);
             store.dispatch(genderAdded(''));
             store.dispatch(categoryIdAdded(0));
             store.dispatch(brandIdAdded(brand));
             store.dispatch(fetchProducts());
         };
-    }, [category, gender, brand]);
+    }, [match.params.categoryid, match.params.gender, match.params.brand_id]);
 
     let head;
     let body;
-
+// Render header for products list based on selection 
     if(prodState === 'loading'){
         head = null;
         body = null;
-    } else if(prodState === 'succeeded' && category === null && gender !== null && brand === null){
+    } else if (prodState === 'succeeded' && match.params.categoryid === undefined && match.params.gender !== undefined && match.params.brand_id === undefined){
+        const gender = match.params.gender;
         const data = {
             gender
         };
         head = <GenderHeader data={data} />
         body = <ProductsList products={products} />
-    } else if (prodState === 'succeeded' && category !== null && gender !== null && brand === null){
+    } else if (prodState === 'succeeded' && match.params.categoryid !== undefined && match.params.gender !== undefined && match.params.brand_id === undefined){
+        const category_title = match.params.category_title;
+        const gender = match.params.gender;
         const data = {
-            category,
+            category_title,
             gender
         };
         head = <GenderHeader data={data} />
         body = <ProductsList products={products} />
-    } else {
+    } else if (prodState === 'succeeded' && match.params.categoryid === undefined && match.params.gender === undefined && match.params.brand_id !== undefined) {
         head = <BrandHeader data={products.manufacturer} />
         body = <ProductsList products={products.products} />
     };

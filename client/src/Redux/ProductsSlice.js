@@ -16,19 +16,20 @@ export const fetchProducts = createAsyncThunk('products/fetchProducts', async (_
     const category = getState().products.category_id;
     const brand = getState().products.brand_id;
 
-    if(gender !== '' || category === 0 || brand === 0){
+    if(gender !== '' && category === 0 && brand === 0){
         const url = `/api/products?gender=${gender}`;
         const response = await axios.get(url);
         return response.data;    
-    } else if(gender !== '' || category !== 0 || brand === 0) {
-        const url = `/api/products?gender=${gender}&category=${category}`
+    } else if(gender !== '' && category !== 0 && brand === 0) {
+        const url = `/api/products?gender=${gender}&categoryid=${category}`
         const response = await axios.get(url);
         return response.data;
-    } else if(gender === '' || category === 0 || brand !== 0) {
-        const url = `/api/manufacturers/${brand}`;
+    } else if(gender === '' && category === 0 && brand !== 0) {
+        const url = `/api/manufacturer/${brand}`;
         const response = await axios.get(url);
         return response.data;
     };
+
 });
 
 const productsSlice = createSlice({
@@ -56,7 +57,7 @@ const productsSlice = createSlice({
         [fetchProducts.rejected]: (state, action) => {
             state.status = 'failed';
             state.error = action.error.message;
-        }
+        },
     }
 });
 

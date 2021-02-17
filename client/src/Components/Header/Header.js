@@ -25,11 +25,11 @@ const Header = () => {
     }, []);
 
     const categoryListM = cats.map((item, i) => (
-        <p key={i} ><Link to={`/products/men/${item.id}`} >{item.title}</Link></p>
+        <p key={i} ><Link to={`/products/men/${item.id}/${item.title}`} >{item.title}</Link></p>
     ))
 
     const categoryListW = cats.map((item, i) => (
-        <p key={i} ><Link to={`/products/women/${item.id}`} >{item.title}</Link></p>
+        <p key={i} ><Link to={`/products/women/${item.id}/${item.title}`} >{item.title}</Link></p>
     ))
 
     let brands
@@ -40,7 +40,7 @@ const Header = () => {
         brands = brnds.map((item, i) => (
             <p key={i} ><Link to={`/brands/${item.id}/${item.title}`} >{item.title}</Link></p>
         ))
-    }
+    } 
 
     return(
         <header className="header" >
