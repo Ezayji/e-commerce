@@ -54,7 +54,36 @@ nav {
     justify-content: space-evenly;
 }
 
+/* DROPDOWN FOR CATEGORIES */
 
+.dropdown{
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content{
+    position: absolute;
+    left: -140px;
+    display: none;
+    align-items: center;
+    padding: 10px 0px;
+}
+
+.dropdown-content p{
+    font-size: 0.9em;
+    padding: 0px 10px;
+}
+
+.dropdown a {
+    text-decoration: none;
+    color: black;
+}
+
+/* show dropdown menu */
+
+.dropdown:hover .dropdown-content{
+    display:flex;
+}
 
 /* USER ACTIONS (LOGIN or USER options) */
 

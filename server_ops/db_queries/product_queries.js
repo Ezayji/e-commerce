@@ -2,7 +2,7 @@ const pool = require('./postgres_pool');
 
 // GET ALL MANUFACTURERS
 const getManufacturers = (request, response) => {
-    const text = 'SELECT * FROM manufacturer ORDER BY id ASC';
+    const text = 'SELECT id, title FROM manufacturer ORDER BY id ASC';
 
     pool.query(text, (error, results) => {
         if(error){
@@ -12,7 +12,7 @@ const getManufacturers = (request, response) => {
         };
     });
 };
-
+ 
 // GET ALL CATEGORIES
 const getCategories = (request, response) => {
     const text = 'SELECT * FROM category ORDER BY id ASC'
@@ -72,13 +72,20 @@ const getProductsByManufacturerId = (request, response) => {
             if (results.rows[0] === undefined){
                 response.status(404).send('No manufacturer found');
             } else {
-                let manufacturer = results.rows[0].manufacturer;
                 let products = results.rows;
-                const result = {
-                    manufacturer,
-                    products
-                };
-                response.status(200).send(result);
+                const text = 'SELECT * FROM manufacturer WHERE id = $1';
+                pool.query(text, [man_id], (error, results) => {
+                    if(error){
+                        throw error;
+                    } else {
+                        let manufacturer = results.rows[0];
+                        const result = {
+                            manufacturer,
+                            products
+                        };
+                        response.status(200).send(result);
+                    };
+                });
             };
         });
     };

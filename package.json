@@ -2,10 +2,11 @@
   "name": "e-commerce",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
   "scripts": {
     "test": "mocha ./tests/",
-    "start": "nodemon server.js"
+    "client": "cd client && npm start",
+    "server": "nodemon server.js",
+    "dev": "concurrently --kill-others \"npm run server\" \"npm run client\""
   },
   "author": "Ezayji",
   "license": "ISC",
@@ -22,6 +23,7 @@
   },
   "devDependencies": {
     "chai": "*",
+    "concurrently": "^5.3.0",
     "dotenv": "^8.2.0",
     "jsdom": "^16.4.0",
     "mocha": "^8.2.1",

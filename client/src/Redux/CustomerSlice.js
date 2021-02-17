@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { getCustomer } from '../Services/Api/customer';
 
 const initialState = {
     user: {},
@@ -9,17 +10,25 @@ const initialState = {
     error: null
 };
 
+const config = {
+    withCredentials: true,
+    credentials: 'include'
+};
+
 export const fetchCustomer = createAsyncThunk('customer/fetchCustomer', async (_, { getState }) => {
     const username = getState().user.username;
+    await getCustomer(username);
+    /*
     const url = `/api/customer_un/${username}`;
-    const response = await axios.get(url)
+    const response = await axios.get(url, config)
     return response;
+    */
 });
 
 export const fetchAddress = createAsyncThunk('customer/fetchAddress', async (_, { getState }) => {
     const username = getState().user.username;
     const url = `/api/customer_address/${username}`;
-    const response = await axios.get(url);
+    const response = await axios.get(url, config);
     return response;
 });
 
@@ -29,10 +38,17 @@ const customerSlice = createSlice({
     reducers: {
         userAdded(state, action) {
             state.user = action.payload;
+        },
+        resetCustomer(state) {
+            state.user = initialState.user;
+            state.profile = initialState.profile;
+            state.address = initialState.address;
+            state.status = initialState.status;
+            state.error = initialState.error;
         }
     },
     extraReducers: {
-        [fetchCustomer.pending]: (state, action) => {
+        [fetchCustomer.pending]: (state) => {
             state.status = 'loading customer';
         },
         [fetchCustomer.fulfilled]: (state, action) => {
@@ -43,7 +59,7 @@ const customerSlice = createSlice({
             state.status = 'failed loading user';
             state.error = action.error.message;
         },
-        [fetchAddress.pending]: (state, action) => {
+        [fetchAddress.pending]: (state) => {
             state.status = 'loading address';
         },
         [fetchAddress.fulfilled]: (state, action) => {
@@ -57,5 +73,5 @@ const customerSlice = createSlice({
     }
 });
 
-export const { userAdded } = customerSlice.actions;
+export const { userAdded, resetCustomer } = customerSlice.actions;
 export default customerSlice.reducer;

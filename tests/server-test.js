@@ -1111,17 +1111,23 @@ describe('PRODUCTS', () => {
                     });
             });
 
-            it('Returns an object with the manufacturer name and an array of products', () => {
+            it('Returns an object with the Manufacturer Object[ID, Title, Description and Logo url] and an array of products', () => {
                 return request(app)
                     .get('/api/manufacturer/3')
                     .expect(200)
                     .then((response) => {
                         let result = response.body;
                         let products = response.body.products;
+                        let manufacturer = response.body.manufacturer;
                         expect(result).to.be.an.instanceOf(Object);
                         expect(result).to.have.ownProperty('manufacturer');
                         expect(result).to.have.ownProperty('products');
                         expect(products).to.be.an.instanceOf(Array);
+                        expect(manufacturer).to.be.an.instanceOf(Object);
+                        expect(manufacturer).to.have.ownProperty('id');
+                        expect(manufacturer).to.have.ownProperty('title');
+                        expect(manufacturer).to.have.ownProperty('description');
+                        expect(manufacturer).to.have.ownProperty('logo_url');
                     });
             });
 
@@ -1285,7 +1291,7 @@ describe('PRODUCTS', () => {
                     });
             });
 
-            it('Returned manufacturers have ID, Title, Description and Logo url', () => {
+            it('Returned manufacturers have ID, Title', () => {
                 return request(app)
                 .get('/api/manufacturers')
                 .expect(200)
@@ -1293,8 +1299,6 @@ describe('PRODUCTS', () => {
                     let man_1 = response.body[0];
                     expect(man_1).to.have.ownProperty('id');
                     expect(man_1).to.have.ownProperty('title');
-                    expect(man_1).to.have.ownProperty('description');
-                    expect(man_1).to.have.ownProperty('logo_url');
                 });
             });
 
