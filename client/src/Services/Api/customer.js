@@ -9,7 +9,7 @@ export async function getCustomer(username) {
     return response;
 };
 
-async function registerCustomer(data){
+export async function registerCustomer(data){
     const url = '/api/register';
     const response = await axios.post(url, {
         username: data.username,
@@ -22,7 +22,7 @@ async function registerCustomer(data){
     return response;
 };
 
-async function login(data){
+export async function login(data){
     const url = '/api/login';
     try{
         const response = await axios.post(url, {

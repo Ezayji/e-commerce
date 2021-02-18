@@ -1,0 +1,14 @@
+/* brand header div */
+
+.brand-header{
+    width: 70%;
+    display:flex;
+    flex-wrap: wrap;
+}
+
+/* brand logo */
+
+.brand-header img{
+    width: 215px;
+    height: 100px;
+}

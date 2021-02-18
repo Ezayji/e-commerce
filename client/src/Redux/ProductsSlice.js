@@ -44,6 +44,9 @@ const productsSlice = createSlice({
         },
         brandIdAdded(state, action) {
             state.brand_id = action.payload;
+        },
+        statusReset(state, action){
+            state.status = 'idle';
         }
     },
     extraReducers: {
@@ -61,5 +64,5 @@ const productsSlice = createSlice({
     }
 });
 
-export const { genderAdded, categoryIdAdded, brandIdAdded } = productsSlice.actions;
+export const { genderAdded, categoryIdAdded, brandIdAdded, statusReset } = productsSlice.actions;
 export default productsSlice.reducer;

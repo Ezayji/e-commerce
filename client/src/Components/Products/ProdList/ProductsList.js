@@ -1,13 +1,14 @@
 import './ProductsList.css';
 import ProductPreview from './ProductPreview';
 
-const ProductsList = ( {products} ) => {
+const ProductsList = ( { products, url } ) => {
+    
     const list = products.map((item, i) => (
-        <ProductPreview product={item} key={i} />
+        <ProductPreview product={item} key={i} url={url} />
     ));
     
     return(
-        <div>
+        <div className='product-list' >
             {list}
         </div>
     );

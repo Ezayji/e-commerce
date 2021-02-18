@@ -1,0 +1,7 @@
+/* product results parent div */
+
+.products{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

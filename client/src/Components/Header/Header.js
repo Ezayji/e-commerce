@@ -3,6 +3,9 @@ import './Header.css';
 import Logo from './RVRZ.png';
 import {Link} from 'react-router-dom';
 
+import { statusReset } from '../../Redux/ProductsSlice';
+import store from '../../Redux/Store';
+
 import axios from 'axios';
 
 const Header = () => {
@@ -24,12 +27,16 @@ const Header = () => {
         fetchBrnds();
     }, []);
 
+    const onClick = () => {
+        store.dispatch(statusReset());
+    };
+
     const categoryListM = cats.map((item, i) => (
-        <p key={i} ><Link to={`/products/men/${item.id}/${item.title}`} >{item.title}</Link></p>
+        <p key={i} onClick={onClick} ><Link to={`/products/men/list/${item.id}/${item.title}`} >{item.title}</Link></p>
     ))
 
     const categoryListW = cats.map((item, i) => (
-        <p key={i} ><Link to={`/products/women/${item.id}/${item.title}`} >{item.title}</Link></p>
+        <p key={i} onClick={onClick} ><Link to={`/products/women/list/${item.id}/${item.title}`} >{item.title}</Link></p>
     ))
 
     let brands
@@ -38,7 +45,7 @@ const Header = () => {
         brands = null;
     } else {
         brands = brnds.map((item, i) => (
-            <p key={i} ><Link to={`/brands/${item.id}/${item.title}`} >{item.title}</Link></p>
+            <p key={i} onClick={onClick} ><Link to={`/brands/${item.id}/${item.title}`} >{item.title}</Link></p>
         ))
     } 
 
@@ -52,13 +59,13 @@ const Header = () => {
             <div className="selection" >
                 <nav className='nav' >
                     <div className="dropdown" >
-                        <p><Link to={'/products/men'} >MN</Link></p>
+                        <p onClick={onClick} ><Link to={'/products/men'} >MN</Link></p>
                         <div className="dropdown-content">
                             {categoryListM}
                         </div>
                     </div>
                     <div className="dropdown" >
-                        <p><Link to={'/products/women'} >WMN</Link></p>
+                        <p onClick={onClick} ><Link to={'/products/women'} >WMN</Link></p>
                         <div className="dropdown-content">
                             {categoryListW}
                         </div>

@@ -88,10 +88,12 @@ nav {
 /* USER ACTIONS (LOGIN or USER options) */
 
 .user_actions{
+    background-color: black;
     margin-right: 32px;
+    padding: 0px 5px;
 }
 
 .user_actions a {
-    color:black;
+    color:white;
     text-decoration: none;
 }

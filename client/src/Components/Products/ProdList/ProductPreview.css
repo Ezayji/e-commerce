@@ -1,0 +1,13 @@
+/* product preview div */
+
+.prod-preview{
+    width: 40vh;
+    max-width: 95%;
+}
+
+/* thumbnail */
+
+.prod-preview img {
+    width: 100%;
+    height: auto;
+}
