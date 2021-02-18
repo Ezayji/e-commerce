@@ -12,4 +12,4 @@ const BrandHeader = ({ data }) => {
     );
 };
 
-export default BrandHeader;
+export default BrandHeader; 

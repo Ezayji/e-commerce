@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
 import './ProductPreview.css';
 
+import navStatus from '../../../Redux/ProductsSlice';
+
 const ProductPreview = ({ product, url }) => {
+    
 
     return(
         <div className='prod-preview' >
@@ -17,4 +20,4 @@ const ProductPreview = ({ product, url }) => {
     );
 };
 
-export default ProductPreview;
+export default ProductPreview; 

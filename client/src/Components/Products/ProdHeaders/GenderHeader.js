@@ -24,4 +24,4 @@ const GenderHeader = ( {data} ) => {
     );
 };
 
-export default GenderHeader;
+export default GenderHeader; 

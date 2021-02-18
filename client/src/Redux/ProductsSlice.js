@@ -47,6 +47,9 @@ const productsSlice = createSlice({
         },
         statusReset(state, action){
             state.status = 'idle';
+        },
+        navStatus(state, action){
+            state.status = 'nav';
         }
     },
     extraReducers: {
@@ -64,5 +67,5 @@ const productsSlice = createSlice({
     }
 });
 
-export const { genderAdded, categoryIdAdded, brandIdAdded, statusReset } = productsSlice.actions;
+export const { genderAdded, categoryIdAdded, brandIdAdded, statusReset, navStatus } = productsSlice.actions;
 export default productsSlice.reducer;
