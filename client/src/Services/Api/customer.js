@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { getConfig, sendConfig } from '../config';
-import { userAdded } from '../../Redux/CustomerSlice';
+import { userAdded, resetCustomer } from '../../Redux/CustomerSlice';
 import store from '../../Redux/Store';
+import { useSelector } from 'react-redux';
 
 export async function getCustomer(username) {
     const url = `/api/customer_un/${username}`;
@@ -18,7 +19,7 @@ export async function registerCustomer(data){
         email: data.email,
         phone: data.phone,
         password: data.password
-    })
+    }, sendConfig);
     return response;
 };
 
@@ -29,11 +30,36 @@ export async function login(data){
             username: data.username,
             password: data.password
         }, getConfig);
-        const username = response.user.username;
-        store.dispatch(userAdded(username));
+        store.dispatch(userAdded(response.data.user));
         return true;
     } catch (error) {
-        console.log(error)
         return false;
+    }
+};
+
+export async function logout(){
+    const url = '/api/logout';
+
+    try{
+        const response = await axios.get(url, getConfig);
+        console.log(response);
+        store.dispatch(resetCustomer());
+        return true
+    } catch (error) {
+        return false;
+    }
+
+};
+
+export async function checkAuth(){
+    const url = '/api/auth';
+
+    try{
+        const response = await axios.get(url, getConfig);
+        store.dispatch(userAdded(response.data.user));
+        return true;
+    } catch(error) {
+        store.dispatch(resetCustomer());
+        return;
     }
 };

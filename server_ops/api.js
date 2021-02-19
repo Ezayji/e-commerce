@@ -11,6 +11,7 @@ const {getCustomerByUsername,
        checkUserPw,
        checkAuthenticated,
        checkNotAuthenticated,
+       verifyAuth,
        updateCustomer,
        checkOldPw,
        updatePw,
@@ -96,6 +97,9 @@ apiRouter.put('/customer_address/:username', checkAuthenticated, checkUpdatedAdd
 apiRouter.post('/login', checkNotAuthenticated, checkUserName, checkUserPw, passport.authenticate('local'), (req, res) => {
     res.status(200).send({user: req.user});
 });
+
+// auth check
+apiRouter.get('/auth', verifyAuth);
 
 // logout
 apiRouter.get('/logout', (req, res) => {

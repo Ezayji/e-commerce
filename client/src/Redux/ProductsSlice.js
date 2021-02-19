@@ -11,25 +11,26 @@ const initialState = {
     brand_id: 0
 }; 
 
-export const fetchProducts = createAsyncThunk('products/fetchProducts', async (_, { getState }) => {
+export const fetchGender = createAsyncThunk('products/fetchGender', async (_, { getState }) => {
+    const gender = getState().products.gender;
+    const url = `/api/products?gender=${gender}`;
+    const response = await axios.get(url);
+    return response.data;    
+});
+
+export const fetchCategory = createAsyncThunk('products/fetchCategory', async (_, { getState }) => {
     const gender = getState().products.gender;
     const category = getState().products.category_id;
+    const url = `/api/products?gender=${gender}&categoryid=${category}`
+    const response = await axios.get(url);
+    return response.data;
+});
+
+export const fetchBrnds = createAsyncThunk('products/fetchBrnds', async (_, { getState }) => {
     const brand = getState().products.brand_id;
-
-    if(gender !== '' && category === 0 && brand === 0){
-        const url = `/api/products?gender=${gender}`;
-        const response = await axios.get(url);
-        return response.data;    
-    } else if(gender !== '' && category !== 0 && brand === 0) {
-        const url = `/api/products?gender=${gender}&categoryid=${category}`
-        const response = await axios.get(url);
-        return response.data;
-    } else if(gender === '' && category === 0 && brand !== 0) {
-        const url = `/api/manufacturer/${brand}`;
-        const response = await axios.get(url);
-        return response.data;
-    };
-
+    const url = `/api/manufacturer/${brand}`;
+    const response = await axios.get(url);
+    return response.data;
 });
 
 const productsSlice = createSlice({
@@ -44,28 +45,44 @@ const productsSlice = createSlice({
         },
         brandIdAdded(state, action) {
             state.brand_id = action.payload;
-        },
-        statusReset(state, action){
-            state.status = 'idle';
-        },
-        navStatus(state, action){
-            state.status = 'nav';
         }
     },
     extraReducers: {
-        [fetchProducts.pending]: (state, action) => {
+        [fetchGender.pending]: (state, action) => {
             state.status = 'loading';
         },
-        [fetchProducts.fulfilled]: (state, action) => {
-            state.status = 'succeeded';
+        [fetchGender.fulfilled]: (state, action) => {
+            state.status = 'gender';
             state.list = action.payload;
         },
-        [fetchProducts.rejected]: (state, action) => {
+        [fetchGender.rejected]: (state, action) => {
+            state.status = 'failed';
+            state.error = action.error.message;
+        },
+        [fetchCategory.pending]: (state, action) => {
+            state.status = 'loading';
+        },
+        [fetchCategory.fulfilled]: (state, action) => {
+            state.status = 'category';
+            state.list = action.payload;
+        },
+        [fetchCategory.rejected]: (state, action) => {
+            state.status = 'failed';
+            state.error = action.error.message;
+        },
+        [fetchBrnds.pending]: (state, action) => {
+            state.status = 'loading';
+        },
+        [fetchBrnds.fulfilled]: (state, action) => {
+            state.status = 'brand';
+            state.list = action.payload;
+        },
+        [fetchBrnds.rejected]: (state, action) => {
             state.status = 'failed';
             state.error = action.error.message;
         },
     }
 });
 
-export const { genderAdded, categoryIdAdded, brandIdAdded, statusReset, navStatus } = productsSlice.actions;
+export const { genderAdded, categoryIdAdded, brandIdAdded } = productsSlice.actions;
 export default productsSlice.reducer;

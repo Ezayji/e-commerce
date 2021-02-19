@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 
 // GETTING CUSTOMER INFO
 
-// verify access
+// verify access based on params username and req user
 const checkAuthenticated = (req, res, next) => {
     if (req.isAuthenticated() && req.user === req.params.username){
         next();
@@ -20,6 +20,15 @@ const checkNotAuthenticated = (req, res, next) => {
         next();
     } else {
         res.status(400).send('You are already authenticated');
+    };
+};
+
+// verify access based on req.user
+const verifyAuth = (req, res) => {
+    if (req.isAuthenticated()){
+        res.status(200).send({user: {username: req.user}});
+    } else {
+        res.status(400).send('Access not verified');
     };
 };
 
@@ -270,6 +279,7 @@ module.exports = {getCustomerByUsername,
                 checkUserName, 
                 checkUserPw,
                 checkAuthenticated,
+                verifyAuth,
                 checkNotAuthenticated,
                 updateCustomer,
                 checkOldPw,

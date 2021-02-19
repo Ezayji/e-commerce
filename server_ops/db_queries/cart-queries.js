@@ -62,7 +62,7 @@ const newCartLog = (request, response) => {
 
 // GET CART ITEMS BY CUSTOMER
 
-// check if customer has items in cart
+// check if customer has items in cart else return empty array
 const checkIfCartExists = (request, response, next) => {
     const username = request.params.username;
     const text = 'SELECT id FROM cart WHERE customer_username = $1';

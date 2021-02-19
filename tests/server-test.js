@@ -234,6 +234,42 @@ describe('CUSTOMERS', () => {
     
     });
 
+    // CHECK USER AUTHENTICATION
+    describe('GET SESSION CHECK /api/auth', () => {
+        it('Returns Customer Username if Session is valid', () => {
+            return server
+                .get('/api/auth')
+                .expect(200, {
+                    user: {
+                        username: 'Revarz'
+                    }
+                });
+        })
+        
+        // log customer out and back in
+        it('Returns 400 if Session is Not Valid', () => {
+            let user = {
+                username: 'Revarz',
+                password: 'selnapw'
+            };
+
+            return server
+                .get('/api/logout')
+                .expect(200)
+                .then(() => {
+                    return server
+                        .get('/api/auth')
+                        .expect(400);
+                })
+                .then(() => {
+                    return server
+                        .post('/api/login')
+                        .send(user)
+                        .expect(200);
+                });
+        })
+    });
+
     // LOGOUT
     describe('GET LOGOUT /api/logout', () => {
         it('Logs out the customer and returns 200', () => {

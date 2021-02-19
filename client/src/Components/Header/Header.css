@@ -14,11 +14,9 @@
 .header {
     height: 100px;
     width: 100%;
-/*    border-bottom: 2px dashed black; */
     font-family: 'Teko';
     display: flex;
 }
-
 
 
 /* LOGO */
@@ -61,12 +59,15 @@ nav {
     display: inline-block;
 }
 
-.dropdown-content{
+.dropdown-content, .brands-drop{
     position: absolute;
-    left: -140px;
     display: none;
     align-items: center;
     padding: 10px 0px;
+}
+
+.dropdown-content {
+    left: -140px;
 }
 
 .dropdown-content p{
@@ -85,15 +86,42 @@ nav {
     display:flex;
 }
 
+.dropdown:hover .brands-drop{
+    display: block;
+}
+
 /* USER ACTIONS (LOGIN or USER options) */
 
 .user_actions{
     background-color: black;
     margin-right: 32px;
     padding: 0px 5px;
+    position: relative;
 }
 
 .user_actions a {
     color:white;
     text-decoration: none;
+}
+
+.user_actions p {
+    vertical-align: middle;
+}
+
+/* user actions dropdown div */
+
+.actions{
+    background-color: black;
+    position: absolute;
+    display: none;
+    left: 0px;
+    padding: 0px 5px;
+}
+
+.logout{
+    color: black;
+}
+
+.user_actions:hover .actions{
+    display: block;
 }

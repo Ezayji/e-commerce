@@ -30,9 +30,7 @@ const ProdPage = ({ match }) => {
                     <p>€{prod.product.unit_price_eur}</p>
                     <p>{prod.product.color}</p>
                     <p>{prod.product.description}</p>
-                    <ul>
-                        <li>{prod.product.material}</li>
-                    </ul>
+                    <p>• Material: {prod.product.material}</p> 
                 </div>
             </div>
         )

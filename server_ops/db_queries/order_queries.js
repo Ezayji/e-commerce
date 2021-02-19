@@ -2,7 +2,7 @@ const pool = require('./postgres_pool');
 
 // Get all orders for customer
 
-// check if any shippemnts and pass them to next middleware as an array
+// check if any shippemnts and pass them to next middleware as an array. Return empty array if no shippments
 const getUserOrders = (request, response, next) => {
     const username = request.params.username;
     const text = 'SELECT id, date_utc, total_eur, payment, to_appartment, to_street, to_city, to_province, to_zip, to_country FROM shippment WHERE customer_username = $1 ORDER BY id DESC';
@@ -11,7 +11,7 @@ const getUserOrders = (request, response, next) => {
         if(error){
             throw error;
         } else if (results.rows[0] === undefined){
-            response.status(404).send('No Completed Orders For Customer');
+            response.status(404).send('No Cart Items For Customer');
         } else {
             response.locals.orders = results.rows;
             next();

@@ -1,18 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { getCustomer } from '../Services/Api/customer';
+import { getCustomer, login } from '../Services/Api/customer';
 
 const initialState = {
-    user: {},
+    user: null,
     profile: {},
     address: {},
     status: 'idle',
     error: null
-};
-
-const config = {
-    withCredentials: true,
-    credentials: 'include'
 };
 
 export const fetchCustomer = createAsyncThunk('customer/fetchCustomer', async (_, { getState }) => {
@@ -28,7 +23,7 @@ export const fetchCustomer = createAsyncThunk('customer/fetchCustomer', async (_
 export const fetchAddress = createAsyncThunk('customer/fetchAddress', async (_, { getState }) => {
     const username = getState().user.username;
     const url = `/api/customer_address/${username}`;
-    const response = await axios.get(url, config);
+    const response = await axios.get(url);
     return response;
 });
 
@@ -52,7 +47,7 @@ const customerSlice = createSlice({
             state.status = 'loading customer';
         },
         [fetchCustomer.fulfilled]: (state, action) => {
-            state.status = 'succeeded';
+            state.status = 'succeeded customer';
             state.profile = action.payload;
         },
         [fetchCustomer.rejected]: (state, action) => {
@@ -63,7 +58,7 @@ const customerSlice = createSlice({
             state.status = 'loading address';
         },
         [fetchAddress.fulfilled]: (state, action) => {
-            state.status = 'succeeded';
+            state.status = 'succeeded address';
             state.address = action.payload;
         },
         [fetchAddress.rejected]: (state, action) => {
@@ -72,6 +67,7 @@ const customerSlice = createSlice({
         }
     }
 });
+
 
 export const { userAdded, resetCustomer } = customerSlice.actions;
 export default customerSlice.reducer;
