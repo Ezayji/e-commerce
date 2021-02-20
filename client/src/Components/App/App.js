@@ -5,6 +5,10 @@ import Login from '../Login/Login';
 import Register from '../Register/Register';
 import Products from '../Products/Products';
 import ProdPage from '../Products/ProdPage/ProdPage';
+import Account from '../Account/Account';
+import Cart from '../Cart/Cart';
+import Orders from '../Orders/Orders';
+import SingleOrder from '../Orders/SingleOrder/SingleOrder';
 
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
@@ -23,6 +27,10 @@ function App() {
           <Route path='/products/:gender' exact component={Products} />
           <Route path='/brands/:brand_id/:title/:productid/:product_title' exact component={ProdPage} />
           <Route path='/brands/:brand_id/:title' exact component={Products} />
+          <Route path='/account/:username' exact component={Account} />
+          <Route path='/cart/:username' exact component={Cart} />
+          <Route path='/orders/:username' exact component={Orders} />
+          <Route path='/orders/:username/order/:order_id' exact component={SingleOrder} />
         </Switch>
       </div>
     </Router>

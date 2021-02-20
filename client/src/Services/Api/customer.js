@@ -1,26 +1,50 @@
 import axios from 'axios';
 import { getConfig, sendConfig } from '../config';
-import { userAdded, resetCustomer } from '../../Redux/CustomerSlice';
+import { userAdded, resetCustomer, profileAdded, addressAdded } from '../../Redux/CustomerSlice';
 import store from '../../Redux/Store';
 import { useSelector } from 'react-redux';
 
 export async function getCustomer(username) {
     const url = `/api/customer_un/${username}`;
-    const response = await axios.get(url, getConfig);
-    return response;
+    try{
+        const response = await axios.get(url, getConfig);
+        store.dispatch(profileAdded(response.data));
+        return true;
+    } catch(error) {
+        console.log(error);
+        return false;
+    }
+    
+};
+
+export async function getAddress(username){
+    const url = `/api/customer_address/${username}`;
+    try{
+        const response = await axios.get(url, getConfig);
+        store.dispatch(addressAdded(response.data));
+        return true;
+    } catch(error) {
+        console.log(error);
+        return false;
+    }
 };
 
 export async function registerCustomer(data){
     const url = '/api/register';
-    const response = await axios.post(url, {
-        username: data.username,
-        first_name: data.first_name,
-        last_name: data.last_name,
-        email: data.email,
-        phone: data.phone,
-        password: data.password
-    }, sendConfig);
-    return response;
+    try{
+        const response = await axios.post(url, {
+            username: data.username,
+            first_name: data.first_name,
+            last_name: data.last_name,
+            email: data.email,
+            phone: data.phone,
+            password: data.password
+        }, sendConfig);
+        return true;
+    } catch(error) {
+        console.log(error.message);
+        return false;
+    };    
 };
 
 export async function login(data){
@@ -42,7 +66,6 @@ export async function logout(){
 
     try{
         const response = await axios.get(url, getConfig);
-        console.log(response);
         store.dispatch(resetCustomer());
         return true
     } catch (error) {

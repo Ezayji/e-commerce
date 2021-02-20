@@ -4,8 +4,6 @@ import {Link, Redirect} from 'react-router-dom';
 import {useSelector} from 'react-redux';
 
 import { login } from '../../Services/Api/customer';
-import { userAdded } from '../../Redux/CustomerSlice';
-import store from '../../Redux/Store';
 
 
 const Login = () => {
@@ -15,7 +13,6 @@ const Login = () => {
     const user = useSelector(state => state.customer.user);
     
     let redirect;
-    let error;
 
     const onSubmit = async (e) => {
         e.preventDefault();
@@ -23,12 +20,9 @@ const Login = () => {
             username: un,
             password: pw
         };
-        
-        console.log(user);
         const response = await login(user);
-        console.log(response);
         if (response === false) {
-            error = <p>Wrong username or password</p>
+            alert('Wrong Username or Password')
             setPw('');
         }
 
@@ -56,10 +50,9 @@ const Login = () => {
                 <input className="sign_in" type="submit" value="SIGN IN" />
             </form>
             <p><Link to={'/register'}>CREATE ACCOUNT</Link></p>
-            {error}
             {redirect}
         </div>
     );
 }
-//value={pw} onChange={handlePwChange}
+
 export default Login;

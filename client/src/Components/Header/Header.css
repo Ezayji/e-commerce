@@ -91,12 +91,23 @@ nav {
 }
 
 /* USER ACTIONS (LOGIN or USER options) */
-
-.user_actions{
+.actions-div{
     background-color: black;
     margin-right: 32px;
     padding: 0px 5px;
+    display: flex;
+    align-items: center;
+}
+
+.user_actions{
+    /*
+    background-color: black;
+    margin-right: 32px;
+    padding: 0px 5px;
+    */
     position: relative;
+    display: inline-block;
+    height: auto;
 }
 
 .user_actions a {
@@ -114,12 +125,13 @@ nav {
     background-color: black;
     position: absolute;
     display: none;
-    left: 0px;
+    left: -5px;
     padding: 0px 5px;
 }
 
 .logout{
     color: black;
+    cursor: pointer;
 }
 
 .user_actions:hover .actions{

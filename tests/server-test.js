@@ -2112,6 +2112,95 @@ describe('CHECKOUT (ASSUMING ACCEPTED PAYMENT AND UPDATED STOCK QUANTITY)', () =
 
 // ORDERS
 describe('ORDERS', () => {
+
+    describe('GET CUSTOMER ORDER BY ID', () => {
+        describe('* Unauthenticated Requests *', () => {
+            it('Unauthenticated user can not access order item', () => {
+                return request(app)
+                    .get('/api/orders/Revarz/1000000')
+                    .expect(400);
+            });
+        });
+
+        describe('* Authenticated requests *', () => {
+            describe('GET ORDER /api/orders/:username/:order_id', () => {
+                // log customer in
+                it('Customer can access their selected order as an Order Object with products array', () => {
+                    const user = {
+                        username: 'Revarz',
+                        password: 'karnaz123'
+                    };
+
+                    return server
+                        .post('/api/login')
+                        .send(user)
+                        .expect(200, {
+                            user: {
+                                username: 'Revarz'
+                            }
+                        })
+                        .then(() => {
+                            return server
+                                .get('/api/orders/Revarz/1000000')
+                                .expect(200)
+                                .then((response) => {
+                                    const result = response.body;
+                                    expect(result).to.be.an.instanceOf(Object);
+
+                                    expect(result).to.have.ownProperty('products');
+                                    expect(result).to.have.ownProperty('id');
+                                    expect(result).to.have.ownProperty('date_utc');
+                                    expect(result).to.have.ownProperty('total_eur');
+                                    expect(result).to.have.ownProperty('payment');
+                                    expect(result).to.have.ownProperty('to_appartment');
+                                    expect(result).to.have.ownProperty('to_street');
+                                    expect(result).to.have.ownProperty('to_city');
+                                    expect(result).to.have.ownProperty('to_province');
+                                    expect(result).to.have.ownProperty('to_zip');
+                                    expect(result).to.have.ownProperty('to_country');
+
+                                    const products = result.products;
+                                    expect(products).to.be.an.instanceOf(Array);
+                                    const product_1 = products[0];
+                                    expect(product_1).to.be.an.instanceOf(Object);
+                                    expect(product_1).to.have.ownProperty('product_id');
+                                    expect(product_1).to.have.ownProperty('quantity');
+                                    expect(product_1).to.have.ownProperty('size');
+                                    expect(product_1).to.have.ownProperty('unit_price_eur');
+                                    expect(product_1).to.have.ownProperty('product_title');
+                                    expect(product_1).to.have.ownProperty('manufacturer');
+                                    expect(product_1).to.have.ownProperty('color');
+                                });
+                        })
+                });
+
+                it('Customer can not access other customer order', () => {
+                    return server
+                        .get('/api/orders/Ezayji/1000')
+                        .expect(400);
+                });
+
+                it('Returns 400 if requested Order Id is not numeric', () => {
+                    return server
+                        .get('/api/orders/Revarz/orderid')
+                        .expect(400);
+                });
+
+                // log customer out in the end
+                it('Returns 404 if no order with selected ID exists for customer', () => {
+                    return server
+                        .get('/api/orders/Revarz/1000')
+                        .expect(404)
+                        .then(() => {
+                            return server
+                                .get('/api/logout')
+                                .expect(200);
+                        });
+                });
+            });
+        });
+    });
+
     describe('GET ALL CUSTOMER ORDERS', () => {
         describe('* Unauthenticated requests *', () => {
             it('Unauthenticated customer can not access orders', () => {

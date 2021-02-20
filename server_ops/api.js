@@ -43,7 +43,9 @@ const {checkShippment,
        createOrderItems} = require('./db_queries/checkout_queries');
 
 const {getUserOrders,
-       getOrderItems} = require('./db_queries/order_queries');
+       getOrderItems,
+       getUserOrder,
+       getSingleOrderItems} = require('./db_queries/order_queries');
 
 const initializePassport = require('./passport-config');
 initializePassport(passport);
@@ -141,6 +143,9 @@ apiRouter.post('/cart/:username/checkout', checkAuthenticated, checkShippment, c
 
 // get all customer orders
 apiRouter.get('/orders/:username', checkAuthenticated, getUserOrders, getOrderItems);
+
+// get single customer order by id
+apiRouter.get('/orders/:username/:order_id', checkAuthenticated, getUserOrder, getSingleOrderItems);
 
 
 module.exports = apiRouter;

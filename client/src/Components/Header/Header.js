@@ -54,27 +54,31 @@ const Header = () => {
         brands = brnds.map((item, i) => (
             <p key={i} ><Link to={`/brands/${item.id}/${item.title}`} >•{item.title}</Link></p>
         ))
-    }
+    };
     
     if(user === null){
         actions = (
-            <div className='user_actions' >
-                <p><Link to={'/login'} >LOGIN</Link></p>
+            <div className='actions-div' >
+                <div className='user_actions' >
+                    <p><Link to={'/login'} >LOGIN</Link></p>
+                </div>
             </div>
         )
     } else if (user.username) {
         actions = (
-            <div className='user_actions' >
-                <p><a className='user' >{user.username.toUpperCase()}</a></p>
-                <div className='actions' >
-                    <p><Link to={`/account/${user.username}`} >ACNT</Link></p>
-                    <p><Link to={`/cart/${user.username}`} >CART</Link></p>
-                    <p><Link to={`/orders/${user.username}`} >ORDRS</Link></p>
-                    <p onClick={onLogout} ><a className='logout' >EXIT</a></p>
+            <div className='actions-div' >
+                <div className='user_actions' >
+                    <p><a className='user' >{user.username.toUpperCase()}</a></p>
+                    <div className='actions' >
+                        <p><Link to={`/account/${user.username}`} >ACNT</Link></p>
+                        <p><Link to={`/cart/${user.username}`} >CART</Link></p>
+                        <p><Link to={`/orders/${user.username}`} >ORDRS</Link></p>
+                        <p onClick={onLogout} ><a className='logout' >EXIT</a></p>
+                    </div>
                 </div>
             </div>
         )
-    }
+    };
 
     return(
         <header className="header" >

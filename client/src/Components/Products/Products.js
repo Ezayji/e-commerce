@@ -12,10 +12,21 @@ const Products = ({ match }) => {
 
     const prodState = useSelector(state => state.products.status);
     const products = useSelector(state => state.products.list);
+    const genderState = useSelector(state => state.products.gender);
+    const brndState = useSelector(state => state.products.brand_id);
+    const categoryState = useSelector(state => state.products.category_id);
 
-// check Path and prodState to dispatch correct values and fetch products
+    const genderParams = match.params.gender;
+    const brndParams = match.params.brand_id;
+    const categoryParams = match.params.categoryid;
+
+    const categoryPath = '/products/:gender/list/:categoryid/:category_title';
+    const genderPath = '/products/:gender';
+    const brndsPath = '/brands/:brand_id/:title'
+
+// Check Path and prodState and Params to dispatch correct values and fetch products
     useEffect(() => {
-        if(match.path === "/products/:gender/list/:categoryid/:category_title" && prodState !== 'category'){
+        if((match.path === categoryPath && prodState !== 'category') || (match.path === categoryPath && prodState === 'category' && (genderParams !== genderState || parseInt(categoryParams) !== categoryState))){
             const category = parseInt(match.params.categoryid)
             const gender = match.params.gender;
             store.dispatch(genderAdded(gender))
@@ -23,13 +34,13 @@ const Products = ({ match }) => {
             store.dispatch(brandIdAdded(0));
             store.dispatch(fetchCategory());
             
-        } else if(match.path === "/products/:gender" && prodState !== 'gender'){
+        } else if((match.path === genderPath && prodState !== 'gender') || (match.path === genderPath && prodState === 'gender' && genderParams !== genderState)){
             const gender = match.params.gender;
             store.dispatch(genderAdded(gender));
             store.dispatch(categoryIdAdded(0));
             store.dispatch(brandIdAdded(0));
             store.dispatch(fetchGender());
-        } else if(match.path === "/brands/:brand_id/:title" && prodState !== 'brand'){
+        } else if((match.path === brndsPath && prodState !== 'brand') || (match.path === brndsPath && prodState === 'brand' && brndState !== brndParams)){
             const brand = parseInt(match.params.brand_id);
             store.dispatch(genderAdded(''));
             store.dispatch(categoryIdAdded(0));

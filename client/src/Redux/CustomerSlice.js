@@ -1,30 +1,24 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { getCustomer, login } from '../Services/Api/customer';
+import { getCustomer, getAddress } from '../Services/Api/customer';
 
 const initialState = {
     user: null,
-    profile: {},
-    address: {},
-    status: 'idle',
+    profile: null,
+    address: null,
+    cus_status: 'idle',
+    adr_status: 'idle',
     error: null
 };
 
 export const fetchCustomer = createAsyncThunk('customer/fetchCustomer', async (_, { getState }) => {
     const username = getState().user.username;
     await getCustomer(username);
-    /*
-    const url = `/api/customer_un/${username}`;
-    const response = await axios.get(url, config)
-    return response;
-    */
 });
 
 export const fetchAddress = createAsyncThunk('customer/fetchAddress', async (_, { getState }) => {
     const username = getState().user.username;
-    const url = `/api/customer_address/${username}`;
-    const response = await axios.get(url);
-    return response;
+    await getAddress(username);
 });
 
 const customerSlice = createSlice({
@@ -40,34 +34,40 @@ const customerSlice = createSlice({
             state.address = initialState.address;
             state.status = initialState.status;
             state.error = initialState.error;
+        },
+        profileAdded(state, action){
+            state.profile = action.payload;
+        },
+        addressAdded(state, action){
+            state.address = action.payload;
         }
     },
     extraReducers: {
         [fetchCustomer.pending]: (state) => {
-            state.status = 'loading customer';
+            state.cus_status = 'loading';
         },
         [fetchCustomer.fulfilled]: (state, action) => {
-            state.status = 'succeeded customer';
+            state.cus_status = 'succeeded';
             state.profile = action.payload;
         },
         [fetchCustomer.rejected]: (state, action) => {
-            state.status = 'failed loading user';
+            state.cus_status = 'failed';
             state.error = action.error.message;
         },
         [fetchAddress.pending]: (state) => {
-            state.status = 'loading address';
+            state.adr_status = 'loading';
         },
         [fetchAddress.fulfilled]: (state, action) => {
-            state.status = 'succeeded address';
+            state.adr_status = 'succeeded';
             state.address = action.payload;
         },
         [fetchAddress.rejected]: (state, action) => {
-            state.status = 'failed loading address';
+            state.adr_status = 'failed';
             state.error = action.error.message
         }
     }
 });
 
 
-export const { userAdded, resetCustomer } = customerSlice.actions;
+export const { userAdded, resetCustomer, profileAdded, addressAdded } = customerSlice.actions;
 export default customerSlice.reducer;
