@@ -64,7 +64,7 @@ const Header = () => {
                 </div>
             </div>
         )
-    } else if (user.username) {
+    } else if (user !== null) {
         actions = (
             <div className='actions-div' >
                 <div className='user_actions' >

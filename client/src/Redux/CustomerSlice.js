@@ -1,25 +1,27 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { getCustomer, getAddress } from '../Services/Api/customer';
+import { getCustomer, getAddress, checkAuth } from '../Services/Api/customer';
 
 const initialState = {
     user: null,
     profile: null,
     address: null,
+    auth_status: 'idle',
     cus_status: 'idle',
     adr_status: 'idle',
     error: null
 };
 
 export const fetchCustomer = createAsyncThunk('customer/fetchCustomer', async (_, { getState }) => {
-    const username = getState().user.username;
+    const username = getState().customer.user.username;
     await getCustomer(username);
 });
 
 export const fetchAddress = createAsyncThunk('customer/fetchAddress', async (_, { getState }) => {
-    const username = getState().user.username;
+    const username = getState().customer.user.username;
     await getAddress(username);
 });
+
 
 const customerSlice = createSlice({
     name: 'customer',
@@ -32,7 +34,8 @@ const customerSlice = createSlice({
             state.user = initialState.user;
             state.profile = initialState.profile;
             state.address = initialState.address;
-            state.status = initialState.status;
+            state.cus_status = initialState.cus_status;
+            state.adr_status = initialState.adr_status;
             state.error = initialState.error;
         },
         profileAdded(state, action){
@@ -48,7 +51,6 @@ const customerSlice = createSlice({
         },
         [fetchCustomer.fulfilled]: (state, action) => {
             state.cus_status = 'succeeded';
-            state.profile = action.payload;
         },
         [fetchCustomer.rejected]: (state, action) => {
             state.cus_status = 'failed';
@@ -59,7 +61,6 @@ const customerSlice = createSlice({
         },
         [fetchAddress.fulfilled]: (state, action) => {
             state.adr_status = 'succeeded';
-            state.address = action.payload;
         },
         [fetchAddress.rejected]: (state, action) => {
             state.adr_status = 'failed';

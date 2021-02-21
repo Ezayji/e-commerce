@@ -1,0 +1,36 @@
+/* PROFILE DIV */
+
+.profile{
+    width: 50vw;
+}
+
+.profile h2{
+    font-family: 'Teko';
+    font-size: 2em;
+}
+
+/* PROFILE FIELDS */
+
+.account-value{
+    display: flex;
+}
+
+/* BUTTONS DIV */
+
+.info-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.profile button, .info-submit{
+    height: 35px;
+    width: 49%;
+    color: white;
+    background-color: black;
+    border: none;
+    cursor: pointer;
+}
+
+.profile button:hover, .info-submit:hover {
+    background-color: rgba(0, 0, 0, 0.89);
+}

@@ -18,7 +18,9 @@ const {getCustomerByUsername,
        checkUpdatedInfo,
        updateCustomerAddress,
        getCustomerAddress,
-       checkUpdatedAddress} = require('./db_queries/customer_queries');
+       checkUpdatedAddress,
+       checkUpdatedEmail,
+       checkUpdatedPhone} = require('./db_queries/customer_queries');
 
 const {getProductsByGenderAndCategory,
        getProductsByManufacturerId,
@@ -84,7 +86,7 @@ apiRouter.post('/register', checkNotAuthenticated, checkNewCustomerInfo, checkIf
 apiRouter.get('/customer_un/:username', checkAuthenticated, getCustomerByUsername);
 
 // update customer profile info
-apiRouter.put('/customer_un/:username', checkAuthenticated, checkUpdatedInfo, checkIfUniqueEmail, checkIfUniquePhone, updateCustomer, getCustomerByUsername);
+apiRouter.put('/customer_un/:username', checkAuthenticated, checkUpdatedInfo, checkUpdatedEmail, checkUpdatedPhone, updateCustomer, getCustomerByUsername);
 
 // update customer password
 apiRouter.put('/customer_un/:username/password', checkAuthenticated, checkOldPw, updatePw);
@@ -93,7 +95,7 @@ apiRouter.put('/customer_un/:username/password', checkAuthenticated, checkOldPw,
 apiRouter.get('/customer_address/:username', checkAuthenticated, getCustomerAddress);
 
 //update customer address
-apiRouter.put('/customer_address/:username', checkAuthenticated, checkUpdatedAddress, updateCustomerAddress, getCustomerAddress);
+apiRouter.put('/customer_address/:username', checkAuthenticated, checkUpdatedAddress, updateCustomerAddress, getCustomerAddress); 
 
 // post login
 apiRouter.post('/login', checkNotAuthenticated, checkUserName, checkUserPw, passport.authenticate('local'), (req, res) => {

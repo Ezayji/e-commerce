@@ -63,7 +63,7 @@ const checkNewCustomerInfo = (request, response, next) => {
     };
 };
 
-// check for existing email
+// check for existing email where the user is not the one requesting
 const checkIfUniqueEmail = (request, response, next) => {
     const text = 'SELECT id FROM customer WHERE email = $1';
     const {email} = request.body;
@@ -101,7 +101,7 @@ const checkIfUniquePhone = (request, response, next) => {
             response.status(400).send('Not unique phone');
         }
     })
-}
+};
 
 
 // register a new customer
@@ -165,6 +165,36 @@ const checkUpdatedInfo = (request, response, next) => {
     } else {
         next();
     };
+};
+
+// check if no other user has the email in update request(accept old email)
+const checkUpdatedEmail = (request, response, next) => {
+    const text = 'SELECT id FROM customer WHERE email = $1 AND username != $2';
+    const {email} = request.body;
+    const username = request.params.username;
+
+    pool.query(text, [email, username], (error, results) => {
+        if (results.rows[0] === undefined){
+            next();
+        } else {
+            response.status(400).send('Not unique email');
+        }
+    });
+};
+
+// check if no other user has the phone nr in update request(accept old phone nr)
+const checkUpdatedPhone = (request, response, next) => {
+    const text = 'SELECT id FROM customer WHERE phone = $1 AND username != $2';
+    const {phone} = request.body;
+    const username = request.params.username;
+
+    pool.query(text, [phone, username], (error, results) => {
+        if(results.rows[0] === undefined){
+            next();
+        } else {
+            response.status(400).send('Not unique phone');
+        }
+    });
 };
 
 // update query
@@ -287,4 +317,6 @@ module.exports = {getCustomerByUsername,
                 checkUpdatedInfo,
                 getCustomerAddress,
                 updateCustomerAddress,
-                checkUpdatedAddress};
+                checkUpdatedAddress,
+                checkUpdatedEmail,
+                checkUpdatedPhone};

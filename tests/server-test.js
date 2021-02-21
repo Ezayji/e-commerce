@@ -461,7 +461,7 @@ describe('CUSTOMERS', () => {
                 const updatedCustomer = {
                     first_name: 'Selna',
                     last_name: 'Kaszk',
-                    email: 'selnaknewemail@testapi.com',
+                    email: 'akoppel2@gmail.com',
                     phone: '+372 77777777',
                 }
                 //password: 'karnaz123'
@@ -477,7 +477,7 @@ describe('CUSTOMERS', () => {
                     first_name: 'Selna',
                     last_name: 'Kaszk',
                     email: 'selnaknewemail2@testapi.com',
-                    phone: '+372 99999999',
+                    phone: '+372 53494198',
                 };
                 //password: 'karnaz123'
 

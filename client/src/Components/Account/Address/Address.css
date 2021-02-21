@@ -1,0 +1,44 @@
+/* ADDRES DIV */
+
+.address{
+    width: 50vw;
+}
+
+.address h2{
+    font-family: 'Teko';
+    font-size: 2em;
+}
+
+/* ADDRESS FIELDS */
+
+.adr-value {
+    display: flex;
+}
+
+
+/* BUTTONS DIV */
+
+.info-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.adr-cancel, .info-submit, .adr-change {
+    height: 35px;
+    color: white;
+    background-color: black;
+    border: none;
+    cursor: pointer;
+}
+
+.adr-cancel, .info-submit {
+    width: 49%;
+}
+
+.adr-change{
+    width: 100%;
+}
+
+.adr-change:hover, .adr-cancel:hover, .info-submit:hover {
+    background-color: rgba(0, 0, 0, 0.89);
+}
