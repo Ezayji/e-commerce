@@ -1,5 +1,7 @@
 import './Profile.css';
 
+import { Link } from 'react-router-dom';
+
 const Display = ({ customer, onClick }) => {
     return(
         <div className='profile' >
@@ -26,7 +28,7 @@ const Display = ({ customer, onClick }) => {
             </div>
             <div className='info-buttons' >
                 <button onClick={onClick} >CHNGE</button>
-                <button>UPDT PW</button>
+                <Link className='updt-pw' to={`/account/${customer.username}/password`} >UPDT PW</Link>
             </div>
         </div>
     )

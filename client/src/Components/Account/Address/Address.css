@@ -1,7 +1,9 @@
 /* ADDRES DIV */
 
 .address{
-    width: 50vw;
+    width: 65vh;
+    max-width: 90%;
+    margin-top: 12px;
 }
 
 .address h2{

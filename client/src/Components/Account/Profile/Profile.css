@@ -1,7 +1,8 @@
 /* PROFILE DIV */
 
 .profile{
-    width: 50vw;
+    width: 65vh;
+    max-width: 90%;
 }
 
 .profile h2{
@@ -22,7 +23,7 @@
     justify-content: space-between;
 }
 
-.profile button, .info-submit{
+.profile button, .info-submit, .updt-pw{
     height: 35px;
     width: 49%;
     color: white;
@@ -31,6 +32,13 @@
     cursor: pointer;
 }
 
-.profile button:hover, .info-submit:hover {
+.updt-pw{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.profile button:hover, .info-submit:hover, .updt-pw:hover {
     background-color: rgba(0, 0, 0, 0.89);
 }

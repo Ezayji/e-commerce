@@ -9,7 +9,6 @@ export async function getCustomer(username) {
     try{
         const response = await axios.get(url, getConfig);
         store.dispatch(profileAdded(response.data));
-        //return true;
     } catch(error) {
         return error;
     }
@@ -26,12 +25,18 @@ export async function updateProfile(data){
         phone: data.phne
     };
     try{
-        const response = axios.put(url, updatedInfo, sendConfig);
-        store.dispatch(profileAdded(response.data));
-        return true;
+        const response = await axios.put(url, updatedInfo, sendConfig);
+        if (response.data) {
+            store.dispatch(profileAdded(response.data));
+            return true;
+        };
     } catch (error) {
-        return false;
-    }
+        if(error.response.data === 'Not unique phone' || error.response.data === 'Not unique email'){
+            return error.response.data;
+        } else {
+            return 'Something Went Wrong, Please Try Again';
+        };
+    };
 };
 
 // get customer address and add to redux state
@@ -40,7 +45,6 @@ export async function getAddress(username){
     try{
         const response = await axios.get(url, getConfig);
         store.dispatch(addressAdded(response.data));
-        //return true;
     } catch(error) {
         return error;
     };
@@ -58,9 +62,11 @@ export async function updateAddress(data){
         country: data.cntry
     };
     try{
-        const response = axios.put(url, updatedInfo, sendConfig);
-        store.dispatch(addressAdded(response.data));
-        return true;
+        const response = await axios.put(url, updatedInfo, sendConfig);
+        if (response.data) {
+            store.dispatch(addressAdded(response.data));
+            return true;
+        };
     } catch(error) {
         return false;
     };
@@ -114,13 +120,31 @@ export async function logout(){
 
 };
 
+// reset password
+export async function resetPw(data){
+    const url = `/api/customer_un/${data.username}/password`;
+    const updatedInfo = {
+        password: data.pw,
+        new_password: data.new_pw
+    };
+    try{
+        await axios.put(url, updatedInfo, sendConfig);
+        return true;
+    } catch(error) {
+        if(error.response.data === 'Wrong Password Provided'){
+            return error.response.data;
+        } else {
+            return 'Something Went Wrong, Please Try Again';
+        };
+    };
+};
+
 // check if browser is authenticated and add username to redux state
 export async function checkAuth(){
     const url = '/api/auth';
     try{
         const response = await axios.get(url, getConfig);
         store.dispatch(userAdded(response.data.user));
-        //return true;
     } catch(error) {
         store.dispatch(resetCustomer());
         return false;

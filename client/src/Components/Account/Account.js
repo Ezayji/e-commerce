@@ -116,8 +116,8 @@ const onProfSubmit = async (e) => {
     };
     if(fn !== customer.first_name || ln !== customer.last_name || email !== customer.email || phne !== customer.phone){
         const response = await updateProfile(data);
-        if(response === false){
-            alert('Not Unique Email or Phone');
+        if(response !== true){
+            alert(response);
         } else if (response === true){
             onCancelProfChange();
         };
@@ -190,6 +190,7 @@ const onCntryChange = (e) => {
 const onAdrSubmit = async (e) => {
     e.preventDefault();
     const data = {
+        username: user.username,
         ap: ap,
         strt: strt,
         cty: cty,
@@ -200,7 +201,7 @@ const onAdrSubmit = async (e) => {
     if(ap !== address.appartment_nr || strt !== address.street || cty !== address.city || prvnc !== address.province || zp !== address.zip || cntry !== address.country){
         const response = await updateAddress(data);
         if(response === false){
-            alert('Something went wrong, please try again');
+            alert('Something Went Wrong, Please Try Again');
         } else if(response === true){
             onCancelAdrChange();
         };

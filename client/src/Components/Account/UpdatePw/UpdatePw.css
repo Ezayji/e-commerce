@@ -1,0 +1,54 @@
+/* PW CHANGE PARENT DIV */
+
+.pw-change{
+    width: 100%;
+    height: 80vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pw-change h2{
+    font-family: 'Teko';
+    font-size: 2em;
+}
+
+/* PW CHANGE FORM */
+
+.pw-change form {
+    width: 65vh;
+    max-width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.new-pw-actions{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.change-pw-div{
+    width: 100%;
+    margin-top: 1px;
+}
+
+.chng-pw-field{
+    width: 100%;
+    height: 35px;
+    margin-bottom: 10px;
+}
+
+.pw-change button, .sbm-new-pw{
+    height: 35px;
+    width: 49%;
+    color: white;
+    background-color: black;
+    border: none;
+    cursor: pointer;
+}
+
+.pw-change button:hover, .sbm-new-pw:hover{
+    background-color: rgba(0, 0, 0, 0.89);
+}
