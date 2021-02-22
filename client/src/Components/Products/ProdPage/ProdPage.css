@@ -1,0 +1,83 @@
+/* FONTS */
+
+@font-face {
+    font-family: 'Bentham';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/bentham/v11/VdGeAZQPEpYfmHglGWsxCQ.woff2) format('woff2');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+
+/* PRODUCT PAGE DIV */
+
+.product {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product img {
+    width: 40%;
+    height: auto;
+}
+
+/* SIZE AND ADD TO CART */
+
+.product form {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.product form select{
+    height: 35px;
+}
+
+.product form a, .product form button{
+    margin-top: 10px;
+    height: 35px;
+    color: white;
+    background-color: black;
+    border: none;
+    cursor: pointer;
+}
+
+.product form a{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
+.product form a:hover, .product form button:hover{
+    background-color: rgba(0, 0, 0, 0.89);
+}
+
+
+/* PRODUCT INFO */
+
+.prod-info h2 {
+    font-family: 'Bentham';
+    font-size: 2.7em;
+}
+
+.prod-info{
+    width: 30%;
+    max-width: 50%;
+}
+
+.prod-manu{
+    color: rgba(0, 0, 0, 0.733);
+    margin-bottom: 5px;
+}
+
+.prod-price{
+    font-size: 1.3em;
+    margin-bottom: 5px;
+}
+
+.prod-desc{
+    margin: 8px 0px;
+    line-height: 1.2;
+}

@@ -25,7 +25,7 @@ const checkCartLog = (request, response, next) => {
             };
         });
     };
-};
+}; 
 
 // check if not in cart
 const checkIfNotInCart = (request, response, next) => {
@@ -44,9 +44,10 @@ const checkIfNotInCart = (request, response, next) => {
     });
 };
 
-// add cart log to database
+// add cart log to database and return updated cart object
 const newCartLog = (request, response) => {
     const text = "INSERT INTO cart (id, product_id, quantity, size, customer_username) VALUES (setval('cart_sequence', (SELECT MAX(id) FROM cart)+1), $1, $2, $3, $4)";
+    const text2 = "SELECT cart.id AS cart_id, cart.product_id, cart.quantity, cart.size, product.title AS product_title, manufacturer.title AS manufacturer, product.color, product.unit_price_eur, product.thumbnail_url FROM cart LEFT JOIN product ON cart.product_id = product.id LEFT JOIN manufacturer ON product.manufacturer_id = manufacturer.id WHERE cart.customer_username = $1"
     const {product_id, quantity, size} = request.body;
     const username = request.params.username;
 
@@ -54,10 +55,24 @@ const newCartLog = (request, response) => {
         if(error){
             throw error;
         } else {
-            response.status(201).send('Cart Item Added');
+            pool.query(text2, [username], (error, results) => {
+                if(error){
+                    throw error;
+                } else {
+                    let products = results.rows;
+                    const totals_array = products.map(item => item.quantity * item.unit_price_eur);
+                    let total = totals_array.reduce((a, b) => a + b, 0);
+                    let result = {
+                        products,
+                        total
+                    };
+                    response.status(201).send(result);
+                };
+            });
+            //response.status(201).send('Cart Item Added');
         };
     });
-};
+}; 
 
 
 // GET CART ITEMS BY CUSTOMER

@@ -1425,7 +1425,7 @@ describe('CARTS', () => {
         describe('* Authenticated requests *', () => {
             describe('POST CART ITEM /api/cart/:username', () => {
                 // Log customer in
-                it('Customer can add new cart items to the database if all the fields are correct', () => {
+                it('Customer can add new cart items to the database if all the fields are correct and recieves updated cart object', () => {
                     const newCartItem = {
                         product_id: 1,
                         quantity: 1,
@@ -1449,7 +1449,26 @@ describe('CARTS', () => {
                             return server
                                 .post('/api/cart/Revarz')
                                 .send(newCartItem)
-                                .expect(201);
+                                .expect(201)
+                                .then((response) => {
+                                    let result = response.body;
+                                    let products = response.body.products;
+                                    let product_1 = response.body.products[0];
+                                    expect(result).to.have.ownProperty('products');
+                                    expect(result).to.have.ownProperty('total');
+                                    expect(result).to.be.an.instanceOf(Object);
+                                    expect(products).to.be.an.instanceOf(Array);
+                                    expect(product_1).to.be.an.instanceOf(Object);
+                                    expect(product_1).to.have.ownProperty('cart_id');
+                                    expect(product_1).to.have.ownProperty('product_id');
+                                    expect(product_1).to.have.ownProperty('quantity');
+                                    expect(product_1).to.have.ownProperty('size');
+                                    expect(product_1).to.have.ownProperty('product_title');
+                                    expect(product_1).to.have.ownProperty('manufacturer');
+                                    expect(product_1).to.have.ownProperty('color');
+                                    expect(product_1).to.have.ownProperty('unit_price_eur');
+                                    expect(product_1).to.have.ownProperty('thumbnail_url');
+                                });
                         });
                         
                 });

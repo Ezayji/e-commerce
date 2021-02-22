@@ -15,8 +15,12 @@
 
 .adr-value {
     display: flex;
+    margin-bottom: 4px;
 }
 
+.adr-value input {
+    width: 100%;
+}
 
 /* BUTTONS DIV */
 

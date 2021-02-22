@@ -1,19 +1,17 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { getCart } from '../Services/Api/cart';
 
 const initialState = {
-    products: [],
+    products: null,
     total: 0,
     status: 'idle',
     error: null
 }
 
 export const fetchCart = createAsyncThunk('cart/fetchCart', async (_, { getState }) => {
-    const username = getState().user.username;
-    const url = `/api/cart/${username}`;
-    const response = await axios.get(url);
-    return response;
-});
+    const username = getState().customer.user.username;
+    await getCart(username);
+}); 
 
 const cartSlice = createSlice({
     name: 'cart',
@@ -24,6 +22,11 @@ const cartSlice = createSlice({
             state.total = initialState.total;
             state.status = initialState.status;
             state.error = initialState.error;
+        },
+        cartAdded(state, action){
+            state.products = action.payload.products;
+            state.total = action.payload.total;
+            state.status = 'succeeded'
         }
     },
     extraReducers:{
@@ -32,8 +35,6 @@ const cartSlice = createSlice({
         },
         [fetchCart.fulfilled]: (state, action) => {
             state.status = 'succeeded'
-            state.products = action.payload.products;
-            state.total = action.payload.total;
         },
         [fetchCart.rejected]: (state, action) => {
             state.status = 'failed'
@@ -42,5 +43,5 @@ const cartSlice = createSlice({
     }
 });
 
-export const { resetCart } = cartSlice.actions;
+export const { resetCart, cartAdded } = cartSlice.actions;
 export default cartSlice.reducer;

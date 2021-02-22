@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { getCustomer, getAddress, checkAuth } from '../Services/Api/customer';
+import { getCustomer, getAddress } from '../Services/Api/customer';
 
 const initialState = {
     user: null,
