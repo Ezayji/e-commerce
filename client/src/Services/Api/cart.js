@@ -9,9 +9,15 @@ export async function getCart(username){
         const response = await axios.get(url, getConfig);
         if(response.data.products && response.data.total){
             store.dispatch(cartAdded(response.data));
+            return true;
         };
     } catch(error) {
         if(error.response.data === 'No Cart Items For Customer'){
+            const data ={
+                products: null,
+                total: 0
+            }
+            store.dispatch(cartAdded(data));
             return error.response.data;
         } else {
             return 'Something Went wrong';
@@ -59,6 +65,7 @@ export async function updateItemQty(data){
         if(error.response.data === 'Not in stock'){
             return error.response.data;
         } else {
+            console.log(error.response);
             return 'Something Went Wrong';
         };
     };

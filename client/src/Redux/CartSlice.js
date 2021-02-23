@@ -17,7 +17,7 @@ const cartSlice = createSlice({
     name: 'cart',
     initialState,
     reducers: {
-        resetCart(state) {
+        resetCart(state, action) {
             state.products = initialState.products;
             state.total = initialState.total;
             state.status = initialState.status;
@@ -27,7 +27,10 @@ const cartSlice = createSlice({
             state.products = action.payload.products;
             state.total = action.payload.total;
             state.status = 'succeeded'
-        }
+        },
+        statusAdded(state, action){
+            state.status = action.payload;
+        },
     },
     extraReducers:{
         [fetchCart.pending]: (state) => {
@@ -39,9 +42,9 @@ const cartSlice = createSlice({
         [fetchCart.rejected]: (state, action) => {
             state.status = 'failed'
             state.error = action.error.message;
-        }
+        },
     }
 });
 
-export const { resetCart, cartAdded } = cartSlice.actions;
+export const { resetCart, cartAdded, statusAdded } = cartSlice.actions;
 export default cartSlice.reducer;

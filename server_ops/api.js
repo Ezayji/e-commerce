@@ -129,6 +129,9 @@ apiRouter.delete('/cart/:username', checkAuthenticated, checkQueryItem, deleteFr
 
 // ----- CHECKOUT -----
 
+// route for creating a checkout session
+
+
 // route for handling payments, creating shippment and converting cart items into order items
     // <---- should be implemented here ---->
     // <-- * in order to post Order Items this section must create a Shippment row in Postgres if the Payment Succeeds.

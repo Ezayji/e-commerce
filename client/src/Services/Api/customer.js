@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { getConfig, sendConfig } from '../config';
 import { userAdded, resetCustomer, profileAdded, addressAdded } from '../../Redux/CustomerSlice';
+//import { resetCart } from '../../Redux/CartSlice';
 import store from '../../Redux/Store';
 
 // get customer profile and add to redux state
@@ -112,6 +113,7 @@ export async function logout(){
 
     try{
         const response = await axios.get(url, getConfig);
+       // store.dispatch(resetCart());
         store.dispatch(resetCustomer());
         return true
     } catch (error) {
