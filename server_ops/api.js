@@ -1,6 +1,18 @@
+// * EXPRESS.js *
 const express = require('express');
 const apiRouter = express.Router();
+
+// * PASSPORT.js *
 const passport = require('passport');
+const initializePassport = require('./passport-config');
+initializePassport(passport);
+
+// * STRIPE.js *
+const {
+       getFinalCart,
+       createPaymentIntent } = require('./stripe-config');
+
+// * DB QUERIES *
 const {getCustomerByUsername,
        addNewCustomer,
        checkNewCustomerInfo,
@@ -49,9 +61,8 @@ const {getUserOrders,
        getUserOrder,
        getSingleOrderItems} = require('./db_queries/order_queries');
 
-const initializePassport = require('./passport-config');
-initializePassport(passport);
 
+// * ROUTES *
 
 // test get req
 apiRouter.get('/', (req, res, next) => {
@@ -64,7 +75,7 @@ apiRouter.get('/', (req, res, next) => {
 // get products by gender or gender and category
 apiRouter.get('/products', getProductsByGenderAndCategory);
 
-// get single product with images and sizes
+// get single product by ID with images and sizes 
 apiRouter.get('/products/:product_id', getProductById, getProductImages, getProductSizes);
 
 // get products by manufacturer id
@@ -130,9 +141,9 @@ apiRouter.delete('/cart/:username', checkAuthenticated, checkQueryItem, deleteFr
 // ----- CHECKOUT -----
 
 // route for creating a checkout session
+apiRouter.post('/create-payment-intent/:username', checkAuthenticated, getFinalCart, createPaymentIntent);
 
-
-// route for handling payments, creating shippment and converting cart items into order items
+// route for converting cart items into order items
     // <---- should be implemented here ---->
     // <-- * in order to post Order Items this section must create a Shippment row in Postgres if the Payment Succeeds.
     // <-- * it should also remove items from stock after a succesful payment.

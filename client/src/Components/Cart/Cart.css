@@ -1,3 +1,7 @@
+/* FONTS */
+
+
+
 /* CART DIV */
 
 .cart{
@@ -22,7 +26,7 @@
     flex-direction: column;
     text-align: center;
 }
-
+/*
 .cart a{
     margin-top: 10px;
     height: 35px;
@@ -34,6 +38,17 @@
     align-items: center;
     justify-content: center;
     text-decoration: none;
+}
+*/
+
+.to-checkout{
+    margin-top: 10px;
+    height: 35px;
+    width: 100%;
+    color: white;
+    background-color: black;
+    border: none;
+    cursor: pointer;
 }
 
 /* CART ITEM DIV */
@@ -95,13 +110,18 @@
 }
 
 .cart-remove{
-    height: 35px;
-    color: white;
-    background-color: black;
+    background-color: white;
+    text-decoration: underline;
     border: none;
     cursor: pointer;
 }
 
-.calculate:hover, .cart-remove:hover, .cart a:hover{
+/* .cart a:hover */
+
+.calculate:hover, .to-checkout:hover {
     background-color: rgba(0, 0, 0, 0.89);
+}
+
+.cart-remove:hover{
+    color: rgba(0, 0, 0, 0.89);
 }

@@ -18,10 +18,10 @@ const GenderHeader = ( {data} ) => {
     }
     
     return(
-        <div>
+        <div className='gndr-header' >
             {text}
         </div>
     );
 };
 
-export default GenderHeader; 
+export default GenderHeader;

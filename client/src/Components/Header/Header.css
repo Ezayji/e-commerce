@@ -59,6 +59,10 @@ nav {
     display: inline-block;
 }
 
+.brands-drop{
+    min-width: 200px;
+}
+
 .dropdown-content, .brands-drop{
     position: absolute;
     display: none;
@@ -67,7 +71,7 @@ nav {
 }
 
 .dropdown-content {
-    left: -140px;
+    left: -145px;
 }
 
 .dropdown-content p{

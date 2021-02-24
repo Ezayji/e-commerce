@@ -2,13 +2,21 @@ import './Cart.css';
 
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { fetchCart, statusAdded } from '../../Redux/CartSlice';
+
+import { fetchCart } from '../../Redux/CartSlice';
 import store from '../../Redux/Store';
-import { updateItemQty, deleteFromCart, getCart } from '../../Services/Api/cart';
+import { updateItemQty, deleteFromCart } from '../../Services/Api/cart';
 
 import { Redirect, Link } from 'react-router-dom';
 
 import CartItem from './CartItem';
+import Checkout from '../Checkout/Checkout';
+
+// * STRIPE.js *
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+const promise = loadStripe('pk_test_51IItmKB1uegguB7b2ReRKVdoa1Bojw5VxlWF9uuCwiYdY1Z3C8wpwI8kDau5SQ8qQN2nQdJXOvwvhODgssLH5RFn00LH75oIZw');
+
 
 const Cart = () => {
     const user = useSelector(state => state.customer.user);
@@ -83,21 +91,25 @@ const Cart = () => {
             alert(response);
         } else {
             store.dispatch(fetchCart());
-        /*
-            store.dispatch(statusAdded('loading'));
-            const response = await getCart(user.username);
-            if(response !== 'No Cart Items For Customer' && response !== true){
-                alert(response);
-            } else if(response === true){
-                store.dispatch(statusAdded('succeeded'));
-            };
-        */
         };
         
     };
     
     let cartItems;
     let checkoutButton;
+    let checkout = null;
+
+    const onCancel = () => {
+        checkout = null;
+    };
+
+    const onCheckout = () => {
+        checkout = (
+            <Elements stripe={promise} >
+                <Checkout total={total} username={user.username} onCancel={onCancel} />
+            </Elements>
+        );
+    };
 
     if(products !== null && cartStatus === 'succeeded'){
         cartItems = products.map((item, i) => (
@@ -106,7 +118,7 @@ const Cart = () => {
         checkoutButton = (
         <div className='cart-checkout' >
             <p>TOTAL: €{total}</p>
-            <Link to={`/cart/${user.username}/checkout`} >CHECKOUT</Link>
+            <button type='button' onClick={onCheckout} className='to-checkout' >CHECKOUT</button>
         </div>
         );
     } else if(cartStatus === 'loading'){
@@ -120,9 +132,12 @@ const Cart = () => {
             <h2>CART</h2>
             {cartItems}
             {checkoutButton}
+            {checkout}
             {redirect}
         </div>
     );
 };
+
+// <Link to={`/cart/${user.username}/checkout`} >CHECKOUT</Link>
 
 export default Cart;

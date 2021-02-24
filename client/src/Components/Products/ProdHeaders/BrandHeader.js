@@ -4,12 +4,11 @@ const BrandHeader = ({ data }) => {
     return(
         <div className="brand-header" >
             <img src={data.logo_url} alt={data.title} />
-            <div>
-                <h2>{data.title}</h2>
+            <div className='brand-desc' >
                 <p>{data.description}</p>
             </div>
         </div>
     );
 };
-
-export default BrandHeader; 
+// <h2>{data.title}</h2>
+export default BrandHeader;

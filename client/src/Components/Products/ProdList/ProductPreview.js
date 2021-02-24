@@ -1,8 +1,6 @@
 import { Link } from 'react-router-dom';
 import './ProductPreview.css';
 
-import navStatus from '../../../Redux/ProductsSlice';
-
 const ProductPreview = ({ product, url }) => {
     
 
@@ -11,9 +9,9 @@ const ProductPreview = ({ product, url }) => {
             <Link to={`${url}/${product.id}/${product.title}`} >
                 <img src={product.thumbnail_url} alt={product.title} />
             </Link>
-            <div>
+            <div className='preview-desc' >
                 <h2>{product.title}</h2>
-                <p>{product.manufacturer}</p>
+                <p className='preview-brnd' >{product.manufacturer}</p>
                 <p>€{product.unit_price_eur}</p>
             </div>
         </div>

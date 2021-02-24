@@ -3,7 +3,12 @@
 .brand-header{
     width: 70%;
     display:flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 70px;
 }
 
 /* brand logo */
@@ -11,4 +16,11 @@
 .brand-header img{
     width: 215px;
     height: 100px;
+    margin-bottom: 10px;
+}
+
+/* brand description */
+
+.brand-desc{
+    line-height: 1.25;
 }

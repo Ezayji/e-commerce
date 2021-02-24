@@ -80,3 +80,15 @@ export async function deleteFromCart(item){
         return 'Something Went Wrong';
     };
 };
+
+export async function postPaymentIntent(username){
+    const url = `/api/create-payment-intent/${username}`;
+    try{
+        const response = await axios.post(url, sendConfig);
+        if(response.data.clientSecret){
+            return response.data.clientSecret;
+        }
+    } catch(error) {
+        return false;
+    }
+}
