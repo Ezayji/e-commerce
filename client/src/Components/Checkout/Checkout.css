@@ -1,0 +1,10 @@
+/* CHECKOUT DIV */
+
+.checkout{
+    position: absolute;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}

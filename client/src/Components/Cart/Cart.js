@@ -106,7 +106,7 @@ const Cart = () => {
     const onCheckout = () => {
         checkout = (
             <Elements stripe={promise} >
-                <Checkout total={total} username={user.username} onCancel={onCancel} />
+                <Checkout total={total} username={user.username} onCancel={onCancel} cart={products} />
             </Elements>
         );
     };
