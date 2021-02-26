@@ -10,7 +10,8 @@ initializePassport(passport);
 // * STRIPE.js *
 const {
        getFinalCart,
-       createPaymentIntent } = require('./stripe-config');
+       createPaymentIntent,
+       createIntent } = require('./stripe-config');
 
 // * DB QUERIES *
 const {getCustomerByUsername,
@@ -139,9 +140,17 @@ apiRouter.delete('/cart/:username', checkAuthenticated, checkQueryItem, deleteFr
 
 
 // ----- CHECKOUT -----
+/*
+//     -- WITHOUT SERVERSIDE CONFIRMATION --
 
 // route for creating a checkout session
 apiRouter.post('/create-payment-intent/:username', checkAuthenticated, getFinalCart, createPaymentIntent);
+*/
+
+//     -- WITH SERVER SIDE CONFIRMATION --
+
+// 
+apiRouter.post('/payment/:username', checkAuthenticated, getFinalCart, createIntent);
 
 // route for converting cart items into order items
     // <---- should be implemented here ---->

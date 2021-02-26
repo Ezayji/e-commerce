@@ -10,6 +10,7 @@ import Cart from '../Cart/Cart';
 import Orders from '../Orders/Orders';
 import SingleOrder from '../Orders/SingleOrder/SingleOrder';
 import UpdatePw from '../Account/UpdatePw/UpdatePw';
+import SuccessPage from '../Checkout/SuccessPage/SuccessPage';
 
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
@@ -31,6 +32,7 @@ function App() {
           <Route path='/account/:username/password' exact component={UpdatePw} />
           <Route path='/account/:username' exact component={Account} />
           <Route path='/cart/:username' exact component={Cart} />
+          <Route path='/checkout/success/:username/:order_id' exact component={SuccessPage} />
           <Route path='/orders/:username' exact component={Orders} />
           <Route path='/orders/:username/order/:order_id' exact component={SingleOrder} />
         </Switch>

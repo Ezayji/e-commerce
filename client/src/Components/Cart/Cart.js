@@ -1,6 +1,6 @@
 import './Cart.css';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { fetchCart } from '../../Redux/CartSlice';
@@ -18,7 +18,9 @@ import { Elements } from '@stripe/react-stripe-js';
 const promise = loadStripe('pk_test_51IItmKB1uegguB7b2ReRKVdoa1Bojw5VxlWF9uuCwiYdY1Z3C8wpwI8kDau5SQ8qQN2nQdJXOvwvhODgssLH5RFn00LH75oIZw');
 
 
-const Cart = () => {
+const Cart = ({ history }) => {
+    const [status, setStatus] = useState('Cart');
+
     const user = useSelector(state => state.customer.user);
     const products = useSelector(state => state.cart.products);
     const total = useSelector(state => state.cart.total);
@@ -97,18 +99,21 @@ const Cart = () => {
     
     let cartItems;
     let checkoutButton;
-    let checkout = null;
+    let checkout;
 
     const onCancel = () => {
-        checkout = null;
+        setStatus('Cart');
     };
 
     const onCheckout = () => {
+        /*
         checkout = (
-            <Elements stripe={promise} >
+            
                 <Checkout total={total} username={user.username} onCancel={onCancel} cart={products} />
-            </Elements>
+            
         );
+        */
+       setStatus('Checkout');
     };
 
     if(products !== null && cartStatus === 'succeeded'){
@@ -127,17 +132,40 @@ const Cart = () => {
         cartItems = <p>No Items In Cart</p>
     };
 
+    if(status === 'Checkout'){
+       checkout = (
+        <Elements stripe={promise} >
+            <Checkout total={total} username={user.username} onCancel={onCancel} cart={products} history={history} />
+        </Elements>
+       );
+    } else if(status === 'Cart') {
+        checkout = null;
+    };
+
     return(
         <div className='cart' >
             <h2>CART</h2>
             {cartItems}
             {checkoutButton}
+            
             {checkout}
+            
             {redirect}
         </div>
     );
 };
 
 // <Link to={`/cart/${user.username}/checkout`} >CHECKOUT</Link>
+/*
+<Elements stripe={promise} >
+                <Checkout total={total} username={user.username} onCancel={onCancel} cart={products} />
+            </Elements>
+
+ checkout = <Checkout total={total} username={user.username} onCancel={onCancel} cart={products} />
+
+ <Elements stripe={promise} >
+                {checkout}
+            </Elements>
+*/
 
 export default Cart;

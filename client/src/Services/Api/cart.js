@@ -81,6 +81,10 @@ export async function deleteFromCart(item){
     };
 };
 
+
+// STRIPE CHECKOUT REQUESTS
+
+// -- No Server Side Payment Confirmation --
 export async function postPaymentIntent(username){
     const url = `/api/create-payment-intent/${username}`;
     try{
@@ -92,3 +96,51 @@ export async function postPaymentIntent(username){
         return false;
     }
 }
+
+// -- Server Side Confirmation --
+
+// send payment request to server
+export async function stripePaymentHandler(result, username, address){
+    const url = `/api/payment/${username}`;
+    if(result.error){
+        console.log(result.error);
+        return 'Something Went Wrong';
+    } else {
+        const body = {
+            payment_method_id: result.paymentMethod.id,
+            address: address,
+        };
+        const response = await axios.post(url, body, sendConfig);
+        return response.data;
+    };
+};
+
+// send 3d secure auth payment request to server
+export async function stripe3DPaymentHandler(result, username, address){
+    const url = `/api/payment/${username}`;
+    if(result.error){
+        console.log(result.error);
+        return 'Something Went Wrong';
+    } else {
+        const body = {
+            payment_intent_id: result.paymentIntent.id,
+            address: address,
+        };
+        const response = await axios.post(url, body, sendConfig);
+        return response.data;
+    };
+};
+
+// post successful checkout
+export async function checkoutSuccess(username, shippment){
+    const url = `/api/cart/${username}/checkout`;
+    const data = {
+        shippment_id: shippment
+    };
+    try{
+        await axios.post(url, data, sendConfig);
+        return true;
+    } catch (e) {
+        return false;
+    }
+};

@@ -1,5 +1,6 @@
 import './Billing.css';
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
 const Billing = ({ onNext, address }) => {
     
@@ -10,7 +11,21 @@ const Billing = ({ onNext, address }) => {
     const [zp, setZp] = useState('');
     const [cntry, setCntry] = useState('');
     const [adrInfo, setAdrInfo] = useState('');
+    const [check, setCheck] = useState(true);
 
+    const dbAddress = useSelector(state => state.customer.address);
+
+    // The Address saved in database (used if available)
+    const setDbAddress = () => {
+        setAp(dbAddress.appartment_nr);
+        setStrt(dbAddress.street);
+        setCty(dbAddress.city);
+        setPrvnc(dbAddress.province);
+        setZp(dbAddress.zip);
+        setCntry(dbAddress.country);
+    };
+
+    // the address saved in checkout state
     const setExistingAdr = () => {
         setAp(address.appartment_nr);
         setStrt(address.street);
@@ -29,43 +44,38 @@ const Billing = ({ onNext, address }) => {
         setCntry('');
     };
 
-    let adrInfoSelect;
+    
 
     useEffect(() => {
-        if(address !== ''){
+        
+        if(address !== '' && address.status === undefined){
             setExistingAdr();
-            //setAdrInfo('Existing');
-            adrInfoSelect = (
-                <div>
-                    <input type='checkbox' onChange={(e) => {
-                        if(e.target.checked){
-                            setAdrInfo('Existing');
-                            setExistingAdr();
-                        } else {
-                            setAdrInfo('Other');
-                            resetAdr();
-                        };
-                    }} />Use existing address
-                </div>
-            );
-        } else {
-            adrInfoSelect = (
-                <div>
-                    <input type='checkbox' onChange={(e) => {
-                        if(e.target.checked){
-                            setAdrInfo('Save');
-                        } else {
-                            setAdrInfo('Temp');
-                        };
-                    }} />Save address
-                </div>
-            );
+            setAdrInfo('Existing');
+        } else if(address === '' && address.status === undefined) {
+            setAdrInfo('New');
+        } else if (address !== '' && address.check !== false && address.status === 'Existing'){
+            setExistingAdr();
+            setAdrInfo('Existing');
+        } else if (address !== '' && address.check === false && address.status === 'Existing'){
+            setExistingAdr();
+            setCheck(false);
+            setAdrInfo('Existing');
+        } else if (address !== '' && address.check !== false && address.status === 'New'){
+            setExistingAdr();
+            setAdrInfo('New');
+        } else if (address !== '' && address.check === false && address.status === 'New'){
+            setExistingAdr();
+            setCheck(true);
+            setAdrInfo('Existing');
         };
+        
     }, []);
 
     const checkAdrStatus = () => {
-        if(adrInfo === 'Existing'){
-            setAdrInfo('Other');
+        if(adrInfo === 'Existing' && check === true){
+            //setAdrInfo('Other');
+            setCheck(false);
+            resetAdr();
         };
     };
 
@@ -78,11 +88,39 @@ const Billing = ({ onNext, address }) => {
             province: prvnc,
             zip: zp,
             country: cntry,
-            status: adrInfo
+            status: adrInfo,
+            check: check
         };
         onNext(info);
     };
     
+    let adrInfoSelect;
+
+    if(adrInfo === 'Existing'){
+        adrInfoSelect = (
+            <div>
+                <input type='checkbox' checked={check} onChange={(e) => {
+                    setCheck(e.target.checked)
+                    if(e.target.checked === true){
+                        setDbAddress();
+                    } else if(e.target.checked === false && address.check !== undefined && address.check !== true){
+                        setExistingAdr();
+                    } else {
+                        resetAdr();
+                    }
+                }} />Use existing address
+            </div>
+        );
+    } else if (adrInfo === 'New'){
+        adrInfoSelect = (
+            <div>
+                <input type='checkbox' checked={check} onChange={(e) => {
+                    setCheck(e.target.checked)
+                }} />Save address
+            </div>
+        );
+    };
+
     return(
         <form onSubmit={next} >
             <div>
@@ -127,14 +165,5 @@ const Billing = ({ onNext, address }) => {
         </form>
     );
 };
-
-/* 
-<div>
-                    <input type='text' placeholder='FIRST NAME' required />
-                    <input type='text' placeholder='LAST NAME' required />
-                </div>
-
-                <input type='text' placeholder='EMAIL' required />
-*/
 
 export default Billing;

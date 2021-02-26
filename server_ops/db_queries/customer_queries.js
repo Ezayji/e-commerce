@@ -23,10 +23,19 @@ const checkNotAuthenticated = (req, res, next) => {
     };
 };
 
-// verify access based on req.user
+// verify access based on req.user and return username
 const verifyAuth = (req, res) => {
     if (req.isAuthenticated()){
         res.status(200).send({user: {username: req.user}});
+    } else {
+        res.status(400).send('Access not verified');
+    };
+};
+
+// verify access based on req.user and call next middleware
+const verifyPayer = (req, res, next) => {
+    if(req.isAuthenticated()){
+        next();
     } else {
         res.status(400).send('Access not verified');
     };

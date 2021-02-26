@@ -5,36 +5,22 @@ import './Checkout.css';
 import { fetchAddress, fetchCustomer } from '../../Redux/CustomerSlice';
 import store from '../../Redux/Store';
 
-import { postPaymentIntent } from '../../Services/Api/cart';
-
 import Billing from './Billing/Billing';
 import Payment from './Payment/Payment';
 
-const Checkout = ({ total, username, onCancel, cart }) => {
+const Checkout = ({ total, username, onCancel, cart, history }) => {
     
-    const [clientSecret, setClientSecret] = useState('');
     const [step, setStep] = useState(1);
-    const [adr, setAdr] = useState('');
+    const [adr, setAdr] = useState(null);
     const [paid, setPaid] = useState(false);
 
     const profile = useSelector(state => state.customer.profile);
     const address = useSelector(state => state.customer.address);
     const cusStatus = useSelector(state => state.customer.cus_status);
     const adrStatus = useSelector(state => state.customer.adr_status);
-    
-    
+
     // create payment intent and fetch profile + address if not in Redux state
     useEffect(() => {
-        const intent = async () => {
-            const response = await postPaymentIntent(username);
-            if (response !== false){
-                setClientSecret(response);
-            } else {
-                alert('Something went wrong!');
-            };
-        };
-
-        intent();
 
         if(profile === null){
             store.dispatch(fetchCustomer());
@@ -44,7 +30,15 @@ const Checkout = ({ total, username, onCancel, cart }) => {
             store.dispatch(fetchAddress());
         };
 
-    }, []);
+    // SET INITIAL STATE ADDRESS DEPENDING ON DB INFORMATION
+        if(adrStatus === 'succeeded' && address !== null){
+            setAdr(address);
+            setStep(1);
+        } else if (adrStatus === 'succeeded' && address === null){
+            setAdr('');
+            setStep(1);
+        };
+    }, [adrStatus]);
 
     const onNext = (data) => {
         setAdr(data);
@@ -57,20 +51,18 @@ const Checkout = ({ total, username, onCancel, cart }) => {
 
     let form;
 
-    if(adrStatus === 'succeeded' && address !== null){
-        setAdr(address);
-    };
-
-    if(step === 1){
+    if(step === 1 && adr !== null){
         form = <Billing onNext={onNext} address={adr} />
     } else if (step === 2){
-        form = <Payment total={total} clientSecret={clientSecret} onPrev={onPrev} email={profile.email} cart={cart} />
+        form = <Payment total={total} onPrev={onPrev} profile={profile} address={adr} cart={cart} history={history} />
+    } else {
+        form = null;
     };
 
     return(
         <div className='checkout' >
             {form}
-            <button type='button' onClick={onCancel} >Cancel Checkout</button>
+            <button className='cancel-checkout' type='button' onClick={onCancel} >Cancel Checkout</button>
         </div>
     );
 };
