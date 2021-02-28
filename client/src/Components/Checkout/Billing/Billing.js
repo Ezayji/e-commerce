@@ -65,8 +65,8 @@ const Billing = ({ onNext, address }) => {
             setAdrInfo('New');
         } else if (address !== '' && address.check === false && address.status === 'New'){
             setExistingAdr();
-            setCheck(true);
-            setAdrInfo('Existing');
+            setCheck(false);
+            setAdrInfo('New');
         };
         
     }, []);

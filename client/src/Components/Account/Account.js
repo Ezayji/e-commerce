@@ -65,13 +65,17 @@ const onCancelProfChange = () => {
 };
 
 const onCancelAdrChange = () => {
-    setAp('');
-    setStrt('');
-    setCty('');
-    setPrvnc('');
-    setZp('');
-    setCntry('');
-    setAdr('Display');
+    if(address.appartment_nr === null){
+        return;
+    } else {
+        setAp('');
+        setStrt('');
+        setCty('');
+        setPrvnc('');
+        setZp('');
+        setCntry('');
+        setAdr('Display');
+    }
 };
 
     let profile;
@@ -156,7 +160,7 @@ const onProfSubmit = async (e) => {
 // updating user address info
 const onAdrChangeClick = () => {
     setAdr('Edit');
-    if(address !== null){
+    if(address.appartment_nr !== null){
         setAp(address.appartment_nr);
         setStrt(address.street);
         setCty(address.city);
@@ -211,11 +215,11 @@ const onAdrSubmit = async (e) => {
 };
 
 // user address info rendering
-    if(adr_status === 'succeeded' && adr === 'Display'){
+    if(adr_status === 'succeeded' && adr === 'Display' && address.appartment_nr !== null){
         addressDiv = <AdrDisplay address={address} onClick={onAdrChangeClick} />
     } else if(adr_status === 'failed'){
-        setAdr('Edit');
-    } else if((adr_status === 'succeeded' && adr === 'Edit') || (adr_status === 'failed' && adr === 'Edit')){
+        addressDiv = <p>Error While Getting Address</p>
+    } else if((adr_status === 'succeeded' && adr === 'Edit') || (adr_status === 'succeeded' && address.appartment_nr === null)){
         addressDiv = <AdrUpdateForm 
                         onApChange={onApChange}
                         onStrtChange={onStrtChange}

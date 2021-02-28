@@ -9,7 +9,7 @@ const initialState = {
 };
 
 export const fetchOrders = createAsyncThunk('customer/fetchOrders', async (_, { getState }) => {
-    const username = getState().user.username;
+    const username = getState().customer.user.username;
     const url = `/api/orders/${username}`;
     const response = await axios.get(url, getConfig);
     return response.data;

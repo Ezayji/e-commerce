@@ -1,0 +1,9 @@
+/* ORDER PREVIEW DIV */
+
+.order-preview{
+    display: flex;
+    justify-content: space-evenly;
+    width: 65vh;
+    max-width: 90%;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.178);
+}

@@ -1,0 +1,19 @@
+/* ORDERS DIV */
+
+.orders-div{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* ORDERS HEAD */
+
+.orders-head{
+    display: flex;
+    width: 65vh;
+    max-width: 90%;
+    justify-content: space-evenly;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.178);
+}

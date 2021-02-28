@@ -41,6 +41,10 @@
     width: 49%;
 }
 
+.adr-cancel:disabled{
+    cursor: not-allowed;
+}
+
 .adr-change{
     width: 100%;
 }

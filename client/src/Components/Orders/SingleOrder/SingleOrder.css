@@ -1,0 +1,44 @@
+/* SINGLE ORDER DIV */
+
+.single-order{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ORDER CONTENTS DIV */
+
+.order-contents{
+    width: 65vh;
+    max-width: 90%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ORDER ADDRESS */
+
+.order-address{
+    display: flex;
+    flex-direction: column;
+}
+
+/* ORDER ITEMS */
+
+.order-items-head{
+    display: flex;
+    justify-content: space-evenly;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.178);
+}
+
+.order-item{
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.178);
+}
+
+.order-item-title{
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+}

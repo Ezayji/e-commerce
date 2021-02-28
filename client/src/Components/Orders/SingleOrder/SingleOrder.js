@@ -5,6 +5,8 @@ import { useSelector } from 'react-redux';
 
 import { getSingleOrder } from '../../../Services/Api/orders';
 
+import SingleProductLine from './SingleProductLine';
+
 const SingleOrder = ({ match, history }) => {
     
     const [order, setOrder] = useState('');
@@ -29,9 +31,46 @@ const SingleOrder = ({ match, history }) => {
 
     }, []);
 
-    return(
-        <div>
+    let heading = null;
+    let products = null;
+    let content = null;
+    let total = null;
 
+    if(order !== ''){
+        heading = <h2>ORDER DETAILS</h2>
+        products = (
+            order.products.map((item, i) => (
+                <SingleProductLine prod={item} key={i} />
+            ))
+        );
+        content = (
+            <div className='order-contents' >
+                <h3>ADDRESS</h3>
+                <div className='order-address' >
+                    <p>{order.to_street} {order.to_appartment}</p>
+                    <p>{order.to_city}</p>
+                    <p>{order.to_zip}</p>
+                    <p>{order.to_province}</p>
+                    <p>{order.to_country}</p>
+                </div>
+                <h3>PRODUCTS</h3>
+                <div className='order-items-head' >
+                    <p>TITLE</p>
+                    <p>COLOR</p>
+                    <p>PRICE</p>
+                    <p>QTY</p>
+                </div>
+                {products}
+            </div>
+        );
+        total = <p>TOTAL: €{order.total_eur}</p>
+    };
+
+    return(
+        <div className='single-order' >
+            {heading}
+            {content}
+            {total}
         </div>
     );
 };

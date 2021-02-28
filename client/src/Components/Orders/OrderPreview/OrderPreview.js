@@ -1,6 +1,8 @@
 import './OrderPreview.css';
 
-const OrderPreview = ({ order }) => {
+import { Link } from 'react-router-dom';
+
+const OrderPreview = ({ username, order }) => {
     let payment;
     if(order.payment === true){
         payment = 'Successful';
@@ -8,13 +10,11 @@ const OrderPreview = ({ order }) => {
         payment = 'Not Processed';
     };
 
-
-    
     return(
-        <div className='order-preview-item' >
-            <p>{order.id}</p>
+        <div className='order-preview' >
+            <p><Link to={`/orders/${username}/order/${order.id}`} >{order.id}</Link></p>
             <p>{order.date_utc}</p>
-            <p>{order.total_eur}</p>
+            <p>€{order.total_eur}</p>
             <p>{payment}</p>
         </div>
     );

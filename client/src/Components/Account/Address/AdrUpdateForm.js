@@ -1,5 +1,7 @@
 import './Address.css';
 
+import React, { useEffect, useState } from 'react';
+
 const AdrUpdateForm = ({ onApChange,
                         onStrtChange,
                         onCtyChange,
@@ -16,10 +18,18 @@ const AdrUpdateForm = ({ onApChange,
                         onSubmit 
 }) => {
     
+    const [disabled, setDisabled] = useState(false);
+
+    useEffect(() => {
+        if(ap === '' && strt === '' && cty === '' && prvnc === '' && zp === '' && cntry === ''){
+            setDisabled(true);
+        }
+    }, []);
+
     let note;
 
     if(ap === '' && strt === '' && cty === '' && prvnc === '' && zp === '' && cntry === ''){
-        note = <p>No Address Added</p>
+        note = <p>* No Address Added *</p>
     } else {
         note = null;
     }
@@ -54,7 +64,7 @@ const AdrUpdateForm = ({ onApChange,
         </div>
         <div className='info-buttons' >
             <input className='info-submit' type='submit' value='SBMT' />
-            <button className='adr-cancel' onClick={onCancel} >CNCL</button>
+            <button disabled={disabled} type='button' className='adr-cancel' onClick={onCancel} >CNCL</button>
         </div>
     </form>
     );

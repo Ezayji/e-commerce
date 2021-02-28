@@ -75,12 +75,12 @@ const createOrder = async (data) => {
 };
 
 // INSERT NEW ADDRESS
-const insertAddress = async (address) => {
+const insertAddress = async (address, username) => {
     const text = 'UPDATE customer SET appartment_nr = $1, street = $2, city = $3, province = $4, zip = $5, country = $6 WHERE username = $7';
     const {appartment_nr, street, city, province, zip, country} = address;
 
     try{
-        const result = await pool.query(text, [appartment_nr, street, city, province, zip, country]);
+        const result = await pool.query(text, [appartment_nr, street, city, province, zip, country, username]);
         if(result.rows){
             return true;
         }
@@ -110,7 +110,7 @@ const generateResponse = async (intent, data) => {
             };
         } else if(orderInsert !== false && data.address.status === 'New' && data.address.check === true){
             // insert new address if customer did not have an address in db and checked 'Save address'
-            const addressInsert = await insertAddress(data.address);
+            const addressInsert = await insertAddress(data.address, data.username);
             if(addressInsert === true){
                 // return sucess and shippment id if insert was successful
                 return {

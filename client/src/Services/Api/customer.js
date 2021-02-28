@@ -83,12 +83,20 @@ export async function registerCustomer(data){
             last_name: data.last_name,
             email: data.email,
             phone: data.phone,
-            password: data.password
+            password: data.password,
+            registered: new Date()
         }, sendConfig);
         return true;
     } catch(error) {
-        console.log(error.message);
-        return false;
+        if(error.response.data){
+            return {
+                error: error.response.data
+            };
+        } else {
+            return {
+                error: 'Something Went Wrong, Please Try Again'
+            };
+        };
     };    
 };
 

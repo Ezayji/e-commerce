@@ -41,7 +41,7 @@ const Orders = ({ history }) => {
         )
         ordersBody = (
             orders.map((item, i) => (
-                <OrderPreview order={item} key={i} />
+                <OrderPreview username={user.username} order={item} key={i} />
             ))
         );
     } else if (orderStatus === 'failed'){
@@ -51,6 +51,7 @@ const Orders = ({ history }) => {
     
     return(
         <div className='orders-div' >
+            <h2>ORDERS</h2>
             {orderHead}
             {ordersBody}
         </div>

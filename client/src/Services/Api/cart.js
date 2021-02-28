@@ -104,7 +104,6 @@ export async function postPaymentIntent(username){
 export async function stripePaymentHandler(result, username, address){
     const url = `/api/payment/${username}`;
     if(result.error){
-        console.log(result.error);
         return 'Something Went Wrong';
     } else {
         const body = {
@@ -120,7 +119,6 @@ export async function stripePaymentHandler(result, username, address){
 export async function stripe3DPaymentHandler(result, username, address){
     const url = `/api/payment/${username}`;
     if(result.error){
-        console.log(result.error);
         return 'Something Went Wrong';
     } else {
         const body = {

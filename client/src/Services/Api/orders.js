@@ -2,6 +2,7 @@ import axios from 'axios';
 
 import { getConfig } from '../config';
 
+// get single order info by id and username
 export async function getSingleOrder(username, id){
     const url = `/api/orders/${username}/${id}`;
     try{

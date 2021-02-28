@@ -30,10 +30,10 @@ const Checkout = ({ total, onCancel, cart, history }) => {
         };
 
         // SET LOCAL STATE ADDRESS DEPENDING ON DB INFORMATION
-        if(adrStatus === 'succeeded' && address !== null){
+        if(adrStatus === 'succeeded' && address.appartment_nr !== null){
             setAdr(address);
             setStep(1);
-        } else if (adrStatus === 'succeeded' && address === null){
+        } else if (adrStatus === 'succeeded' && address.appartment_nr === null){
             setAdr('');
             setStep(1);
         };
