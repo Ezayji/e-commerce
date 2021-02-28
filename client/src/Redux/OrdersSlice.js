@@ -1,8 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { getConfig } from '../Services/config';
 
 const initialState = {
-    orders: [],
+    orders: null,
     status: 'idle',
     error: null
 };
@@ -10,8 +11,8 @@ const initialState = {
 export const fetchOrders = createAsyncThunk('customer/fetchOrders', async (_, { getState }) => {
     const username = getState().user.username;
     const url = `/api/orders/${username}`;
-    const response = await axios.get(url);
-    return response;
+    const response = await axios.get(url, getConfig);
+    return response.data;
 });
 
 const ordersSlice = createSlice({
@@ -26,14 +27,14 @@ const ordersSlice = createSlice({
     },
     extraReducers: {
         [fetchOrders.pending]: (state, action) => {
-            state.status = 'loading orders'
+            state.status = 'loading'
         },
         [fetchOrders.fulfilled]: (state, action) => {
             state.status = 'succeeded';
             state.orders = action.payload;
         },
         [fetchOrders.rejected]: (state, action) => {
-            state.status = 'failed loading orders'
+            state.status = 'failed'
             state.error = action.error.message;
         }
     }

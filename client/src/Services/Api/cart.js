@@ -97,6 +97,7 @@ export async function postPaymentIntent(username){
     }
 }
 
+
 // -- Server Side Confirmation --
 
 // send payment request to server

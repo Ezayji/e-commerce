@@ -17,7 +17,7 @@ const cartSlice = createSlice({
     name: 'cart',
     initialState,
     reducers: {
-        resetCart(state, action) {
+        resetCart(state) {
             state.products = initialState.products;
             state.total = initialState.total;
             state.status = initialState.status;

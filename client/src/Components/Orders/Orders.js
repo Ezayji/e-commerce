@@ -1,9 +1,58 @@
 import './Orders.css';
 
-const Orders = () => {
-    return(
-        <div>
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 
+import { fetchOrders } from '../../Redux/OrdersSlice';
+import store from '../../Redux/Store';
+
+import OrderPreview from './OrderPreview/OrderPreview';
+
+const Orders = ({ history }) => {
+
+    const user = useSelector(state => state.customer.user);
+    const orders = useSelector(state => state.orders.orders);
+    const orderStatus = useSelector(state => state.orders.status);
+    
+    if(user === null){
+        history.push('/');
+    };
+
+    useEffect(() => {
+        if(orders === null && user !== null){
+            store.dispatch(fetchOrders());
+        };
+    }, []);
+
+    let ordersBody;
+    let orderHead;
+
+    if(orderStatus === 'loading'){
+        ordersBody = null;
+        orderHead = null;
+    } else if (orderStatus === 'succeeded'){
+        orderHead = (
+            <div className='orders-head' >
+                <p>ORDR NR</p>
+                <p>DATE</p>
+                <p>TOTAL</p>
+                <p>PAYMENT</p>
+            </div>
+        )
+        ordersBody = (
+            orders.map((item, i) => (
+                <OrderPreview order={item} key={i} />
+            ))
+        );
+    } else if (orderStatus === 'failed'){
+        orderHead = null;
+        ordersBody = <p>You Haven't Ordered Anything Yet</p>
+    };
+    
+    return(
+        <div className='orders-div' >
+            {orderHead}
+            {ordersBody}
         </div>
     );
 };

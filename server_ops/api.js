@@ -58,10 +58,9 @@ const {checkShippment,
        createOrderItems} = require('./db_queries/checkout_queries');
 
 const {getUserOrders,
-       getOrderItems,
        getUserOrder,
        getSingleOrderItems} = require('./db_queries/order_queries');
-
+// getOrderItems,
 
 // * ROUTES *
 
@@ -149,27 +148,21 @@ apiRouter.post('/create-payment-intent/:username', checkAuthenticated, getFinalC
 
 //     -- WITH SERVER SIDE CONFIRMATION --
 
-// 
+// route for requesting a payment intent and creating a shippment in db after a successful transaction
 apiRouter.post('/payment/:username', checkAuthenticated, getFinalCart, createIntent);
+       // ^^ * it should also remove items from stock after a succesful payment in real production version. ^^ //
 
-// route for converting cart items into order items
-    // <---- should be implemented here ---->
-    // <-- * in order to post Order Items this section must create a Shippment row in Postgres if the Payment Succeeds.
-    // <-- * it should also remove items from stock after a succesful payment.
-
-    // * after previous request is succesful the Middleware in the Following Route should be called to convert 
-    //   cart items into order items *
-
-// post order items
+// convert cart items into order items if a shippment was successfully created
 apiRouter.post('/cart/:username/checkout', checkAuthenticated, checkShippment, checkIfCartExists, getCheckoutCart, createOrderItems);
 
 
 // ----- ORDERS -----
 
 // get all customer orders
-apiRouter.get('/orders/:username', checkAuthenticated, getUserOrders, getOrderItems);
+apiRouter.get('/orders/:username', checkAuthenticated, getUserOrders);
+// getOrderItems
 
-// get single customer order by id
+// get single customer order by id with details
 apiRouter.get('/orders/:username/:order_id', checkAuthenticated, getUserOrder, getSingleOrderItems);
 
 

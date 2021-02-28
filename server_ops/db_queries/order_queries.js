@@ -2,6 +2,23 @@ const pool = require('./postgres_pool');
 
 // Get all orders for customer
 
+// check if any shippemnts and return if available
+const getUserOrders = (request, response) => {
+    const username = request.params.username;
+    const text = 'SELECT id, date_utc, total_eur, payment FROM shippment WHERE customer_username = $1 ORDER BY id DESC';
+    
+    pool.query(text, [username], (error, results) => {
+        if(error){
+            throw error;
+        } else if (results.rows[0] === undefined){
+            response.status(404).send('No Orders For Customer');
+        } else {
+            response.status(200).send(results.rows);
+        };
+    });
+};
+
+/*
 // check if any shippemnts and pass them to next middleware as an array
 const getUserOrders = (request, response, next) => {
     const username = request.params.username;
@@ -49,7 +66,7 @@ const getOrderItems = async (request, response) => {
     response.status(200).send(orders);
     
 };
-
+*/
 
 // Get single order for customer
 
@@ -93,7 +110,8 @@ const getSingleOrderItems = (request, response) => {
 
 module.exports = {
     getUserOrders,
-    getOrderItems,
     getUserOrder,
     getSingleOrderItems
 };
+
+// getOrderItems,

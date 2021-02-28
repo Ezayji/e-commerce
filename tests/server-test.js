@@ -2232,7 +2232,7 @@ describe('ORDERS', () => {
         describe('* Authenticated requests *', () => {
             describe('GET ORDERS /api/orders/:username', () => {
                 // log customer in
-                it('Authenticated user can request all their orders as an array of objects that also include order products', () => {
+                it('Authenticated customer can request All their Orders as an Array of Objects[ID, Date, Total, Payment Status - per order]', () => {
                     const user = {
                         username: 'Revarz',
                         password: 'karnaz123'
@@ -2250,28 +2250,18 @@ describe('ORDERS', () => {
                                     const result = response.body;
                                     expect(result).to.be.an.instanceOf(Array);
 
-                                    const order_1 = result[0]
-                                    expect(order_1).to.have.ownProperty('products');
+                                    const order_1 = result[0];
                                     expect(order_1).to.have.ownProperty('id');
                                     expect(order_1).to.have.ownProperty('date_utc');
                                     expect(order_1).to.have.ownProperty('total_eur');
                                     expect(order_1).to.have.ownProperty('payment');
-                                    expect(order_1).to.have.ownProperty('to_appartment');
-                                    expect(order_1).to.have.ownProperty('to_street');
-                                    expect(order_1).to.have.ownProperty('to_city');
-                                    expect(order_1).to.have.ownProperty('to_province');
-                                    expect(order_1).to.have.ownProperty('to_zip');
-                                    expect(order_1).to.have.ownProperty('to_country');
+                                    expect(order_1).to.not.have.ownProperty('to_appartment');
+                                    expect(order_1).to.not.have.ownProperty('to_street');
+                                    expect(order_1).to.not.have.ownProperty('to_city');
+                                    expect(order_1).to.not.have.ownProperty('to_province');
+                                    expect(order_1).to.not.have.ownProperty('to_zip');
+                                    expect(order_1).to.not.have.ownProperty('to_country');
 
-                                    const product_1 = result[0].products[0];
-                                    expect(product_1).to.be.an.instanceOf(Object);
-                                    expect(product_1).to.have.ownProperty('product_id');
-                                    expect(product_1).to.have.ownProperty('quantity');
-                                    expect(product_1).to.have.ownProperty('size');
-                                    expect(product_1).to.have.ownProperty('unit_price_eur');
-                                    expect(product_1).to.have.ownProperty('product_title');
-                                    expect(product_1).to.have.ownProperty('manufacturer');
-                                    expect(product_1).to.have.ownProperty('color');
                                 });
                         });
                 });

@@ -7,7 +7,7 @@ import { fetchCart } from '../../Redux/CartSlice';
 import store from '../../Redux/Store';
 import { updateItemQty, deleteFromCart } from '../../Services/Api/cart';
 
-import { Redirect, Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 import CartItem from './CartItem';
 import Checkout from '../Checkout/Checkout';
@@ -106,13 +106,6 @@ const Cart = ({ history }) => {
     };
 
     const onCheckout = () => {
-        /*
-        checkout = (
-            
-                <Checkout total={total} username={user.username} onCancel={onCancel} cart={products} />
-            
-        );
-        */
        setStatus('Checkout');
     };
 
@@ -135,7 +128,7 @@ const Cart = ({ history }) => {
     if(status === 'Checkout'){
        checkout = (
         <Elements stripe={promise} >
-            <Checkout total={total} username={user.username} onCancel={onCancel} cart={products} history={history} />
+            <Checkout total={total} onCancel={onCancel} cart={products} history={history} />
         </Elements>
        );
     } else if(status === 'Cart') {
@@ -147,25 +140,10 @@ const Cart = ({ history }) => {
             <h2>CART</h2>
             {cartItems}
             {checkoutButton}
-            
             {checkout}
-            
             {redirect}
         </div>
     );
 };
-
-// <Link to={`/cart/${user.username}/checkout`} >CHECKOUT</Link>
-/*
-<Elements stripe={promise} >
-                <Checkout total={total} username={user.username} onCancel={onCancel} cart={products} />
-            </Elements>
-
- checkout = <Checkout total={total} username={user.username} onCancel={onCancel} cart={products} />
-
- <Elements stripe={promise} >
-                {checkout}
-            </Elements>
-*/
 
 export default Cart;

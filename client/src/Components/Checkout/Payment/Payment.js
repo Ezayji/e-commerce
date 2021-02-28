@@ -2,14 +2,13 @@ import './Payment.css';
 
 import countries from 'i18n-iso-countries';
 
+import React, { useState } from 'react';
 
-import React, { useState, useEffect } from 'react';
-
-import { postPaymentIntent, stripePaymentHandler, stripe3DPaymentHandler } from '../../../Services/Api/cart';
+import { stripePaymentHandler, stripe3DPaymentHandler, checkoutSuccess } from '../../../Services/Api/cart';
 
 import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
-const Payment = ({ total, profile, address, cart, onPrev, history }) => {
+const Payment = ({ total, profile, address, cart, onPrev, history, onPayment }) => {
     const [processing, setProcessing] = useState(false);
 
     countries.registerLocale(require("i18n-iso-countries/langs/en.json"));
@@ -20,7 +19,9 @@ const Payment = ({ total, profile, address, cart, onPrev, history }) => {
     // handle stripe js result
     const handleStripeJsResult = async (result) => {
         if(result.error){
-            alert(result.error);
+            alert(result.error.message);
+            onPayment(false);
+            setProcessing(false);
         } else {
             const confirmResult = await stripe3DPaymentHandler(result, profile.username, address);
             handleServerResponse(confirmResult);
@@ -31,16 +32,26 @@ const Payment = ({ total, profile, address, cart, onPrev, history }) => {
     const handleServerResponse = (response) => {
         if(response.error){
             alert(response.error);
+            onPayment(false);
             setProcessing(false);
         } else if (response.requires_action){
+            // Proceed to 3D authentication if neccessary
             stripe.handleCardAction(
                 response.payment_intent_client_secret
             ).then(handleStripeJsResult);
-        } else if(response === 'Something Went Wrong'){
+        } else if(response === 'Something Went Wrong, Please Refresh The Page'){
             alert(response);
         } else if(response.success) {
-            history.push(`/checkout/success/${profile.username}/${response.shippment}`)
-        }
+            // Create orders items based on returned new shippment id and redirect to success page
+            checkoutSuccess(profile.username, response.shippment)
+                .then((result) => {
+                    if(result === true){
+                        history.push(`/checkout/success/${profile.username}/${response.shippment}`)
+                    } else {
+                        alert('Something Went Wrong While Creating Order Items');
+                    };
+                });
+        };
     };
 
     const onSubmit = async (e) => {
@@ -49,6 +60,7 @@ const Payment = ({ total, profile, address, cart, onPrev, history }) => {
         if(!stripe || !elements){
             return;
         } else {
+            onPayment(true);
             setProcessing(true);
             const name = `${profile.first_name} ${profile.last_name}`;
             const line1 = `${address.street} ${address.appartment_nr}`;
@@ -70,7 +82,6 @@ const Payment = ({ total, profile, address, cart, onPrev, history }) => {
                 }
             });
             const serverResult = await stripePaymentHandler(result, profile.username, address);
-            console.log(serverResult);
             handleServerResponse(serverResult);
         };
     };
@@ -100,45 +111,5 @@ const Payment = ({ total, profile, address, cart, onPrev, history }) => {
         </form>
     );
 };
-/*
-    STRIPE integration without server side confirmation
-    ------------------------------------------------
-        const [clientSecret, setClientSecret] = useState('');
-        const [succeeded, setSucceeded] = useState(false);
-        const [processing, setProcessing] = useState('');
-        const [error, setError] = useState(null);
-        const [disabled, setDisabled] = useState(true);
-
-    -------------------------------------------------------
-    useEffect(() => {
-        const intent = async () => {
-            const response = await postPaymentIntent(username);
-            if (response !== false){
-                setClientSecret(response);
-            } else {
-                alert('Something went wrong!');
-            };
-        };
-        intent();
-    }, []);
-    ------------------------------------------------
-        setProcessing(true);
-
-        const payload = await stripe.confirmCardPayment(clientSecret, {
-            receipt_email: email,
-            payment_method: {
-                card: elements.getElement(CardElement)
-            }
-        });
-
-        if (payload.error) {
-            setError(`Payment failed ${payload.error.message}`);
-            setProcessing(false);
-        } else {
-            setError(null);
-            setProcessing(false);
-            setSucceeded(true);
-        };
-*/ 
 
 export default Payment;
