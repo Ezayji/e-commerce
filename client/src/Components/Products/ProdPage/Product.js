@@ -3,10 +3,14 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import './ProdPage.css';
 
+import Left from './arrow_png_left.png';
+import Right from './arrow_png_right.png';
+
 import { addCartItem } from '../../../Services/Api/cart';
 
 const Product = ({ prod }) => {
     const [size, setSize] = useState('');
+    const [currentImg, setCurrentImg] = useState(0);
 
     const user = useSelector(state => state.customer.user);
 
@@ -34,6 +38,22 @@ const Product = ({ prod }) => {
         };
     };
 
+    const onLeftNav = () => {
+        if(currentImg === 0){
+            setCurrentImg(prod.images.length - 1);
+        } else {
+            setCurrentImg(currentImg - 1);
+        };
+    };
+
+    const onRightNav = () => {
+        if(currentImg === prod.images.length - 1){
+            setCurrentImg(0);
+        } else {
+            setCurrentImg(currentImg + 1);
+        }
+    };
+
     let button;
 
     if(user !== null){
@@ -44,7 +64,11 @@ const Product = ({ prod }) => {
     
     return(
         <div className='product' >
-            <img src={prod.images[0].url} alt={prod.product.title} />
+            <div className='prod-image-div' >
+                <img className='nav-arrow' src={Left} alt='navigate left' role='button' onClick={onLeftNav} />
+                <img src={prod.images[currentImg].url} alt={prod.product.title} />
+                <img className='nav-arrow' src={Right} alt='navigate right' role='button' onClick={onRightNav} />
+            </div>
             <div className='prod-info' >
                 <h2>{prod.product.title}</h2>
                 <p className='prod-manu' >{prod.product.manufacturer}</p>

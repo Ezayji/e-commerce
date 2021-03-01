@@ -1,0 +1,31 @@
+/* FOOTER */
+
+.ezayji-link:link{
+    color: rgb(57, 5, 199) !important;
+    text-decoration: none;
+}
+
+.credentials{
+    display: flex;
+    align-items: center;
+}
+
+.credentials img{
+    height: 20px;
+    margin-left: 5px;
+}
+
+@media only screen and (max-width: 768px){
+    footer{
+        margin-top: 50px;
+    }
+}
+
+footer{
+    height: 100px;
+    background-color: rgb(0, 0, 0);
+    color: rgb(255, 255, 255);
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+};

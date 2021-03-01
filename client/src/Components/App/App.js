@@ -11,6 +11,7 @@ import Orders from '../Orders/Orders';
 import SingleOrder from '../Orders/SingleOrder/SingleOrder';
 import UpdatePw from '../Account/UpdatePw/UpdatePw';
 import SuccessPage from '../Checkout/SuccessPage/SuccessPage';
+import Footer from '../Footer/Footer';
 
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
@@ -40,5 +41,7 @@ function App() {
     </Router>
   );
 };
+
+// <Footer/>
 
 export default App;

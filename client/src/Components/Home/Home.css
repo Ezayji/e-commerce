@@ -1,0 +1,14 @@
+/* HOME DIV */
+
+.home{
+    position: absolute;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.home img{
+    width: 100%;
+    z-index: 0;
+}
