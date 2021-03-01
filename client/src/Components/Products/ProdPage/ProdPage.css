@@ -12,6 +12,7 @@
 /* PRODUCT PAGE DIV */
 
 .product {
+    min-height: 80vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -80,4 +81,21 @@
 .prod-desc{
     margin: 8px 0px;
     line-height: 1.2;
+}
+
+/* PRODUCT PAGE MEDIA QUERY */
+
+@media only screen and (max-width: 768px){
+    .product{
+        flex-direction: column;
+    }
+
+    .product img{
+        width: 90%;
+    }
+
+    .prod-info{
+        min-width: 80%;
+    }
+
 }

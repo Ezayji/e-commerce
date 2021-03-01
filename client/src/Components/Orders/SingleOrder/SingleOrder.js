@@ -54,13 +54,9 @@ const SingleOrder = ({ match, history }) => {
                     <p>{order.to_country}</p>
                 </div>
                 <h3>PRODUCTS</h3>
-                <div className='order-items-head' >
-                    <p>TITLE</p>
-                    <p>COLOR</p>
-                    <p>PRICE</p>
-                    <p>QTY</p>
+                <div className='order-items' >
+                    {products}
                 </div>
-                {products}
             </div>
         );
         total = <p>TOTAL: €{order.total_eur}</p>

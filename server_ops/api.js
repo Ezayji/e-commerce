@@ -148,7 +148,7 @@ apiRouter.post('/create-payment-intent/:username', checkAuthenticated, getFinalC
 
 //     -- WITH SERVER SIDE CONFIRMATION --
 
-// route for requesting a payment intent and creating a shippment in db after a successful transaction
+// request a payment and create a shippment in db after a successful transaction
 apiRouter.post('/payment/:username', checkAuthenticated, getFinalCart, createIntent);
        // ^^ * it should also remove items from stock after a succesful payment in real production version. ^^ //
 

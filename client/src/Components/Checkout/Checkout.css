@@ -15,6 +15,10 @@
 
 /* checkout form */
 
+.checkout form{
+    min-width: 50%;
+}
+
 .checkout form button{
     height: 35px;
     /*
@@ -39,4 +43,12 @@
 
 .cancel-checkout:disabled{
     cursor: not-allowed;
+}
+
+/* CHECKOUT MEDIA QUERY */
+
+@media only screen and (max-width: 768px){
+    .checkout form{
+        min-width: 80%;
+    }
 }

@@ -13,13 +13,11 @@ const Orders = ({ history }) => {
     const user = useSelector(state => state.customer.user);
     const orders = useSelector(state => state.orders.orders);
     const orderStatus = useSelector(state => state.orders.status);
-    
-    if(user === null){
-        history.push('/');
-    };
 
     useEffect(() => {
-        if(orders === null && user !== null){
+        if(user === null){
+            history.push('/');
+        } else if(orders === null && user !== null){
             store.dispatch(fetchOrders());
         };
     }, []);

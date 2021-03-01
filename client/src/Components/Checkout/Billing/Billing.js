@@ -98,7 +98,7 @@ const Billing = ({ onNext, address }) => {
 
     if(adrInfo === 'Existing'){
         adrInfoSelect = (
-            <div>
+            <div className='billing-info-check-div' >
                 <input type='checkbox' checked={check} onChange={(e) => {
                     setCheck(e.target.checked)
                     if(e.target.checked === true){
@@ -113,7 +113,7 @@ const Billing = ({ onNext, address }) => {
         );
     } else if (adrInfo === 'New'){
         adrInfoSelect = (
-            <div>
+            <div className='billing-info-check-div' >
                 <input type='checkbox' checked={check} onChange={(e) => {
                     setCheck(e.target.checked)
                 }} />Save address
@@ -123,45 +123,45 @@ const Billing = ({ onNext, address }) => {
 
     return(
         <form onSubmit={next} >
-            <div>
+            <div className='billing-info' >
                 <h2>BILLING</h2>
                 <p>* we will use your saved name, email and phone</p>
                 <p>* shipping is free</p>
-                <div>
-                    <input type='text' value={strt} placeholder='STREET' onChange={(e) => {
+                <div className='billing-info-row-div' >
+                    <input className='billing-info-row' type='text' value={strt} placeholder='STREET' onChange={(e) => {
                         checkAdrStatus();
                         setStrt(e.target.value);
                     }} required />
-                    <input type='text' value={ap} placeholder='APPARTMENT' onChange={(e) => {
+                    <input className='billing-info-row' type='text' value={ap} placeholder='APPARTMENT' onChange={(e) => {
                         checkAdrStatus();
                         setAp(e.target.value);
                     }} required />
                 </div>
 
-                <div>
-                    <input type='text' value={cty} placeholder='CITY' onChange={(e) => {
+                <div className='billing-info-row-div' >
+                    <input className='billing-info-row' type='text' value={cty} placeholder='CITY' onChange={(e) => {
                         checkAdrStatus();
                         setCty(e.target.value);
                     }} required />
-                    <input type='text' value={zp} placeholder='ZIP' onChange={(e) => {
+                    <input className='billing-info-row' type='text' value={zp} placeholder='ZIP' onChange={(e) => {
                         checkAdrStatus();
                         setZp(e.target.value);
                     }} required />
                 </div>
 
-                <div>
-                    <input type='text' value={prvnc} placeholder='PROVINCE' onChange={(e) => {
+                <div className='billing-info-row-div' >
+                    <input className='billing-info-row' type='text' value={prvnc} placeholder='PROVINCE' onChange={(e) => {
                         checkAdrStatus();
                         setPrvnc(e.target.value);
                     }} required />
-                    <input type='text' value={cntry} placeholder='COUNTRY' onChange={(e) => {
+                    <input className='billing-info-row' type='text' value={cntry} placeholder='COUNTRY' onChange={(e) => {
                         checkAdrStatus();
                         setCntry(e.target.value);
                     }} required />
                 </div>
                 {adrInfoSelect}
             </div>
-            <button type='submit' >NEXT</button>
+            <button className='next' type='submit' >NEXT</button>
         </form>
     );
 };

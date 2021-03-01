@@ -1,0 +1,51 @@
+/* PAYMENT FORM */
+
+.submit-payment{
+    width: 100%;
+    color: white;
+    background-color: black;
+    margin: 10px 0px;
+}
+
+.submit-payment:hover{
+    background-color: rgba(0, 0, 0, 0.89);
+}
+
+.previous{
+    width: 25%;
+    background-color: transparent;
+}
+
+.previous:hover{
+    background-color: rgba(0, 0, 0, 0.11);
+}
+
+.card-element-div{
+    margin: 5px 0px;
+}
+
+/* PAYMENT ITEMS */
+
+.payment-items{
+    margin-bottom: 32px;
+}
+
+/* PAYMENT ITEM */
+
+.payment-item-div{
+    border-bottom: 2px solid rgba(0, 0, 0, 0.178);
+}
+
+.payment-item-div {
+    margin-bottom: 8px;
+}
+
+.payment-total{
+    margin-bottom: 16px;
+}
+
+.payment-item-div p, .checkout-payment h2 {
+    margin-bottom: 5px;
+}
+
+

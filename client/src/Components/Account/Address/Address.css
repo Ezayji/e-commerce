@@ -3,7 +3,7 @@
 .address{
     width: 65vh;
     max-width: 90%;
-    margin-top: 12px;
+    margin-top: 22px;
 }
 
 .address h2{
@@ -20,6 +20,12 @@
 
 .adr-value input {
     width: 100%;
+    height: 21px;
+}
+
+.adr-value p {
+    white-space: nowrap;
+    margin-right: 5px;
 }
 
 /* BUTTONS DIV */
@@ -27,6 +33,7 @@
 .info-buttons {
     display: flex;
     justify-content: space-between;
+    margin-top: 12px;
 }
 
 .adr-cancel, .info-submit, .adr-change {
@@ -51,4 +58,12 @@
 
 .adr-change:hover, .adr-cancel:hover, .info-submit:hover {
     background-color: rgba(0, 0, 0, 0.89);
+}
+
+/* ADDRESS MEDIA QUERY */
+
+@media only screen and (max-width: 768px){
+    .address{
+        min-width: 80%;
+    }
 }

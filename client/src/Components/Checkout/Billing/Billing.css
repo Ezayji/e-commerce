@@ -1,0 +1,46 @@
+/* BILLING DIV */
+
+.billing-info{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.billing-info p, .billing-info h2 {
+    margin-bottom: 5px;
+}
+
+/* BILLING FORM */
+
+.billing-info-row{
+    width: 48%;
+    height: 30px;
+    background-color: transparent;
+    border: none;
+}
+
+.billing-info-row:focus{
+    outline: none;
+}
+
+.billing-info-row-div{
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 10px;
+}
+
+.billing-info-check-div{
+    margin: 15px 0px;
+}
+
+.next{
+    width: 25%;
+    color: white;
+    background-color: black;
+    margin: 5px 0px;
+}
+
+.next:hover{
+    background-color: rgba(0, 0, 0, 0.89);
+}

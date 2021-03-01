@@ -87,26 +87,28 @@ const Payment = ({ total, profile, address, cart, onPrev, history, onPayment }) 
     };
 
     const items = cart.map((item, i) => (
-        <div key={i} >
+        <div className='payment-item-div' key={i} >
             <p>{item.product_title}({item.color}) x{item.quantity}</p>
             <p>€{item.quantity * item.unit_price_eur}</p>
         </div>
     ));
     
     return(
-        <form onSubmit={onSubmit} >
-            <div>
+        <form className='checkout-payment' onSubmit={onSubmit} >
+            <div className='payment-items' >
                 <h2>ITEMS</h2>
                 {items}
-                <p>TOTAL: €{total}</p>
+                <p className='payment-total' >TOTAL: €{total}</p>
             </div>  
             <div>
                 <h2>PAYMENT</h2>
-                <CardElement />
+                <div className='card-element-div' >
+                    <CardElement />
+                </div>
             </div>
-            <button disabled={processing} type='submit' >CONFIRM</button>
+            <button className='submit-payment' disabled={processing} type='submit' >CONFIRM</button>
             <div>
-                <button disabled={processing} type='button' onClick={onPrev} >CHANGE ADDRESS</button>
+                <button className='previous' disabled={processing} type='button' onClick={onPrev} >CHANGE ADDRESS</button>
             </div>
         </form>
     );

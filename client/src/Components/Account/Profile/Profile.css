@@ -19,6 +19,12 @@
 
 .account-value input {
     width: 100%;
+    height: 21px;
+}
+
+.account-value p {
+    white-space: nowrap;
+    margin-right: 5px;
 }
 
 /* BUTTONS DIV */
@@ -46,4 +52,12 @@
 
 .profile button:hover, .info-submit:hover, .updt-pw:hover {
     background-color: rgba(0, 0, 0, 0.89);
+}
+
+/* PROFILE MEDIA QUERY */
+
+@media only screen and (max-width: 768px){
+    .profile{
+        min-width: 80%;
+    }
 }
