@@ -6,6 +6,8 @@ import {Link} from 'react-router-dom';
 
 import { logout, checkAuth } from '../../Services/Api/customer';
 
+import MobileHeader from './MobileHeader';
+
 import axios from 'axios';
 
 const Header = () => {
@@ -88,7 +90,7 @@ const Header = () => {
                 </Link>
             </div>
             <div className="selection" >
-                <nav className='nav' >
+                <nav className='desktop-nav' >
                     <div className="dropdown" >
                         <p><Link to={'/products/men'} >MN</Link></p>
                         <div className="dropdown-content">
@@ -110,6 +112,7 @@ const Header = () => {
                 </nav>
                 {actions}
             </div>
+            <MobileHeader user={user} categoryListM={categoryListM} categoryListW={categoryListW} brands={brands} onLogout={onLogout} />
         </header>
     );
 };
