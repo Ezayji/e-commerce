@@ -2,12 +2,7 @@ import './Address.css';
 
 import React, { useEffect, useState } from 'react';
 
-const AdrUpdateForm = ({ onApChange,
-                        onStrtChange,
-                        onCtyChange,
-                        onPrvncChange,
-                        onZpChange,
-                        onCntryChange,
+const AdrUpdateForm = ({
                         ap,
                         strt,
                         cty,
@@ -15,7 +10,13 @@ const AdrUpdateForm = ({ onApChange,
                         zp,
                         cntry,
                         onCancel,
-                        onSubmit 
+                        onSubmit,
+                        setAp,
+                        setStrt,
+                        setCty,
+                        setPrvnc,
+                        setZp,
+                        setCntry 
 }) => {
     
     const [disabled, setDisabled] = useState(false);
@@ -40,27 +41,27 @@ const AdrUpdateForm = ({ onApChange,
         {note}
         <div className='adr-value' >
             <p>APPRTMNT:</p>
-            <input type='text' value={ap} placeholder='APPARTMENT' onChange={onApChange} required />
+            <input type='text' value={ap} placeholder='APPARTMENT' onChange={(e) => setAp(e.target.value)} required />
         </div>
         <div className='adr-value' >
             <p>STRT:</p>
-            <input type='text' value={strt} placeholder='STREET' onChange={onStrtChange} required />
+            <input type='text' value={strt} placeholder='STREET' onChange={(e) => setStrt(e.target.value)} required />
         </div>
         <div className='adr-value' >
             <p>CTY:</p>
-            <input type='text' value={cty} placeholder='CITY' onChange={onCtyChange} required />
+            <input type='text' value={cty} placeholder='CITY' onChange={(e) => setCty(e.target.value)} required />
         </div>
         <div className='adr-value' >
             <p>PRVNCE:</p>
-            <input type='text' value={prvnc} placeholder='PROVINCE' onChange={onPrvncChange} required />
+            <input type='text' value={prvnc} placeholder='PROVINCE' onChange={(e) => setPrvnc(e.target.value)} required />
         </div>
         <div className='adr-value' >
             <p>ZP:</p>
-            <input type='text' value={zp} placeholder='ZIP' onChange={onZpChange} required />
+            <input type='text' value={zp} placeholder='ZIP' onChange={(e) => setZp(e.target.value)} required />
         </div>
         <div className='adr-value' >
             <p>CNTRY:</p>
-            <input type='text' value={cntry} placeholder='COUNTRY' onChange={onCntryChange} required />
+            <input type='text' value={cntry} placeholder='COUNTRY' onChange={(e) => setCntry(e.target.value)} required />
         </div>
         <div className='info-buttons' >
             <input className='info-submit' type='submit' value='SBMT' />

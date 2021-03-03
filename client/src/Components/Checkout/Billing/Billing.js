@@ -79,6 +79,7 @@ const Billing = ({ onNext, address }) => {
         };
     };
 
+    // Move to Payment page
     const next = (e) => {
         e.preventDefault();
         const info = {
@@ -96,6 +97,7 @@ const Billing = ({ onNext, address }) => {
     
     let adrInfoSelect;
 
+    // Determine if user already has an address saved and offer to save new address or use existing address
     if(adrInfo === 'Existing'){
         adrInfoSelect = (
             <div className='billing-info-check-div' >

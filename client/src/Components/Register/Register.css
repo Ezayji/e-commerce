@@ -20,6 +20,12 @@
     margin-top: 10px;
 }
 
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+
 .register_div p {
     margin-top: 20px;
 }

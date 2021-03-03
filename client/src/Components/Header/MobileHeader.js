@@ -69,19 +69,23 @@ const MobileHeader = ({ user, categoryListM, categoryListW, brands, onLogout }) 
     const showProfileActions = () => {
         if(prof === false){
             setProf(true);
+            document.body.classList.toggle('lock-scroll');
         } else {
             setProf(false);
+            document.body.classList.toggle('lock-scroll');
         };
     };
 
     // render profile action elements based on state
     if(prof === true){
         userActions = (
-            <div className='mob-user-actions' onClick={showProfileActions} >
-                <p><Link to={`/account/${user.username}`} >ACNT</Link></p>
-                <p><Link to={`/cart/${user.username}`} >CART</Link></p>
-                <p><Link to={`/orders/${user.username}`} >ORDRS</Link></p>
-                <p onClick={onLogout} ><a className='logout' >EXIT</a></p>
+            <div className='mob-user-actions-wrapper' >
+                <div className='mob-user-actions' onClick={showProfileActions} >
+                    <p><Link to={`/account/${user.username}`} >ACNT</Link></p>
+                    <p><Link to={`/cart/${user.username}`} >CART</Link></p>
+                    <p><Link to={`/orders/${user.username}`} >ORDRS</Link></p>
+                    <p onClick={onLogout} ><a className='logout' >EXIT</a></p>
+                </div>
             </div>
         );
     } else {

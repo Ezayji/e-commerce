@@ -125,3 +125,9 @@
 .cart-remove:hover{
     color: rgba(0, 0, 0, 0.89);
 }
+
+@media only screen and (max-width: 768px){
+    .cart-item{
+        width: 90%;
+    }
+}

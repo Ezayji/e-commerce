@@ -146,4 +146,4 @@ const Cart = ({ history }) => {
     );
 };
 
-export default Cart;
+export default Cart; 

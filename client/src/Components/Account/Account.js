@@ -96,18 +96,6 @@ const onProfChngeClick = () => {
         onCancelAdrChange();
     };
 };
-const onFnChange = (e) => {
-    setfn(e.target.value);
-};
-const onLnChange = (e) => {
-    setLn(e.target.value);
-};
-const onEmailChange = (e) => {
-    setEmail(e.target.value);
-};
-const onPhneChange = (e) => {
-    setPhne(e.target.value);
-};
 
 const onProfSubmit = async (e) => {
     e.preventDefault();
@@ -142,16 +130,16 @@ const onProfSubmit = async (e) => {
         redirect = null;
         profile = <UpdateForm 
                     username={customer.username} 
-                    onFnChange={onFnChange} 
-                    onLnChange={onLnChange} 
-                    onEmailChange={onEmailChange} 
-                    onPhneChange={onPhneChange}
                     fn={fn}
                     ln={ln}
                     email={email}
                     phne={phne}
                     onCancel={onCancelProfChange}
-                    onSubmit={onProfSubmit} />
+                    onSubmit={onProfSubmit}
+                    setfn={setfn}
+                    setLn={setLn}
+                    setEmail={setEmail}
+                    setPhne={setPhne} />
     };
 
 
@@ -173,24 +161,7 @@ const onAdrChangeClick = () => {
         onCancelProfChange();
     };
 };
-const onApChange = (e) => {
-    setAp(e.target.value);
-};
-const onStrtChange = (e) => {
-    setStrt(e.target.value);
-};
-const onCtyChange = (e) => {
-    setCty(e.target.value);
-};
-const onPrvncChange = (e) => {
-    setPrvnc(e.target.value);
-};
-const onZpChange = (e) => {
-    setZp(e.target.value);
-};
-const onCntryChange = (e) => {
-    setCntry(e.target.value);
-};
+
 const onAdrSubmit = async (e) => {
     e.preventDefault();
     const data = {
@@ -221,12 +192,6 @@ const onAdrSubmit = async (e) => {
         addressDiv = <p>Error While Getting Address</p>
     } else if((adr_status === 'succeeded' && adr === 'Edit') || (adr_status === 'succeeded' && address.appartment_nr === null)){
         addressDiv = <AdrUpdateForm 
-                        onApChange={onApChange}
-                        onStrtChange={onStrtChange}
-                        onCtyChange={onCtyChange}
-                        onPrvncChange={onPrvncChange}
-                        onZpChange={onZpChange}
-                        onCntryChange={onCntryChange}
                         ap={ap}
                         strt={strt}
                         cty={cty}
@@ -234,7 +199,13 @@ const onAdrSubmit = async (e) => {
                         zp={zp}
                         cntry={cntry}
                         onCancel={onCancelAdrChange}
-                        onSubmit={onAdrSubmit} />
+                        onSubmit={onAdrSubmit}
+                        setAp={setAp}
+                        setStrt={setStrt}
+                        setCty={setCty}
+                        setPrvnc={setPrvnc}
+                        setZp={setZp}
+                        setCntry={setCntry} />
     } else {
         addressDiv = null;
     };

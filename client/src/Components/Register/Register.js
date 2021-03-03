@@ -64,10 +64,10 @@ const Register = ({ history }) => {
                 <input className="register_cred" type='text' onChange={(e) => {
                     setLn(e.target.value);
                 }} value={ln} placeholder="LAST NAME" required />
-                <input className="register_cred" type='text' onChange={(e) => {
+                <input className="register_cred" type='email' onChange={(e) => {
                     setEmail(e.target.value);
                 }} value={email} placeholder="EMAIL" required />
-                <input className="register_cred" type='text' onChange={(e) => {
+                <input className="register_cred" type='number' onChange={(e) => {
                     setPhone(e.target.value);
                 }} value={phone} placeholder="PHONE" required />
                 <input className="register_cred" type='password' onChange={(e) => {

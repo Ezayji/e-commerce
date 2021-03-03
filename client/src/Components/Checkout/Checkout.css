@@ -17,6 +17,7 @@
 
 .checkout form{
     min-width: 50%;
+    max-width: 90%;
 }
 
 .checkout form button{

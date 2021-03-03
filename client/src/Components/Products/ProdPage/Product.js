@@ -28,7 +28,7 @@ const Product = ({ prod }) => {
         if(size !== ''){
             const response = await addCartItem(data);
             if(response === true){
-                alert(`${prod.product.title} Size ${size} Added To Cart`);
+                //alert(`${prod.product.title} Size ${size} Added To Cart`);
                 setSize('');
             } else {
                 alert(response);
