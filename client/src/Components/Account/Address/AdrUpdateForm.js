@@ -36,7 +36,7 @@ const AdrUpdateForm = ({
     }
 
     return(
-    <form onSubmit={onSubmit} className='address' >
+    <form data-testid='address-edit-form' onSubmit={onSubmit} className='address' >
         <h2>ADDRSS</h2>
         {note}
         <div className='adr-value' >
@@ -64,8 +64,8 @@ const AdrUpdateForm = ({
             <input type='text' value={cntry} placeholder='COUNTRY' onChange={(e) => setCntry(e.target.value)} required />
         </div>
         <div className='info-buttons' >
-            <input className='info-submit' type='submit' value='SBMT' />
-            <button disabled={disabled} type='button' className='adr-cancel' onClick={onCancel} >CNCL</button>
+            <input data-testid='address-edit-submit' className='info-submit' type='submit' value='SBMT' />
+            <button data-testid='address-edit-cancel' disabled={disabled} type='button' className='adr-cancel' onClick={onCancel} >CNCL</button>
         </div>
     </form>
     );

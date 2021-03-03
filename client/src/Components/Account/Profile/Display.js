@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const Display = ({ customer, onClick }) => {
     return(
-        <div className='profile' >
+        <div data-testid='profile-display' className='profile' >
             <h2>MY ACCNT</h2>
             <div className='account-value'>
                 <p>USRNM: </p>
@@ -27,8 +27,8 @@ const Display = ({ customer, onClick }) => {
                 <p>{customer.phone}</p>
             </div>
             <div className='info-buttons' >
-                <button onClick={onClick} >CHNGE</button>
-                <Link className='updt-pw' to={`/account/${customer.username}/password`} >UPDT PW</Link>
+                <button data-testid='profile-edit' onClick={onClick} >CHNGE</button>
+                <Link data-testid='profile-password-change' className='updt-pw' to={`/account/${customer.username}/password`} >UPDT PW</Link>
             </div>
         </div>
     )

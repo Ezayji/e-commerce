@@ -15,7 +15,7 @@ const UpdateForm = ({ username,
                     setPhne
 }) => {
     return(
-        <form onSubmit={onSubmit} className='profile' >
+        <form data-testid='profile-edit-form' onSubmit={onSubmit} className='profile' >
             <h2>MY ACCNT</h2>
             <div className='account-value'>
                 <p>USRNM: </p>
@@ -38,8 +38,8 @@ const UpdateForm = ({ username,
                 <input type='text' value={phne} placeholder='PHONE' onChange={(e) => setPhne(e.target.value)} required />
             </div>
             <div className='info-buttons' >
-                <input className='info-submit' type='submit' value='SBMT' />
-                <button onClick={onCancel} >CNCL</button>
+                <input data-testid='profile-edit-submit' className='info-submit' type='submit' value='SBMT' />
+                <button data-testid='profile-edit-cancel' onClick={onCancel} >CNCL</button>
             </div>
         </form>
     );

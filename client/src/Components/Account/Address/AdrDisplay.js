@@ -2,7 +2,7 @@ import './Address.css';
 
 const AdrDisplay = ({ address, onClick }) => {
     return(
-    <div className='address' >
+    <div data-testid='address-display' className='address' >
         <h2>ADDRSS</h2>
         <div className='adr-value' >
             <p>APPRTMNT:</p>
@@ -29,7 +29,7 @@ const AdrDisplay = ({ address, onClick }) => {
             <p>{address.country}</p>
         </div>
         <div className='info-buttons' >
-            <button className='adr-change' onClick={onClick} >CHNGE</button>
+            <button data-testid='address-edit' className='adr-change' onClick={onClick} >CHNGE</button>
         </div>
     </div>
     );
