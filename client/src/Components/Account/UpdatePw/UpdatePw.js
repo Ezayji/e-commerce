@@ -21,18 +21,6 @@ const UpdatePw = ({ history }) => {
         setRePw('');
     };
 
-    const onOldPWChange = (e) => {
-        setOldPw(e.target.value);
-    };
-
-    const onNewPwChange = (e) => {
-        setNewPw(e.target.value);
-    };
-
-    const onRePwChange = (e) => {
-        setRePw(e.target.value);
-    };
-
     const onSubmit = async (e) => {
         e.preventDefault();
         const data = {
@@ -69,16 +57,16 @@ const UpdatePw = ({ history }) => {
 
     return(
     <div className='pw-change' >
-        <form onSubmit={onSubmit} >
+        <form data-testid='password-change-form' onSubmit={onSubmit} >
             <h2>CHANGE PASSWORD</h2>
             <div className='change-pw-div' >
-                <input className='chng-pw-field' type='password' value={oldPw} placeholder='OLD PASSWORD' onChange={onOldPWChange} required />
-                <input className='chng-pw-field' type='password' value={newPw} placeholder='NEW PASSWORD' onChange={onNewPwChange} required />
-                <input className='chng-pw-field' type='password' value={rePw} placeholder='REPEAT NEW PASSWORD' onChange={onRePwChange} required />
+                <input data-testid='old-password-field' className='chng-pw-field' type='password' value={oldPw} placeholder='OLD PASSWORD' onChange={(e) => { setOldPw(e.target.value) }} required />
+                <input data-testid='new-password-field' className='chng-pw-field' type='password' value={newPw} placeholder='NEW PASSWORD' onChange={(e) => { setNewPw(e.target.value) }} required />
+                <input data-testid='repeat-password-field' className='chng-pw-field' type='password' value={rePw} placeholder='REPEAT NEW PASSWORD' onChange={(e) => { setRePw(e.target.value) }} required />
             </div>
             <div className='new-pw-actions' >
-                <input className='sbm-new-pw' type='submit' value='SUBMIT' />
-                <button type='button' onClick={onCancel} >CNCL</button>
+                <input data-testid='submit-password-field' className='sbm-new-pw' type='submit' value='SUBMIT' />
+                <button data-testid='cancel-password-field' type='button' onClick={onCancel} >CNCL</button>
             </div>
             {redirect}
         </form>

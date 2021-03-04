@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { createMemoryHistory } from 'history';
 
 import { render as rtlRender, fireEvent, screen, waitFor } from '@testing-library/react';
 import { createStore } from 'redux';
@@ -338,7 +339,7 @@ describe('* <UpdateForm /> (profile update form) *', () => {
     });
 });
 
-describe('<AdrUpdateForm />', () => {
+describe('* <AdrUpdateForm /> *', () => {
     describe('-- Logged in user with saved address --', () => {
         it('Renders without crashing and Displays current address in fields', () => {
             rtlRender(<AdrUpdateForm
@@ -632,5 +633,58 @@ describe('<AdrUpdateForm />', () => {
             await waitFor(() => expect(onSubmit).toHaveBeenCalled());
         });
 
+    });
+});
+
+describe('* <UpdatePw /> *', () => {
+    describe('-- Logged in user with Profile in Redux state --', () => {
+        it('Renders without crashing and has empty fields', () => {
+            const history = createMemoryHistory();
+            const { getByTestId } = render(
+                <Router>
+                    <UpdatePw history={history} />
+                </Router>
+                , { initialState: noAddressUser }
+            );
+
+            const form = getByTestId('password-change-form');
+            expect(form).toBeInTheDocument();
+
+            expect(screen.getByTestId('old-password-field')).toHaveTextContent('');
+            expect(screen.getByTestId('new-password-field')).toHaveTextContent('');
+            expect(screen.getByTestId('repeat-password-field')).toHaveTextContent('');
+        });
+
+        it('Redirects to "/account/:username" if "CNCL" is clicked', async () => {
+            const history = createMemoryHistory();
+            const {getByTestId, container} = render(
+                <Router>
+                    <UpdatePw history={history} />
+                </Router>
+                , { initialState: noAddressUser }
+            );
+
+            const cancel = getByTestId('cancel-password-field');
+            fireEvent.click(cancel);
+            expect(history.location.pathname).toBe('/account/Revarz');
+        });
+
+
+
+    });
+
+    describe('-- Not logged in user --', () => {
+        it('Redirects to "/"', () => {
+            const history = createMemoryHistory();
+            const {container} = render(
+                <Router>
+                    <UpdatePw history={history} />
+                    <Route path='/' exact >Main Page</Route>
+                </Router>
+                , { initialState: anonymous }
+            );
+
+            expect(container).toHaveTextContent('Main Page');
+        });
     });
 });
