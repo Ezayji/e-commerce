@@ -66,7 +66,9 @@ export const emptyUser = {
         },
         profile: null,
         address: null,
+        auth_status: 'idle',
         cus_status: 'idle',
-        adr_status: 'idle'
+        adr_status: 'idle',
+        error: null
     }
 };

@@ -1,11 +1,12 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 
 import { render as rtlRender, fireEvent, screen, waitFor } from '@testing-library/react';
 import { createStore } from 'redux';
 import { Provider } from 'react-redux';
+
+import nock from 'nock';
 
 import customerReducer from '../../../Redux/CustomerSlice';
 
@@ -126,6 +127,63 @@ describe('* <Account /> (Parent Comp) *', () => {
 
             expect(container).toHaveTextContent('Password Change');
 
+        });
+
+        it('Dispatches a call to get Profile and Address info if not in Redux state and Displays recieved data', async () => {
+
+            const scope = nock('http://localhost:5000')
+                .get('/api/customer_un/Revarz')
+                .reply(200, {
+                    data: {
+                        username: 'Revarz',
+                        first_name: 'Selna',
+                        last_name: 'Kaszk',
+                        email: 'selnaknewemail@testapi.com',
+                        phone: '+372 99999999'
+                    }
+                })
+                .get('/api/customer_address/Revarz')
+                .reply(200, {
+                    data: {
+                        username: 'Revarz',
+                        appartment_nr: '5',
+                        street: 'somestreet',
+                        city: 'somecity',
+                        province: 'someprovince',
+                        zip: '75607',
+                        country: 'highrise'
+                    }
+            });
+            
+            render(
+                <Router>  
+                    <Account />
+                </Router> 
+                , { initialState: emptyUser }
+            );
+
+            if (!scope.isDone()) {
+                console.error('pending mocks: %j', scope.pendingMocks())
+              }
+              
+            await waitFor(() => expect(screen.getByText('Revarz')).toBeInTheDocument());
+/*
+            await waitFor(() => expect(screen.getByText('5')).toBeInTheDocument());
+
+            // profile info
+            
+            expect(screen.getByText('Selna')).toBeInTheDocument();
+            expect(screen.getByText('Kaszk')).toBeInTheDocument();
+            expect(screen.getByText('selnaknewemail@testapi.com')).toBeInTheDocument();
+            expect(screen.getByText('+372 99999999')).toBeInTheDocument();
+
+            // address info
+            expect(screen.getByText('somestreet')).toBeInTheDocument();
+            expect(screen.getByText('somecity')).toBeInTheDocument();
+            expect(screen.getByText('someprovince')).toBeInTheDocument();
+            expect(screen.getByText('75607')).toBeInTheDocument();
+            expect(screen.getByText('highrise')).toBeInTheDocument();
+*/
         });
 
     });
