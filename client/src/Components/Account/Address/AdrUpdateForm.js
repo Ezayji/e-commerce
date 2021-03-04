@@ -41,27 +41,27 @@ const AdrUpdateForm = ({
         {note}
         <div className='adr-value' >
             <p>APPRTMNT:</p>
-            <input type='text' value={ap} placeholder='APPARTMENT' onChange={(e) => setAp(e.target.value)} required />
+            <input data-testid='appartment-field' type='text' value={ap} placeholder='APPARTMENT' onChange={(e) => setAp(e.target.value)} required />
         </div>
         <div className='adr-value' >
             <p>STRT:</p>
-            <input type='text' value={strt} placeholder='STREET' onChange={(e) => setStrt(e.target.value)} required />
+            <input data-testid='street-field' type='text' value={strt} placeholder='STREET' onChange={(e) => setStrt(e.target.value)} required />
         </div>
         <div className='adr-value' >
             <p>CTY:</p>
-            <input type='text' value={cty} placeholder='CITY' onChange={(e) => setCty(e.target.value)} required />
+            <input data-testid='city-field' type='text' value={cty} placeholder='CITY' onChange={(e) => setCty(e.target.value)} required />
         </div>
         <div className='adr-value' >
             <p>PRVNCE:</p>
-            <input type='text' value={prvnc} placeholder='PROVINCE' onChange={(e) => setPrvnc(e.target.value)} required />
+            <input data-testid='province-field' type='text' value={prvnc} placeholder='PROVINCE' onChange={(e) => setPrvnc(e.target.value)} required />
         </div>
         <div className='adr-value' >
             <p>ZP:</p>
-            <input type='text' value={zp} placeholder='ZIP' onChange={(e) => setZp(e.target.value)} required />
+            <input data-testid='zip-field' type='text' value={zp} placeholder='ZIP' onChange={(e) => setZp(e.target.value)} required />
         </div>
         <div className='adr-value' >
             <p>CNTRY:</p>
-            <input type='text' value={cntry} placeholder='COUNTRY' onChange={(e) => setCntry(e.target.value)} required />
+            <input data-testid='country-field' type='text' value={cntry} placeholder='COUNTRY' onChange={(e) => setCntry(e.target.value)} required />
         </div>
         <div className='info-buttons' >
             <input data-testid='address-edit-submit' className='info-submit' type='submit' value='SBMT' />
