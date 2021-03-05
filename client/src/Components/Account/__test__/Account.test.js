@@ -3,8 +3,9 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 
 import { render as rtlRender, fireEvent, screen, waitFor } from '@testing-library/react';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
+import thunk from 'redux-thunk';
 
 import nock from 'nock';
 
@@ -17,11 +18,17 @@ import UpdatePw from '../UpdatePw/UpdatePw';
 
 import { fullUser, noAddressUser, anonymous, emptyUser } from './utils/user';
 
+
+
+    // to avoid console errors
+jest.mock('../../../Redux/Store');
+
+    // renders that don't dispatch actions
 function render(
     ui,
     {
         initialState,
-        store = createStore(customerReducer, initialState),
+        store = createStore(customerReducer, initialState, applyMiddleware(thunk)),
         ...renderOptions
     } = {}
 ){
@@ -30,6 +37,17 @@ function render(
     };
     return rtlRender(ui, { wrapper: Wrapper, ...renderOptions });
 };
+
+    // store for renders that dispatch actions
+function setUpStore(initialState){
+    return createStore(
+        combineReducers({ customer: customerReducer }),
+        initialState,
+        applyMiddleware(thunk)
+    );
+};
+
+
 
 describe('* <Account /> (Parent Comp) *', () => {
     
@@ -129,61 +147,199 @@ describe('* <Account /> (Parent Comp) *', () => {
 
         });
 
-        it('Dispatches a call to get Profile and Address info if not in Redux state and Displays recieved data', async () => {
+        it('Fetches PUT call to Update Profile info and Renders new updated profile with <Display /> if <UpdateForm /> is submited', async () => {
 
-            const scope = nock('http://localhost:5000')
-                .get('/api/customer_un/Revarz')
-                .reply(200, {
-                    data: {
-                        username: 'Revarz',
-                        first_name: 'Selna',
-                        last_name: 'Kaszk',
-                        email: 'selnaknewemail@testapi.com',
-                        phone: '+372 99999999'
-                    }
+            const store = setUpStore( fullUser );
+
+            const scope = nock('http://localhost')
+                .put('/api/customer_un/Revarz', {
+                    first_name: 'Eelna',
+                    last_name: 'Kaszk',
+                    email: 'selnaknewemail@testapi.com',
+                    phone: '+372 99999999'
                 })
-                .get('/api/customer_address/Revarz')
                 .reply(200, {
-                    data: {
-                        username: 'Revarz',
-                        appartment_nr: '5',
-                        street: 'somestreet',
-                        city: 'somecity',
-                        province: 'someprovince',
-                        zip: '75607',
-                        country: 'highrise'
-                    }
+                    username: 'Revarz',
+                    first_name: 'Eelna',
+                    last_name: 'Kaszk',
+                    phone: '+372 99999999',
+                    email: 'selnaknewemail@testapi.com',
+                    id: 2
             });
-            
-            render(
-                <Router>  
-                    <Account />
-                </Router> 
-                , { initialState: emptyUser }
-            );
 
-            if (!scope.isDone()) {
-                console.error('pending mocks: %j', scope.pendingMocks())
-              }
-              
-            await waitFor(() => expect(screen.getByText('Revarz')).toBeInTheDocument());
-/*
-            await waitFor(() => expect(screen.getByText('5')).toBeInTheDocument());
+            rtlRender(
+                <Provider store={store} >
+                    <Router>
+                        <Account store={store} />
+                    </Router>
+                </Provider>
+            );       
 
-            // profile info
-            
+            // initial profile info
+            expect(screen.getByText('Revarz')).toBeInTheDocument();
             expect(screen.getByText('Selna')).toBeInTheDocument();
             expect(screen.getByText('Kaszk')).toBeInTheDocument();
             expect(screen.getByText('selnaknewemail@testapi.com')).toBeInTheDocument();
             expect(screen.getByText('+372 99999999')).toBeInTheDocument();
+            
+            // change to edit display
+            expect(screen.getByTestId('profile-display')).toBeInTheDocument();
+            const chngeButton = screen.getByTestId('profile-edit');
+            fireEvent.click(chngeButton);
 
+            // insert new first name
+            expect(screen.getByTestId('profile-edit-form')).toBeInTheDocument();
+            const fnField = screen.getByTestId('fn-field');
+            fireEvent.change(fnField, { target: { value: 'Eelna' } });
+
+            // click submit
+            const submit = screen.getByTestId('profile-edit-submit');
+            fireEvent.click(submit);
+
+            await waitFor(() => {
+                expect(screen.getByTestId('profile-display')).toBeInTheDocument();
+            });
+
+            // display with updated first name after submit
+            expect(screen.getByText('Revarz')).toBeInTheDocument();
+            expect(screen.getByText('Eelna')).toBeInTheDocument();
+            expect(screen.getByText('Kaszk')).toBeInTheDocument();
+            expect(screen.getByText('selnaknewemail@testapi.com')).toBeInTheDocument();
+            expect(screen.getByText('+372 99999999')).toBeInTheDocument();
+        });
+
+        it('Fetches PUT call to Update Address info and Renders new address with <AdrDisplay /> if <AdrUpdateForm /> is submited', async () => {
+
+            const store = setUpStore( fullUser );
+
+            const scope = nock('http://localhost')
+                .put('/api/customer_address/Revarz', {
+                    appartment_nr: '6',
+                    street: 'street',
+                    city: 'city',
+                    province: 'province',
+                    zip: '77777',
+                    country: 'country'
+                })
+                .reply(200, {
+                    username: 'Revarz',
+                    appartment_nr: '6',
+                    street: 'street',
+                    city: 'city',
+                    province: 'province',
+                    zip: 77777,
+                    country: 'country'
+            });
+
+            rtlRender(
+                <Provider store={store} >
+                    <Router>
+                        <Account store={store} />
+                    </Router>
+                </Provider>
+            );
+            
+            // initial address info
+            expect(screen.getByText('5')).toBeInTheDocument();
+            expect(screen.getByText('somestreet')).toBeInTheDocument();
+            expect(screen.getByText('somecity')).toBeInTheDocument();
+            expect(screen.getByText('someprovince')).toBeInTheDocument();
+            expect(screen.getByText('75607')).toBeInTheDocument();
+            expect(screen.getByText('highrise')).toBeInTheDocument();
+
+            // change to adr update display
+            expect(screen.getByTestId('address-display')).toBeInTheDocument();
+            const chngeButton = screen.getByTestId('address-edit');
+            fireEvent.click(chngeButton);
+
+            // insert new address info
+            expect(screen.getByTestId('address-edit-form')).toBeInTheDocument();
+            const appartmentField = screen.getByTestId('appartment-field');
+            fireEvent.change(appartmentField, { target: { value: '6' } });
+
+            const streetField = screen.getByTestId('street-field');
+            fireEvent.change(streetField, { target: { value: 'street' } });
+
+            const cityField = screen.getByTestId('city-field');
+            fireEvent.change(cityField, { target: { value: 'city' } });
+
+            const provinceField = screen.getByTestId('province-field');
+            fireEvent.change(provinceField, { target: { value: 'province' } });
+
+            const zipField = screen.getByTestId('zip-field');
+            fireEvent.change(zipField, { target: { value: '77777' } });
+
+            const countryField = screen.getByTestId('country-field');
+            fireEvent.change(countryField, { target: { value: 'country' } });
+
+            // click submit
+            const submit = screen.getByTestId('address-edit-submit');
+            fireEvent.click(submit);
+
+            await waitFor(() => {
+                expect(screen.getByTestId('address-display')).toBeInTheDocument();
+            });
+
+            // display updated address
+            expect(screen.getByText('6')).toBeInTheDocument();
+            expect(screen.getByText('street')).toBeInTheDocument();
+            expect(screen.getByText('city')).toBeInTheDocument();
+            expect(screen.getByText('province')).toBeInTheDocument();
+            expect(screen.getByText('77777')).toBeInTheDocument();
+            expect(screen.getByText('country')).toBeInTheDocument();
+        });
+
+    });
+
+    describe('-- Logged in customer without address nor profile in Redux state --', () => {
+
+        it('Dispatches a call to get Profile + Address info and Displays result', async () => {
+
+            const store = setUpStore( emptyUser );
+
+            const scope = nock('http://localhost')
+                .get('/api/customer_un/Revarz')
+                .reply(200, {
+                    username: 'Revarz',
+                    first_name: 'Selna',
+                    last_name: 'Kaszk',
+                    email: 'selnaknewemail@testapi.com',
+                    phone: '+372 99999999'
+                })
+                .get('/api/customer_address/Revarz')
+                .reply(200, {
+                    username: 'Revarz',
+                    appartment_nr: '5',
+                    street: 'somestreet',
+                    city: 'somecity',
+                    province: 'someprovince',
+                    zip: '75607',
+                    country: 'highrise'
+            });
+
+            rtlRender(
+                <Provider store={store} >
+                    <Router>
+                        <Account store={store} />
+                    </Router>
+                </Provider>
+            );       
+         
+            await waitFor(() => expect(screen.getByText('Revarz')).toBeInTheDocument());
+            
+            // profile info
+
+            expect(screen.getByText('Selna')).toBeInTheDocument();
+            expect(screen.getByText('Kaszk')).toBeInTheDocument();
+            expect(screen.getByText('selnaknewemail@testapi.com')).toBeInTheDocument();
+            expect(screen.getByText('+372 99999999')).toBeInTheDocument();
             // address info
             expect(screen.getByText('somestreet')).toBeInTheDocument();
             expect(screen.getByText('somecity')).toBeInTheDocument();
             expect(screen.getByText('someprovince')).toBeInTheDocument();
             expect(screen.getByText('75607')).toBeInTheDocument();
             expect(screen.getByText('highrise')).toBeInTheDocument();
-*/
+
         });
 
     });

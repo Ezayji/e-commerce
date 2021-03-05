@@ -9,9 +9,13 @@ export async function getCustomer(username) {
     const url = `/api/customer_un/${username}`;
     try{
         const response = await axios.get(url, getConfig);
+        /*
         store.dispatch(profileAdded(response.data));
+        */
+        return response.data;
     } catch(error) {
-        return error;
+        return null;
+        //return error;
     }
     
 };
@@ -28,14 +32,17 @@ export async function updateProfile(data){
     try{
         const response = await axios.put(url, updatedInfo, sendConfig);
         if (response.data) {
+            /*
             store.dispatch(profileAdded(response.data));
             return true;
+            */
+            return response.data;
         };
     } catch (error) {
         if(error.response.data === 'Not unique phone' || error.response.data === 'Not unique email'){
-            return error.response.data;
+            return { error: error.response.data };
         } else {
-            return 'Something Went Wrong, Please Try Again';
+            return {error: 'Something Went Wrong, Please Try Again'};
         };
     };
 };
@@ -45,9 +52,11 @@ export async function getAddress(username){
     const url = `/api/customer_address/${username}`;
     try{
         const response = await axios.get(url, getConfig);
-        store.dispatch(addressAdded(response.data));
+        return response.data;
+        //store.dispatch(addressAdded(response.data));
     } catch(error) {
-        return error;
+        return null;
+        //return error;
     };
 };
 
@@ -65,8 +74,11 @@ export async function updateAddress(data){
     try{
         const response = await axios.put(url, updatedInfo, sendConfig);
         if (response.data) {
+        /*    
             store.dispatch(addressAdded(response.data));
             return true;
+        */
+            return response.data;
         };
     } catch(error) {
         return false;

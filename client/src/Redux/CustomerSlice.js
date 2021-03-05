@@ -13,12 +13,14 @@ const initialState = {
 
 export const fetchCustomer = createAsyncThunk('customer/fetchCustomer', async (_, { getState }) => {
     const username = getState().customer.user.username;
-    await getCustomer(username);
+    const response = await getCustomer(username);
+    return response;
 });
 
 export const fetchAddress = createAsyncThunk('customer/fetchAddress', async (_, { getState }) => {
     const username = getState().customer.user.username;
-    await getAddress(username);
+    const response = await getAddress(username);
+    return response;
 });
 
 
@@ -49,6 +51,7 @@ const customerSlice = createSlice({
             state.cus_status = 'loading';
         },
         [fetchCustomer.fulfilled]: (state, action) => {
+            state.profile = action.payload;
             state.cus_status = 'succeeded';
         },
         [fetchCustomer.rejected]: (state, action) => {
@@ -59,6 +62,7 @@ const customerSlice = createSlice({
             state.adr_status = 'loading';
         },
         [fetchAddress.fulfilled]: (state, action) => {
+            state.address = action.payload;
             state.adr_status = 'succeeded';
         },
         [fetchAddress.rejected]: (state, action) => {

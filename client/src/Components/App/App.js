@@ -15,7 +15,7 @@ import Footer from '../Footer/Footer';
 
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
-function App() {
+function App({ store }) {
   return (
     <Router>
       <div className="App">
@@ -31,7 +31,9 @@ function App() {
           <Route path='/brands/:brand_id/:title/:productid/:product_title' exact component={ProdPage} />
           <Route path='/brands/:brand_id/:title' exact component={Products} />
           <Route path='/account/:username/password' exact component={UpdatePw} />
-          <Route path='/account/:username' exact component={Account} />
+          <Route path='/account/:username' exact>
+            <Account store={store} />
+          </Route>
           <Route path='/cart/:username' exact component={Cart} />
           <Route path='/checkout/success/:username/:order_id' exact component={SuccessPage} />
           <Route path='/orders/:username' exact component={Orders} />
@@ -41,6 +43,8 @@ function App() {
     </Router>
   );
 };
+
+// <Route path='/account/:username' exact component={Account} />
 
 // <Footer/>
 
