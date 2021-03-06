@@ -115,7 +115,7 @@ const Cart = ({ history, store }) => {
 
     if(products !== null && cartStatus === 'succeeded'){
         cartItems = products.map((item, i) => (
-            <CartItem key={i} item={item} onIncrement={onIncrement} onDecrement={onDecrement} onDelete={onDelete} />
+            <CartItem key={i} item={item} onIncrement={onIncrement} onDecrement={onDecrement} onDelete={onDelete} listKey={i} />
         ));
         checkoutButton = (
         <div className='cart-checkout' >

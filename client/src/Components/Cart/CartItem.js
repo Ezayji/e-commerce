@@ -1,6 +1,6 @@
 
 
-const CartItem = ({ item, onDecrement, onIncrement, onDelete }) => {
+const CartItem = ({ item, onDecrement, onIncrement, onDelete, listKey }) => {
     
     
     return(
@@ -15,11 +15,11 @@ const CartItem = ({ item, onDecrement, onIncrement, onDelete }) => {
                 </div>
                 <div className='cart-actions' >
                     <div className='cart-quantity' >
-                        <button className='calculate' onClick={() => onDecrement(item)} >-</button>
+                        <button data-testid={`decrement-${listKey}`} className='calculate' onClick={() => onDecrement(item)} >-</button>
                         <p><span>{item.quantity}</span></p>
-                        <button className='calculate' onClick={() => onIncrement(item)} >+</button>
+                        <button data-testid={`increment-${listKey}`} className='calculate' onClick={() => onIncrement(item)} >+</button>
                     </div>
-                    <button className='cart-remove' onClick={() => onDelete(item)} >REMOVE ITEM</button>
+                    <button data-testid={`remove-${listKey}`} className='cart-remove' onClick={() => onDelete(item)} >REMOVE ITEM</button>
                 </div>
             </div>
         </div>

@@ -1,4 +1,40 @@
+export const emptyState = {
+    customer: {
+        user: null,
+        profile: null,
+        address: null,
+        auth_status: 'idle',
+        cus_status: 'idle',
+        adr_status: 'idle',
+        error: null
+    },
+    cart: {
+        products: null,
+        total: 0,
+        status: 'idle',
+        error: null
+    }
+}
 
+export const noItemsUser = {
+    customer: {
+        user: {
+            username: 'Revarz'
+        },
+        profile: null,
+        address: null,
+        auth_status: 'idle',
+        cus_status: 'idle',
+        adr_status: 'idle',
+        error: null
+    },
+    cart: {
+        products: null,
+        total: 0,
+        status: 'idle',
+        error: null
+    }
+};
 
 export const oneItemUser = {
     customer: {
@@ -53,9 +89,20 @@ export const twoItemUser = {
             size: 'L',
             thumbnail_url: 'linktoimage',
             unit_price_eur: 330
+        },
+        {
+            cart_id: 3,
+            product_id: 19,
+            quantity: 2,
+            size: 'Universal',
+            product_title: 'Lord Nermal Socks',
+            manufacturer: 'RIPNDIP',
+            color: 'Tie Dye',
+            unit_price_eur: 12,
+            thumbnail_url: 'linktoimage'
         }],
-        total: 330,
+        total: 354,
         status: 'succeeded',
         error: null
     }
-}
+};
