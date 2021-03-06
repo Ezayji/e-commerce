@@ -12,6 +12,8 @@ import customerReducer from '../../../Redux/CustomerSlice';
 import Cart from '../Cart';
 import CartItem from '../CartItem';
 
+import { oneItemUser } from './utils/cartState';
+
 jest.mock('../../../Redux/Store');
 
     // store for renders that dont dispatch actions

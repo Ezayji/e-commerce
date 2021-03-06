@@ -60,14 +60,16 @@ export async function updateItemQty(data){
     try{
         const response = await axios.put(url, updatedItem, sendConfig);
         if(response.data.products && response.data.total){
-            store.dispatch(cartAdded(response.data));
-            return true;
+            //store.dispatch(cartAdded(response.data));
+            //return true;
+            return response.data;
         };
     } catch(error) {
         if(error.response.data === 'Not in stock'){
-            return error.response.data;
+            //return error.response.data;
+            return { error: error.response.data };
         } else {
-            return 'Something Went Wrong';
+            return { error: 'Something Went Wrong' };
         };
     };
 };

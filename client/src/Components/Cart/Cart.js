@@ -47,10 +47,12 @@ const Cart = ({ history, store }) => {
         };
             
         const response = await updateItemQty(updatedItem);
-
-        if(response !== true){
-            alert(response);
+        if(response.error){
+            alert(response.error);
+        } else {
+            store.dispatch(cartAdded(response));
         };
+
     };
 
     const onDecrement = async (item) => {
@@ -66,10 +68,12 @@ const Cart = ({ history, store }) => {
             };
             
             const response = await updateItemQty(updatedItem);
+            if(response.error){
+                alert(response.error);
+            } else {
+                store.dispatch(cartAdded(response));
+            };
 
-            if(response !== true){
-                alert(response);
-            };            
         };
     };
 
