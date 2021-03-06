@@ -34,7 +34,9 @@ function App({ store }) {
           <Route path='/account/:username' exact>
             <Account store={store} />
           </Route>
-          <Route path='/cart/:username' exact component={Cart} />
+          <Route path='/cart/:username' exact >
+            <Cart store={store} />
+          </Route>
           <Route path='/checkout/success/:username/:order_id' exact component={SuccessPage} />
           <Route path='/orders/:username' exact component={Orders} />
           <Route path='/orders/:username/order/:order_id' exact component={SingleOrder} />
@@ -45,6 +47,7 @@ function App({ store }) {
 };
 
 // <Route path='/account/:username' exact component={Account} />
+// <Route path='/cart/:username' exact component={Cart} />
 
 // <Footer/>
 

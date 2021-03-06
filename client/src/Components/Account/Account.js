@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
 import { fetchCustomer, fetchAddress, profileAdded, addressAdded } from '../../Redux/CustomerSlice';
-//import store from '../../Redux/Store';
 
 import { updateProfile, updateAddress } from '../../Services/Api/customer';
 

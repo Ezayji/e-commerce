@@ -3,8 +3,8 @@ import './Cart.css';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { fetchCart } from '../../Redux/CartSlice';
-import store from '../../Redux/Store';
+import { fetchCart, cartAdded } from '../../Redux/CartSlice';
+//import store from '../../Redux/Store';
 import { updateItemQty, deleteFromCart } from '../../Services/Api/cart';
 
 import { Redirect } from 'react-router-dom';
@@ -18,7 +18,7 @@ import { Elements } from '@stripe/react-stripe-js';
 const promise = loadStripe('pk_test_51IItmKB1uegguB7b2ReRKVdoa1Bojw5VxlWF9uuCwiYdY1Z3C8wpwI8kDau5SQ8qQN2nQdJXOvwvhODgssLH5RFn00LH75oIZw');
 
 
-const Cart = ({ history }) => {
+const Cart = ({ history, store }) => {
     const [status, setStatus] = useState('Cart');
 
     const user = useSelector(state => state.customer.user);

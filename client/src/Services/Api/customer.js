@@ -154,9 +154,9 @@ export async function resetPw(data){
         return true;
     } catch(error) {
         if(error.response.data === 'Wrong Password Provided'){
-            return error.response.data;
+            return { error: error.response.data };
         } else {
-            return 'Something Went Wrong, Please Try Again';
+            return { error: 'Something Went Wrong, Please Try Again' };
         };
     };
 };

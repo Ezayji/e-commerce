@@ -51,6 +51,10 @@ const item = {
     unit_price_eur: 330
 };
 
+describe('* <Cart /> *', () => {
+    
+});
+
 describe('* <CartItem /> *', () => {
     it('Renders without crashing and displays item details', () => {
         rtlRender(<CartItem item={item}  />);

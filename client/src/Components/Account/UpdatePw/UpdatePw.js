@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { resetPw } from '../../../Services/Api/customer';
-import {Link} from 'react-router-dom';
 
 const UpdatePw = ({ history }) => {
     const [oldPw, setOldPw] = useState('');
@@ -40,9 +39,9 @@ const UpdatePw = ({ history }) => {
                 resetFields();
                 alert('Password Changed Successfully');
                 history.push(`/account/${user.username}`);
-            } else {
+            } else if (response.error) {
                 resetFields();
-                alert(response);
+                alert(response.error);
             };
         };
     };

@@ -8,8 +8,9 @@ export async function getCart(username){
     try{
         const response = await axios.get(url, getConfig);
         if(response.data.products && response.data.total){
-            store.dispatch(cartAdded(response.data));
-            return true;
+            //store.dispatch(cartAdded(response.data));
+            //return true;
+            return response.data;
         };
     } catch(error) {
         if(error.response.data === 'No Cart Items For Customer'){
@@ -17,8 +18,9 @@ export async function getCart(username){
                 products: null,
                 total: 0
             }
-            store.dispatch(cartAdded(data));
-            return error.response.data;
+            //store.dispatch(cartAdded(data));
+            //return error.response.data;
+            return data;
         } else {
             return 'Something Went wrong';
         };
@@ -65,7 +67,6 @@ export async function updateItemQty(data){
         if(error.response.data === 'Not in stock'){
             return error.response.data;
         } else {
-            console.log(error.response);
             return 'Something Went Wrong';
         };
     };

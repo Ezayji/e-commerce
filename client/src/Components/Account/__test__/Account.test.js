@@ -883,7 +883,131 @@ describe('* <UpdatePw /> *', () => {
             expect(history.location.pathname).toBe('/account/Revarz');
         });
 
+        it('Request password change from server on submit and redirects to "/account/:username" on success', async () => {
+            window.alert = jest.fn();
 
+            const history = createMemoryHistory();
+            const store = setUpStore( noAddressUser );
+
+            const scope = nock('http://localhost')
+                .put('/api/customer_un/Revarz/password', {
+                    password: 'samsungpw',
+                    new_password: 'newpassword'
+                })
+                .reply(200);
+
+            rtlRender(
+                <Provider store={store} >
+                    <Router>
+                        <UpdatePw history={history} />
+                    </Router>
+                </Provider>
+            );
+
+            expect(history.location.pathname).toEqual(expect.not.stringContaining('/account/Revarz'));
+
+            const form = screen.getByTestId('password-change-form');
+            expect(form).toBeInTheDocument();
+
+            const oldPassword = screen.getByTestId('old-password-field');
+            fireEvent.change(oldPassword, { target: { value: 'samsungpw' } });
+
+            const newPassword = screen.getByTestId('new-password-field');
+            fireEvent.change(newPassword, { target: { value: 'newpassword' } });
+
+            const repeatPassword = screen.getByTestId('repeat-password-field');
+            fireEvent.change(repeatPassword, { target: { value: 'newpassword' } });
+
+            const submit = screen.getByTestId('submit-password-field');
+            fireEvent.click(submit);
+
+            await waitFor(() => {
+                expect(window.alert).toHaveBeenCalled();
+                expect(history.location.pathname).toBe('/account/Revarz');
+            });
+
+        });
+
+        it('Throws an alert an clears fields if New password and Repeat New Password do not match', async () => {
+            window.alert = jest.fn();
+
+            const history = createMemoryHistory();
+            const store = setUpStore( noAddressUser );
+
+            rtlRender(
+                <Provider store={store} >
+                    <Router>
+                        <UpdatePw history={history} />
+                    </Router>
+                </Provider>
+            );
+
+            expect(history.location.pathname).toEqual(expect.not.stringContaining('/account/Revarz'));
+
+            const form = screen.getByTestId('password-change-form');
+            expect(form).toBeInTheDocument();
+
+            const oldPassword = screen.getByTestId('old-password-field');
+            fireEvent.change(oldPassword, { target: { value: 'samsungpw' } });
+
+            const newPassword = screen.getByTestId('new-password-field');
+            fireEvent.change(newPassword, { target: { value: 'newpassword' } });
+
+            const repeatPassword = screen.getByTestId('repeat-password-field');
+            fireEvent.change(repeatPassword, { target: { value: 'samsungpw' } });
+
+            const submit = screen.getByTestId('submit-password-field');
+            fireEvent.click(submit);
+
+            await waitFor(() => {
+                expect(window.alert).toHaveBeenCalled();
+            });
+
+            expect(screen.getByTestId('old-password-field')).toHaveTextContent('');
+            expect(screen.getByTestId('new-password-field')).toHaveTextContent('');
+            expect(screen.getByTestId('repeat-password-field')).toHaveTextContent('');
+
+        });
+
+        it('Throws and alert and clears fields if Old password and New passwords match', async () => {
+            window.alert = jest.fn();
+
+            const history = createMemoryHistory();
+            const store = setUpStore( noAddressUser );
+
+            rtlRender(
+                <Provider store={store} >
+                    <Router>
+                        <UpdatePw history={history} />
+                    </Router>
+                </Provider>
+            );
+
+            expect(history.location.pathname).toEqual(expect.not.stringContaining('/account/Revarz'));
+
+            const form = screen.getByTestId('password-change-form');
+            expect(form).toBeInTheDocument();
+
+            const oldPassword = screen.getByTestId('old-password-field');
+            fireEvent.change(oldPassword, { target: { value: 'samsungpw' } });
+
+            const newPassword = screen.getByTestId('new-password-field');
+            fireEvent.change(newPassword, { target: { value: 'samsungpw' } });
+
+            const repeatPassword = screen.getByTestId('repeat-password-field');
+            fireEvent.change(repeatPassword, { target: { value: 'samsungpw' } });
+
+            const submit = screen.getByTestId('submit-password-field');
+            fireEvent.click(submit);
+
+            await waitFor(() => {
+                expect(window.alert).toHaveBeenCalled();
+            });
+
+            expect(screen.getByTestId('old-password-field')).toHaveTextContent('');
+            expect(screen.getByTestId('new-password-field')).toHaveTextContent('');
+            expect(screen.getByTestId('repeat-password-field')).toHaveTextContent('');
+        });
 
     });
 

@@ -10,8 +10,9 @@ const initialState = {
 
 export const fetchCart = createAsyncThunk('cart/fetchCart', async (_, { getState }) => {
     const username = getState().customer.user.username;
-    await getCart(username);
-}); 
+    const response = await getCart(username);
+    return response;
+});
 
 const cartSlice = createSlice({
     name: 'cart',
@@ -37,6 +38,8 @@ const cartSlice = createSlice({
             state.status = 'loading';
         },
         [fetchCart.fulfilled]: (state, action) => {
+            state.products = action.payload.products;
+            state.total = action.payload.total;
             state.status = 'succeeded'
         },
         [fetchCart.rejected]: (state, action) => {
