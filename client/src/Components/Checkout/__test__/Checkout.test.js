@@ -31,13 +31,13 @@ function setUpStore(initialState){
     );
 };
 
-xdescribe('* <Checkout /> *', () => {
+xdescribe('* <Checkout /> (parent) *', () => {
     describe('-- Customer With Saved Address --', () => {
 
     });
 });
 
-describe('* <Billing /> *', () => {
+describe('* <Billing /> (child) *', () => {
     it('Renders without crashing if Saved Address is supplied and provides checkbox option "Use existing address"', async () => {
         const store = setUpStore( savedAddressUser );
         
@@ -123,6 +123,40 @@ describe('* <Billing /> *', () => {
         expect(screen.getByText('Use existing address')).toBeInTheDocument();
     });
 
+    it('Clears fields if first render with Saved Address and any field is changed', async () => {
+        const store = setUpStore( savedAddressUser );
+        
+        const address = {
+            appartment_nr: '1',
+            street: 'street',
+            city: 'city',
+            province: 'province',
+            zip: '76607',
+            country: 'Estonia',
+        };
+        
+        rtlRender(
+            <Provider store={store} >
+                <Billing address={address} />
+            </Provider>
+        );
+        
+        await waitFor(() => {
+            expect(screen.getByDisplayValue('Estonia')).toBeInTheDocument();
+        });
+
+        const appartment = screen.getByTestId('appartment');
+        fireEvent.change(appartment, { target: { value: '2' } });
+
+        expect(screen.getByTestId('appartment').value).toBe('2');
+        expect(screen.getByTestId('street').value).toBe('');
+        expect(screen.getByTestId('city').value).toBe('');
+        expect(screen.getByTestId('province').value).toBe('');
+        expect(screen.getByTestId('zip').value).toBe('');
+        expect(screen.getByTestId('country').value).toBe('');
+
+    });
+
     it('Does not change input values if No Supplied Address, fields are then filled and "Save address" is then unchecked', () => {
         const store = setUpStore( noAddressUser );
         
@@ -158,9 +192,48 @@ describe('* <Billing /> *', () => {
         expect(screen.getByDisplayValue('76607')).toBeInTheDocument();
     });
 
-    describe('-- Second render with custom address in Parent state --', () => {
+    it('onNext from props is called with selected address info if "NEXT" is clicked', async () => {
+        const store = setUpStore( savedAddressUser );
+        const onNext = jest.fn();
+
+        const address = {
+            appartment_nr: '1',
+            street: 'street',
+            city: 'city',
+            province: 'province',
+            zip: '76607',
+            country: 'Estonia',
+        };
+        
+        rtlRender(
+            <Provider store={store} >
+                <Billing address={address} onNext={onNext} />
+            </Provider>
+        );
+        
+        await waitFor(() => {
+            expect(screen.getByDisplayValue('Estonia')).toBeInTheDocument();
+        });
+
+        const next = screen.getByText('NEXT');
+        fireEvent.click(next);
+
+        expect(onNext).toHaveBeenCalledWith({
+            appartment_nr: '1',
+            street: 'street',
+            city: 'city',
+            province: 'province',
+            zip: '76607',
+            country: 'Estonia',
+            status: 'Existing',
+            check: true
+        });
+        
+    });
+
+    describe('-- Second render with address in Parent state --', () => {
     
-        it('Can switch between Custom Address and Saved address if "Use existing address" is checked and unchecked', async () => {
+        it('Can switch between Custom Address info and Saved address if "Use existing address" is checked and unchecked (renders with *Unchecked* and has custom in fields)', async () => {
             const store = setUpStore( savedAddressUser );
         
             const address = {
@@ -188,6 +261,7 @@ describe('* <Billing /> *', () => {
             expect(screen.getByDisplayValue('city2')).toBeInTheDocument();
             expect(screen.getByDisplayValue('province2')).toBeInTheDocument();
             expect(screen.getByDisplayValue('76605')).toBeInTheDocument();
+            expect(screen.getByTestId('use-existing').checked).toBe(false);
 
             const check = screen.getByTestId('use-existing');
             fireEvent.click(check);
@@ -198,6 +272,7 @@ describe('* <Billing /> *', () => {
             expect(screen.getByTestId('province').value).toBe('province');
             expect(screen.getByTestId('zip').value).toBe('76607');
             expect(screen.getByTestId('country').value).toBe('Estonia');
+            expect(screen.getByTestId('use-existing').checked).toBe(true);
 
             fireEvent.click(check);
 
@@ -207,8 +282,115 @@ describe('* <Billing /> *', () => {
             expect(screen.getByTestId('province').value).toBe('province2');
             expect(screen.getByTestId('zip').value).toBe('76605');
             expect(screen.getByTestId('country').value).toBe('England');
+            expect(screen.getByTestId('use-existing').checked).toBe(false);
 
         });
+
+        it('Customer with saved address has saved info in fields and "Use existing address" *Checked*', async () => {
+            const store = setUpStore( savedAddressUser );
+        
+            const address = {
+                appartment_nr: '1',
+                street: 'street',
+                city: 'city',
+                province: 'province',
+                zip: '76607',
+                country: 'Estonia',
+                status: 'Existing',
+                check: true
+            };
+            
+            rtlRender(
+                <Provider store={store} >
+                    <Billing address={address} />
+                </Provider>
+            );
+            
+            await waitFor(() => {
+                expect(screen.getByDisplayValue('Estonia')).toBeInTheDocument();
+            });
+            
+            expect(screen.getByTestId('appartment').value).toBe('1');
+            expect(screen.getByTestId('street').value).toBe('street');
+            expect(screen.getByTestId('city').value).toBe('city');
+            expect(screen.getByTestId('province').value).toBe('province');
+            expect(screen.getByTestId('zip').value).toBe('76607');
+            expect(screen.getByTestId('country').value).toBe('Estonia');
+
+            expect(screen.getByTestId('use-existing').checked).toBe(true);
+        });
+
+        it('Customer without saved address has custom address in fields and "Save address" remains *Unchecked*', async () => {
+            const store = setUpStore( noAddressUser );
+        
+            const address = {
+                appartment_nr: '1',
+                street: 'street',
+                city: 'city',
+                province: 'province',
+                zip: '76607',
+                country: 'Estonia',
+                status: 'New',
+                check: false
+            };
+        
+            rtlRender(
+                <Provider store={store} >
+                    <Billing address={address} />
+                </Provider>
+            );
+
+            await waitFor(() => {
+                expect(screen.getByDisplayValue('Estonia')).toBeInTheDocument();
+            });
+
+            expect(screen.getByTestId('appartment').value).toBe('1');
+            expect(screen.getByTestId('street').value).toBe('street');
+            expect(screen.getByTestId('city').value).toBe('city');
+            expect(screen.getByTestId('province').value).toBe('province');
+            expect(screen.getByTestId('zip').value).toBe('76607');
+            expect(screen.getByTestId('country').value).toBe('Estonia');
+
+            expect(screen.getByTestId('save-address').checked).toBe(false);
+        });
+
+        it('Customer without saved address has custom address in fields and "Save address" remains *Checked*', async () => {
+            const store = setUpStore( noAddressUser );
+        
+            const address = {
+                appartment_nr: '1',
+                street: 'street',
+                city: 'city',
+                province: 'province',
+                zip: '76607',
+                country: 'Estonia',
+                status: 'New',
+                check: true
+            };
+        
+            rtlRender(
+                <Provider store={store} >
+                    <Billing address={address} />
+                </Provider>
+            );
+
+            await waitFor(() => {
+                expect(screen.getByDisplayValue('Estonia')).toBeInTheDocument();
+            });
+
+            expect(screen.getByTestId('appartment').value).toBe('1');
+            expect(screen.getByTestId('street').value).toBe('street');
+            expect(screen.getByTestId('city').value).toBe('city');
+            expect(screen.getByTestId('province').value).toBe('province');
+            expect(screen.getByTestId('zip').value).toBe('76607');
+            expect(screen.getByTestId('country').value).toBe('Estonia');
+
+            expect(screen.getByTestId('save-address').checked).toBe(true);
+        });
     });
+
+});
+
+xdescribe('* <Payment /> (child) *', () => {
 
 });
