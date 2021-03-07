@@ -101,7 +101,7 @@ const Billing = ({ onNext, address }) => {
     if(adrInfo === 'Existing'){
         adrInfoSelect = (
             <div className='billing-info-check-div' >
-                <input type='checkbox' checked={check} onChange={(e) => {
+                <input data-testid='use-existing' type='checkbox' checked={check} onChange={(e) => {
                     setCheck(e.target.checked)
                     if(e.target.checked === true){
                         setDbAddress();
@@ -116,7 +116,7 @@ const Billing = ({ onNext, address }) => {
     } else if (adrInfo === 'New'){
         adrInfoSelect = (
             <div className='billing-info-check-div' >
-                <input type='checkbox' checked={check} onChange={(e) => {
+                <input data-testid='save-address' type='checkbox' checked={check} onChange={(e) => {
                     setCheck(e.target.checked)
                 }} />Save address
             </div>
@@ -130,33 +130,33 @@ const Billing = ({ onNext, address }) => {
                 <p>* we will use your saved name, email and phone</p>
                 <p>* shipping is free</p>
                 <div className='billing-info-row-div' >
-                    <input className='billing-info-row' type='text' value={strt} placeholder='STREET' onChange={(e) => {
+                    <input data-testid='street' className='billing-info-row' type='text' value={strt} placeholder='STREET' onChange={(e) => {
                         checkAdrStatus();
                         setStrt(e.target.value);
                     }} required />
-                    <input className='billing-info-row' type='text' value={ap} placeholder='APPARTMENT' onChange={(e) => {
+                    <input data-testid='appartment' className='billing-info-row' type='text' value={ap} placeholder='APPARTMENT' onChange={(e) => {
                         checkAdrStatus();
                         setAp(e.target.value);
                     }} required />
                 </div>
 
                 <div className='billing-info-row-div' >
-                    <input className='billing-info-row' type='text' value={cty} placeholder='CITY' onChange={(e) => {
+                    <input data-testid='city' className='billing-info-row' type='text' value={cty} placeholder='CITY' onChange={(e) => {
                         checkAdrStatus();
                         setCty(e.target.value);
                     }} required />
-                    <input className='billing-info-row' type='text' value={zp} placeholder='ZIP' onChange={(e) => {
+                    <input data-testid='zip' className='billing-info-row' type='text' value={zp} placeholder='ZIP' onChange={(e) => {
                         checkAdrStatus();
                         setZp(e.target.value);
                     }} required />
                 </div>
 
                 <div className='billing-info-row-div' >
-                    <input className='billing-info-row' type='text' value={prvnc} placeholder='PROVINCE' onChange={(e) => {
+                    <input data-testid='province' className='billing-info-row' type='text' value={prvnc} placeholder='PROVINCE' onChange={(e) => {
                         checkAdrStatus();
                         setPrvnc(e.target.value);
                     }} required />
-                    <input className='billing-info-row' type='text' value={cntry} placeholder='COUNTRY' onChange={(e) => {
+                    <input data-testid='country' className='billing-info-row' type='text' value={cntry} placeholder='COUNTRY' onChange={(e) => {
                         checkAdrStatus();
                         setCntry(e.target.value);
                     }} required />

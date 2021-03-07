@@ -63,7 +63,7 @@ const Checkout = ({ total, onCancel, cart, history }) => {
     };
 
     return(
-        <div className='checkout' >
+        <div data-testid='checkout-div' className='checkout' >
             {form}
             <button disabled={proccessing} className='cancel-checkout' type='button' onClick={onCancel} >Cancel Checkout</button>
         </div>

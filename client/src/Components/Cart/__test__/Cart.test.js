@@ -56,7 +56,7 @@ const item = {
     unit_price_eur: 330
 };
 
-describe('* <Cart /> *', () => {
+describe('* <Cart /> (parent) *', () => {
     describe('-- Logged in customer --', () => {
         it('Renders 1 Cart Item and Total without crashing', () => {
 
@@ -105,6 +105,32 @@ describe('* <Cart /> *', () => {
             expect(screen.getByText('€12')).toBeInTheDocument();
             
             expect(screen.getByText('TOTAL: €354')).toBeInTheDocument();
+        });
+
+        it('Renders "No Items In Cart" if server responds with 404 "No Cart Items For Customer"', async () => {
+            const history = createMemoryHistory();
+            const store = setUpStore( noItemsUser );
+
+            rtlRender(
+                <Provider store={store} >
+                    <Router>
+                        <Cart history={history} store={store} />
+                    </Router>
+                </Provider>
+            );
+
+            const scope = nock('http://localhost')
+                .get('/api/cart/Revarz')
+                .replyWithError(404, {
+                    statusCode: 404,
+                    error: 'Not Found',
+                    message: 'No Cart Items For Customer'
+                });
+            
+            await waitFor(() => {
+                expect(screen.getByText('No Items In Cart')).toBeInTheDocument();
+            });
+
         });
 
         it('Fetches Delete request to server and dispatches Redux Fetch for remaining Cart items if "REMOVE ITEM" is clicked for an Item', async () => {
@@ -319,7 +345,7 @@ describe('* <Cart /> *', () => {
                         unit_price_eur: 330
                     }],
                     total: 330
-            });
+            }); 
 
             await waitFor(() => {
                 expect(screen.getByText('Stuzzy and Nike Insulated Pullover')).toBeInTheDocument();
@@ -331,6 +357,31 @@ describe('* <Cart /> *', () => {
             expect(screen.getByText('€330')).toBeInTheDocument();
             expect(screen.getByText('TOTAL: €330')).toBeInTheDocument();
 
+        });
+
+        it('Renders Checkout div if "CHECKOUT" is clicked and removes it if "Cancel Checkout" is clicked', async () => {
+            const history = createMemoryHistory();
+            const store = setUpStore( twoItemUser );
+
+            rtlRender(
+                <Provider store={store} >
+                    <Router>
+                        <Cart history={history} store={store} />
+                    </Router>
+                </Provider>
+            );
+
+            const toCheckout = screen.getByText('CHECKOUT');
+            fireEvent.click(toCheckout);
+
+            await waitFor(() => {
+                expect(screen.getByTestId('checkout-div')).toBeInTheDocument();
+            });
+
+            const cancel = screen.getByText('Cancel Checkout');
+            fireEvent.click(cancel);
+
+            expect(() =>  screen.getByText('Cancel Checkout')).toThrow();
         });
 
     });

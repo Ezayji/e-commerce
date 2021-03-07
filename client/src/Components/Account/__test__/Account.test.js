@@ -713,12 +713,12 @@ describe('* <AdrUpdateForm /> *', () => {
             );
 
             expect(screen.getByText('* No Address Added *')).toBeInTheDocument();
-            expect(screen.getByTestId('appartment-field')).toHaveTextContent('');
-            expect(screen.getByTestId('street-field')).toHaveTextContent('');
-            expect(screen.getByTestId('city-field')).toHaveTextContent('');
-            expect(screen.getByTestId('province-field')).toHaveTextContent('');
-            expect(screen.getByTestId('zip-field')).toHaveTextContent('');
-            expect(screen.getByTestId('country-field')).toHaveTextContent('');
+            expect(screen.getByTestId('appartment-field').value).toBe('');
+            expect(screen.getByTestId('street-field').value).toBe('');
+            expect(screen.getByTestId('city-field').value).toBe('');
+            expect(screen.getByTestId('province-field').value).toBe('');
+            expect(screen.getByTestId('zip-field').value).toBe('');
+            expect(screen.getByTestId('country-field').value).toBe('');
 
         });
 
