@@ -49,7 +49,7 @@ function setUpStore(initialState){
 
 
 
-describe('* <Account /> (Parent Comp) *', () => {
+describe('* <Account /> (Parent Comp) * ', () => {
     
     describe('-- Logged in Customer with Profile and Address in Redux state --', () => {
 

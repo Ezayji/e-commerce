@@ -40,6 +40,7 @@
 /* ORDER CONTENTS DIV */
 
 .order-contents{
+    margin-bottom: 10px;
     width: 65vh;
     max-width: 90%;
     display: flex;
@@ -63,12 +64,18 @@
 }
 
 .order-item{
+    
     display: flex;
     flex-direction: column;
     border-bottom: 2px solid rgba(0, 0, 0, 0.178);
 }
 
 .order-item-title{
+    margin-top: 5px;
     display: flex;
     flex-direction: column;
+}
+
+.order-item p, .order-address p {
+    margin-bottom: 5px;
 }

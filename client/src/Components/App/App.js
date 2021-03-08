@@ -31,13 +31,9 @@ function App({ store }) {
           <Route path='/brands/:brand_id/:title/:productid/:product_title' exact component={ProdPage} />
           <Route path='/brands/:brand_id/:title' exact component={Products} />
           <Route path='/account/:username/password' exact component={UpdatePw} />
-          <Route path='/account/:username' exact>
-            <Account store={store} />
-          </Route>
-          <Route path='/cart/:username' exact >
-            <Cart store={store} />
-          </Route>
-          <Route path='/checkout/success/:username/:order_id' exact component={SuccessPage} />
+          <Route path='/account/:username' exact render={(props) => <Account {...props} store={store} />} />
+          <Route path='/cart/:username' exact render={(props) => <Cart {...props} store={store} />} />
+          <Route path='/checkout/success/:username/:order_id' exact render={(props) => <SuccessPage {...props} store={store} />} />
           <Route path='/orders/:username' exact component={Orders} />
           <Route path='/orders/:username/order/:order_id' exact component={SingleOrder} />
         </Switch>
@@ -45,7 +41,12 @@ function App({ store }) {
     </Router>
   );
 };
-
+/*
+<Route path='/cart/:username' exact >
+            <Cart store={store} />
+          </Route>
+*/
+// <Route path='/checkout/success/:username/:order_id' exact component={SuccessPage} />
 // <Route path='/account/:username' exact component={Account} />
 // <Route path='/cart/:username' exact component={Cart} />
 

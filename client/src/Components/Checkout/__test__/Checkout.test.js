@@ -9,22 +9,41 @@ import thunk from 'redux-thunk';
 
 import nock from 'nock';
 
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+
 import cartReducer from '../../../Redux/CartSlice';
 import customerReducer from '../../../Redux/CustomerSlice';
+import ordersReducer from '../../../Redux/OrdersSlice';
 
 import Checkout from '../Checkout';
 import Billing from '../Billing/Billing';
 import Payment from '../Payment/Payment';
+import SuccessPage from '../SuccessPage/SuccessPage';
 
-import { noAddressUser, savedAddressUser, notFetchedProfile } from './utils/customers';
+import { noAddressUser, savedAddressUser, notFetchedProfile, emptyCartUser, notLoggedIn, fullUserWOrders } from './utils/customers';
 
 jest.mock('../../../Redux/Store');
 
+    // store with customer and cart states
 function setUpStore(initialState){
     return createStore(
         combineReducers({ 
             customer: customerReducer,
             cart: cartReducer,
+        }),
+        initialState,
+        applyMiddleware(thunk)
+    );
+};
+
+    // store with customer, cart and order states
+function makeStore(initialState){
+    return createStore(
+        combineReducers({ 
+            customer: customerReducer,
+            cart: cartReducer,
+            orders: ordersReducer
         }),
         initialState,
         applyMiddleware(thunk)
@@ -391,6 +410,232 @@ describe('* <Billing /> (child) *', () => {
 
 });
 
-xdescribe('* <Payment /> (child) *', () => {
+describe('* <Payment /> (child) *', () => {
+    
+    const promise = loadStripe('pk_test_51IItmKB1uegguB7b2ReRKVdoa1Bojw5VxlWF9uuCwiYdY1Z3C8wpwI8kDau5SQ8qQN2nQdJXOvwvhODgssLH5RFn00LH75oIZw');
+
+    const twoItemCart = [
+        {
+            cart_id: 2,
+            product_id: 12,
+            color: 'White / Green',
+            manufacturer: 'Stuzzy',
+            product_title: 'Stuzzy and Nike Insulated Pullover',
+            quantity: 1,
+            size: 'L',
+            thumbnail_url: 'linktoimage',
+            unit_price_eur: 330
+        },
+        {
+            cart_id: 3,
+            product_id: 19,
+            quantity: 2,
+            size: 'Universal',
+            product_title: 'Lord Nermal Socks',
+            manufacturer: 'RIPNDIP',
+            color: 'Tie Dye',
+            unit_price_eur: 12,
+            thumbnail_url: 'linktoimage'
+        }
+    ];
+
+    const twoTotal = 354;
+    
+    const oneItemCart = [
+        {
+            cart_id: 2,
+            product_id: 12,
+            color: 'White / Green',
+            manufacturer: 'Stuzzy',
+            product_title: 'Stuzzy and Nike Insulated Pullover',
+            quantity: 1,
+            size: 'L',
+            thumbnail_url: 'linktoimage',
+            unit_price_eur: 330
+        }
+    ];
+
+    const oneTotal = 330;
+    
+    const profile = {
+        username: 'Revarz',
+        first_name: 'Selna',
+        last_name: 'Kaszk',
+        email: 'selnaknewemail@testapi.com',
+        phone: '+372 99999999'
+    };
+
+    const address = {
+        username: 'Revarz',
+        appartment_nr: '1',
+        street: 'street',
+        city: 'city',
+        province: 'province',
+        zip: '76607',
+        country: 'Estonia',
+        status: 'Existing',
+        check: true
+    };
+
+
+
+    it('Renders without crashing and displays 1 cart item', () => {
+        const history = createMemoryHistory();
+        
+        rtlRender(
+            <Router>
+                <Elements stripe={promise} >
+                    <Payment history={history} total={oneTotal} cart={oneItemCart} />
+                </Elements>
+            </Router>
+        );
+
+        expect(screen.getByText('ITEMS')).toBeInTheDocument();
+        expect(screen.getByText('Stuzzy and Nike Insulated Pullover(White / Green) x1')).toBeInTheDocument();
+        expect(screen.getByText('€330')).toBeInTheDocument();
+        expect(screen.getByText('TOTAL: €330')).toBeInTheDocument();
+        expect(screen.getByText('PAYMENT')).toBeInTheDocument();
+
+    });
+
+    it('Renders without crashing and displays 2 cart items', () => {
+        const history = createMemoryHistory();
+        
+        rtlRender(
+            <Router>
+                <Elements stripe={promise} >
+                    <Payment history={history} total={twoTotal} cart={twoItemCart} />
+                </Elements>
+            </Router>
+        );
+
+        expect(screen.getByText('ITEMS')).toBeInTheDocument();
+        expect(screen.getByText('Stuzzy and Nike Insulated Pullover(White / Green) x1')).toBeInTheDocument();
+        expect(screen.getByText('€330')).toBeInTheDocument();
+        expect(screen.getByText('Lord Nermal Socks(Tie Dye) x2')).toBeInTheDocument();
+        expect(screen.getByText('€24')).toBeInTheDocument();
+        expect(screen.getByText('TOTAL: €354')).toBeInTheDocument();
+        expect(screen.getByText('PAYMENT')).toBeInTheDocument();
+
+    });
+
+    it('onPrev from props is called if "CHANGE ADDRESS" is clicked', () => {
+        const history = createMemoryHistory();
+        const onPrev = jest.fn()
+
+        rtlRender(
+            <Router>
+                <Elements stripe={promise} >
+                    <Payment history={history} total={oneTotal} cart={oneItemCart} onPrev={onPrev} />
+                </Elements>
+            </Router>
+        );
+
+        const changeAddress = screen.getByText('CHANGE ADDRESS');
+        fireEvent.click(changeAddress);
+        expect(onPrev).toHaveBeenCalled();
+
+    });
+
+});
+
+describe('* <SuccessPage /> *', () => {
+    describe('-- Logged in customer redirected after succesful purchase --', () => {
+
+        it('Renders without crashing, displays Order ID and username ', async () => {
+
+            const store = setUpStore( emptyCartUser );
+            rtlRender(
+                <Provider store={store} >
+                    <Router >
+                        <SuccessPage store={store} match={{params: {username: 'Revarz', order_id: 1000000}, isExact: true, path: '/checkout/success/:username/:order_id', url: '/checkout/success/Revarz/1000000'}} />
+                    </Router>
+                </Provider>
+            );
+
+            await waitFor(() => {
+                expect(screen.getByText('Thank you for your purchase!')).toBeInTheDocument();
+            });
+
+            expect(screen.getByText('Succesfully created order #1000000 for Revarz')).toBeInTheDocument();
+            //expect(screen.getByText('Find your new order details here.')).toBeInTheDocument();
+        });
+
+        it('Renders a link to order details page', async () => {
+            const store = setUpStore( emptyCartUser );
+            rtlRender(
+                <Provider store={store} >
+                    <Router >
+                        <SuccessPage store={store} match={{params: {username: 'Revarz', order_id: 1000000}, isExact: true, path: '/checkout/success/:username/:order_id', url: '/checkout/success/Revarz/1000000'}} />
+                    </Router>
+                </Provider>
+            );
+
+            await waitFor(() => {
+                expect(screen.getByText('Thank you for your purchase!')).toBeInTheDocument();
+            });
+
+            expect(screen.getByRole('link')).toHaveAttribute('href', '/orders/Revarz/order/1000000');
+        });
+
+        it('Resets Redux Cart state and fetches Orders on render', async () => {
+            const store = makeStore( fullUserWOrders );
+            const order = [{
+                id: 1001,
+                date_utc: "2021-03-08T11:22:09.184Z",
+                total_eur: 330,
+                payment: true
+            }];
+
+            const emptyCart = {
+                products: null,
+                total: 0,
+                status: 'idle',
+                error: null
+            };
+
+            const scope = nock('http://localhost')
+                .get('/api/orders/Revarz')
+                .reply(200, order);
+
+            rtlRender(
+                <Provider store={store} >
+                    <Router >
+                        <SuccessPage store={store} match={{params: {username: 'Revarz', order_id: 1000000}, isExact: true, path: '/checkout/success/:username/:order_id', url: '/checkout/success/Revarz/1000000'}} />
+                    </Router>
+                </Provider>
+            );
+                // timeout for redux to finish actions
+            await new Promise((r) => setTimeout(r, 1000));
+
+            const stateOrders = store.getState().orders.orders;
+            expect(stateOrders).toEqual(order);
+            const stateCart = store.getState().cart;
+            expect(stateCart).toEqual(emptyCart);
+
+        });
+
+    });
+
+    describe('-- Not logged in customer trying to access via Url --', () => {
+        
+        it('Redirects to "/"', async () => {
+            const store = setUpStore( notLoggedIn );
+            rtlRender(
+                <Provider store={store} >
+                    <Router>
+                        <SuccessPage store={store} match={{params: {username: 'Revarz', order_id: 1000000}, isExact: true, path: '/checkout/success/:username/:order_id', url: '/checkout/success/Revarz/1000000'}} />
+                        <Route path="/" >Main Page</Route>
+                    </Router>
+                </Provider>
+            );
+
+            await waitFor(() => {
+                expect(screen.getByText('Main Page')).toBeInTheDocument();
+            });
+
+        });
+
+    });
 
 });

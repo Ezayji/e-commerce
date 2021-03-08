@@ -2,13 +2,13 @@ import './SuccessPage.css';
 
 import { resetCart } from '../../../Redux/CartSlice';
 import { fetchOrders } from '../../../Redux/OrdersSlice';
-import store from '../../../Redux/Store';
+//import store from '../../../Redux/Store';
 
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Redirect, Link } from 'react-router-dom';
 
-const SuccessPage = ({ match }) => {
+const SuccessPage = ({ match, store }) => {
     
     const user = useSelector(state => state.customer.user);
     const cart = useSelector(state => state.cart.products);

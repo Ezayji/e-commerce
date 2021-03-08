@@ -56,7 +56,7 @@ const item = {
     unit_price_eur: 330
 };
 
-describe('* <Cart /> (parent) *', () => {
+describe('* <Cart /> (parent) * ', () => {
     describe('-- Logged in customer --', () => {
         it('Renders 1 Cart Item and Total without crashing', () => {
 
