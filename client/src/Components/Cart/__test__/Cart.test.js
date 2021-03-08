@@ -15,7 +15,7 @@ import customerReducer from '../../../Redux/CustomerSlice';
 import Cart from '../Cart';
 import CartItem from '../CartItem';
 
-import { oneItemUser, twoItemUser, emptyState, noItemsUser} from './utils/cartState';
+import { oneItemUser, twoItemUser, emptyState, noItemsUser, fullTwoItemUser} from './utils/cartState';
 
 jest.mock('../../../Redux/Store');
 
@@ -361,7 +361,7 @@ describe('* <Cart /> (parent) * ', () => {
 
         it('Renders Checkout div if "CHECKOUT" is clicked and removes it if "Cancel Checkout" is clicked', async () => {
             const history = createMemoryHistory();
-            const store = setUpStore( twoItemUser );
+            const store = setUpStore( fullTwoItemUser );
 
             rtlRender(
                 <Provider store={store} >

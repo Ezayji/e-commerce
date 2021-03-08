@@ -21,7 +21,9 @@ import Billing from '../Billing/Billing';
 import Payment from '../Payment/Payment';
 import SuccessPage from '../SuccessPage/SuccessPage';
 
-import { noAddressUser, savedAddressUser, notFetchedProfile, emptyCartUser, notLoggedIn, fullUserWOrders } from './utils/customers';
+const promise = loadStripe('pk_test_51IItmKB1uegguB7b2ReRKVdoa1Bojw5VxlWF9uuCwiYdY1Z3C8wpwI8kDau5SQ8qQN2nQdJXOvwvhODgssLH5RFn00LH75oIZw');
+
+import { noAddressUser, savedAddressUser, notFetchedProfile, emptyCartUser, notLoggedIn, fullUserWOrders, twoItemCart, twoTotal, oneItemCart, oneTotal, profile, address } from './utils/customers';
 
 jest.mock('../../../Redux/Store');
 
@@ -50,8 +52,210 @@ function makeStore(initialState){
     );
 };
 
-xdescribe('* <Checkout /> (parent) *', () => {
+describe('* <Checkout /> (parent) *', () => {
     describe('-- Customer With Saved Address --', () => {
+
+        it("Renders without crashing and displays <Billing /> with Customer's saved address", async () => {
+            const store = setUpStore( savedAddressUser );
+
+            rtlRender(
+                <Provider store={store} >
+                    <Checkout store={store} />
+                </Provider>
+            );
+
+            await waitFor(() => {
+                expect(screen.getByText('BILLING')).toBeInTheDocument();
+            });
+
+            expect(screen.getByTestId('appartment').value).toBe('1');
+            expect(screen.getByTestId('street').value).toBe('street');
+            expect(screen.getByTestId('city').value).toBe('city');
+            expect(screen.getByTestId('province').value).toBe('province');
+            expect(screen.getByTestId('zip').value).toBe('76607');
+            expect(screen.getByTestId('country').value).toBe('Estonia');
+            expect(screen.getByTestId('use-existing').checked).toBe(true);
+        });
+
+        it('onCancel from props is called if "Cancel Checkout" is clicked', async () => {
+            const store = setUpStore( savedAddressUser );
+            const onCancel = jest.fn();
+
+            rtlRender(
+                <Provider store={store} >
+                    <Checkout store={store} onCancel={onCancel} />
+                </Provider>
+            );
+
+            await waitFor(() => {
+                expect(screen.getByText('BILLING')).toBeInTheDocument();
+            });
+
+            const cancel = screen.getByText('Cancel Checkout');
+            fireEvent.click(cancel);
+
+            expect(onCancel).toHaveBeenCalled();
+        });
+
+        it('Renders <Payment /> if "NEXT" is clicked', async () => {
+            const store = setUpStore( savedAddressUser );
+
+            rtlRender(
+                <Provider store={store} >
+                    <Elements stripe={promise} >
+                        <Checkout store={store} cart={twoItemCart} total={twoTotal} />
+                    </Elements>
+                </Provider>
+            );
+
+            await waitFor(() => {
+                expect(screen.getByText('BILLING')).toBeInTheDocument();
+            });
+
+            const next = screen.getByText('NEXT');
+            fireEvent.click(next);
+
+            expect(screen.getByText('ITEMS')).toBeInTheDocument();
+            expect(screen.getByText('PAYMENT')).toBeInTheDocument();
+        });
+
+        it('Renders <Billing /> with selected address info if "CHANGE ADDRESS" is clicked on <Payment /> component', async () => {
+            const store = setUpStore( savedAddressUser );
+
+            rtlRender(
+                <Provider store={store} >
+                    <Elements stripe={promise} >
+                        <Checkout store={store} cart={twoItemCart} total={twoTotal} />
+                    </Elements>
+                </Provider>
+            );
+
+            await waitFor(() => {
+                expect(screen.getByText('BILLING')).toBeInTheDocument();
+            });
+
+            const appartment = screen.getByTestId('appartment');
+            fireEvent.change(appartment, { target: { value: '2' } });
+            const street = screen.getByTestId('street');
+            fireEvent.change(street, { target: { value: 'street2' } });
+            const city = screen.getByTestId('city');
+            fireEvent.change(city, { target: { value: 'city2' } });
+            const zip = screen.getByTestId('zip');
+            fireEvent.change(zip, { target: { value: '76605' } });
+            const province = screen.getByTestId('province');
+            fireEvent.change(province, { target: { value: 'province2' } });
+            const country = screen.getByTestId('country');
+            fireEvent.change(country, { target: { value: 'Ukraine' } });
+
+            const next = screen.getByText('NEXT');
+            fireEvent.click(next);
+
+            const change = screen.getByText('CHANGE ADDRESS');
+            fireEvent.click(change);
+
+            expect(screen.getByTestId('appartment').value).toBe('2');
+            expect(screen.getByTestId('street').value).toBe('street2');
+            expect(screen.getByTestId('city').value).toBe('city2');
+            expect(screen.getByTestId('province').value).toBe('province2');
+            expect(screen.getByTestId('zip').value).toBe('76605');
+            expect(screen.getByTestId('country').value).toBe('Ukraine');
+            expect(screen.getByTestId('use-existing').checked).toBe(false);
+
+        });
+
+        it('Dispatches Profile and Address Fetch to Redux if not present', async () => {
+            const store = setUpStore( notFetchedProfile );
+
+            const reqAddress = {
+                username: 'Revarz',
+                appartment_nr: '1',
+                street: 'street',
+                city: 'city',
+                province: 'province',
+                zip: 76607,
+                country: 'Estonia'
+            };
+
+            const scope = nock('http://localhost')
+                .get('/api/customer_un/Revarz')
+                .reply(200, {
+                    username: 'Revarz',
+                    first_name: 'Selna',
+                    last_name: 'Kaszk',
+                    email: 'selnaknewemail@testapi.com',
+                    phone: '+372 99999999'
+                })
+                .get('/api/customer_address/Revarz')
+                .reply(200, {
+                    username: 'Revarz',
+                    appartment_nr: '1',
+                    street: 'street',
+                    city: 'city',
+                    province: 'province',
+                    zip: 76607,
+                    country: 'Estonia'
+            });
+
+            rtlRender(
+                <Provider store={store} >
+                    <Checkout store={store} />
+                </Provider>
+            );
+
+            await waitFor(() => {
+                expect(screen.getByText('BILLING')).toBeInTheDocument();
+            });
+
+            const stateProfile = store.getState().customer.profile;
+            const addressState = store.getState().customer.address;
+
+            expect(stateProfile).toEqual(profile);
+            expect(addressState).toEqual(reqAddress);
+
+        });
+
+        it('Renders <Billing /> with the option "Save address" and empty fields if no address was found from the database', async () => {
+            const store = setUpStore( notFetchedProfile );
+
+            const scope = nock('http://localhost')
+                .get('/api/customer_un/Revarz')
+                .reply(200, {
+                    username: 'Revarz',
+                    first_name: 'Selna',
+                    last_name: 'Kaszk',
+                    email: 'selnaknewemail@testapi.com',
+                    phone: '+372 99999999'
+                })
+                .get('/api/customer_address/Revarz')
+                .reply(200, {
+                    username: 'Revarz',
+                    appartment_nr: null,
+                    street: null,
+                    city: null,
+                    province: null,
+                    zip: null,
+                    country: null
+                });
+
+            rtlRender(
+                <Provider store={store} >
+                    <Checkout store={store} />
+                </Provider>
+            );
+
+            await waitFor(() => {
+                expect(screen.getByText('BILLING')).toBeInTheDocument();
+            });
+
+            expect(screen.getByTestId('appartment').value).toBe('');
+            expect(screen.getByTestId('street').value).toBe('');
+            expect(screen.getByTestId('city').value).toBe('');
+            expect(screen.getByTestId('province').value).toBe('');
+            expect(screen.getByTestId('zip').value).toBe('');
+            expect(screen.getByTestId('country').value).toBe('');
+
+            expect(screen.getByText('Save address')).toBeInTheDocument();
+        });
 
     });
 });
@@ -411,73 +615,6 @@ describe('* <Billing /> (child) *', () => {
 });
 
 describe('* <Payment /> (child) *', () => {
-    
-    const promise = loadStripe('pk_test_51IItmKB1uegguB7b2ReRKVdoa1Bojw5VxlWF9uuCwiYdY1Z3C8wpwI8kDau5SQ8qQN2nQdJXOvwvhODgssLH5RFn00LH75oIZw');
-
-    const twoItemCart = [
-        {
-            cart_id: 2,
-            product_id: 12,
-            color: 'White / Green',
-            manufacturer: 'Stuzzy',
-            product_title: 'Stuzzy and Nike Insulated Pullover',
-            quantity: 1,
-            size: 'L',
-            thumbnail_url: 'linktoimage',
-            unit_price_eur: 330
-        },
-        {
-            cart_id: 3,
-            product_id: 19,
-            quantity: 2,
-            size: 'Universal',
-            product_title: 'Lord Nermal Socks',
-            manufacturer: 'RIPNDIP',
-            color: 'Tie Dye',
-            unit_price_eur: 12,
-            thumbnail_url: 'linktoimage'
-        }
-    ];
-
-    const twoTotal = 354;
-    
-    const oneItemCart = [
-        {
-            cart_id: 2,
-            product_id: 12,
-            color: 'White / Green',
-            manufacturer: 'Stuzzy',
-            product_title: 'Stuzzy and Nike Insulated Pullover',
-            quantity: 1,
-            size: 'L',
-            thumbnail_url: 'linktoimage',
-            unit_price_eur: 330
-        }
-    ];
-
-    const oneTotal = 330;
-    
-    const profile = {
-        username: 'Revarz',
-        first_name: 'Selna',
-        last_name: 'Kaszk',
-        email: 'selnaknewemail@testapi.com',
-        phone: '+372 99999999'
-    };
-
-    const address = {
-        username: 'Revarz',
-        appartment_nr: '1',
-        street: 'street',
-        city: 'city',
-        province: 'province',
-        zip: '76607',
-        country: 'Estonia',
-        status: 'Existing',
-        check: true
-    };
-
-
 
     it('Renders without crashing and displays 1 cart item', () => {
         const history = createMemoryHistory();

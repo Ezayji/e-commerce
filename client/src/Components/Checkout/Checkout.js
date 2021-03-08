@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 import './Checkout.css';
 
 import { fetchAddress, fetchCustomer } from '../../Redux/CustomerSlice';
-import store from '../../Redux/Store';
+//import store from '../../Redux/Store';
 
 import Billing from './Billing/Billing';
 import Payment from './Payment/Payment';
 
-const Checkout = ({ total, onCancel, cart, history }) => {
+const Checkout = ({ total, onCancel, cart, history, store }) => {
     
     const [step, setStep] = useState(1);
     const [adr, setAdr] = useState(null);
@@ -37,7 +37,7 @@ const Checkout = ({ total, onCancel, cart, history }) => {
             setAdr('');
             setStep(1);
         };
-    }, [adrStatus]);
+    }, [address]);
 
     const onNext = (data) => {
         setAdr(data);

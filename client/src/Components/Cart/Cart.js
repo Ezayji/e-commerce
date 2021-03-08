@@ -132,7 +132,7 @@ const Cart = ({ history, store }) => {
     if(status === 'Checkout'){
        checkout = (
         <Elements stripe={promise} >
-            <Checkout total={total} onCancel={onCancel} cart={products} history={history} />
+            <Checkout total={total} onCancel={onCancel} cart={products} history={history} store={store} />
         </Elements>
        );
     } else if(status === 'Cart') {

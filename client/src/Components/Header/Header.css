@@ -18,7 +18,7 @@
     font-family: 'Teko';
     display: flex;
     z-index: 10;
-    backdrop-filter: blur(50px);
+    backdrop-filter: blur(6px);
 }
 
 
