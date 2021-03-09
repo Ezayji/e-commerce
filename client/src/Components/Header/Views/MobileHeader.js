@@ -35,7 +35,7 @@ const MobileHeader = ({ user, categoryListM, categoryListW, brands, onLogout }) 
     let mnSelect = null;
     if(mn === true){
         mnSelect = (
-            <div className='mob-dropdown-content' onClick={resetNav} >
+            <div data-testid='men-selection' className='mob-dropdown-content' onClick={resetNav} >
                 {categoryListM}
                 <p><Link to={'/products/men'} >ALL PRDCTS FR MN</Link></p>
             </div>
@@ -46,7 +46,7 @@ const MobileHeader = ({ user, categoryListM, categoryListW, brands, onLogout }) 
     let wmnSelect;
     if(wmn === true){
         wmnSelect = (
-            <div className='mob-dropdown-content' onClick={resetNav} >
+            <div data-testid='women-selection' className='mob-dropdown-content' onClick={resetNav} >
                 {categoryListW}
                 <p><Link to={'/products/women'} >ALL PRDCTS FR WMN</Link></p>
             </div>
@@ -57,7 +57,7 @@ const MobileHeader = ({ user, categoryListM, categoryListW, brands, onLogout }) 
     let brndSelect;
     if(brnds === true){
         brndSelect = (
-            <div className='mob-dropdown-content' onClick={resetNav} >
+            <div data-testid='brands-selection' className='mob-dropdown-content' onClick={resetNav} >
                 {brands}
             </div>
         );
@@ -97,7 +97,7 @@ const MobileHeader = ({ user, categoryListM, categoryListW, brands, onLogout }) 
         usernav = (
             <div className='mob-user' >
                 <div className='mob-user-icon' >
-                    <p onClick={showProfileActions} >{unChars[0].toUpperCase()}</p>
+                    <p data-testid='user-letter' onClick={showProfileActions} >{unChars[0].toUpperCase()}</p>
                 </div>
                 {userActions}
             </div>
@@ -114,8 +114,8 @@ const MobileHeader = ({ user, categoryListM, categoryListW, brands, onLogout }) 
         <div data-testid='mobile-header' className='mob-selection' >
             {usernav}
             <nav>
-                <img className='burger' src={navBur} alt='open shop navigation' role='button' onClick={slideNav} />
-                <div className='mob-shop-nav-actions' >
+                <img data-testid='burger-icon' className='burger' src={navBur} alt='open shop navigation' role='button' onClick={slideNav} />
+                <div data-testid='mobile-selection' className='mob-shop-nav-actions' >
                     <div className='mob-select-wrapper' >
                     <div className='mob-category-select' >
                         <p onClick={() => {
