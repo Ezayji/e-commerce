@@ -2,14 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import './Header.css';
 import Logo from './RVRZ.png';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { resetOrders } from '../../Redux/OrdersSlice';
 import { resetCart } from '../../Redux/CartSlice';
 import { userAdded, resetCustomer } from '../../Redux/CustomerSlice';
 import { logout, checkAuth } from '../../Services/Api/customer';
 
-import MobileHeader from './MobileHeader';
+import DesktopHeader from './Views/DesktopHeader';
+import MobileHeader from './Views/MobileHeader';
 
 import axios from 'axios';
 
@@ -25,7 +26,9 @@ const Header = () => {
         {id:5, title:'SCKS'}
     ]);
     const [brnds, setBrnds] = useState([]);
+    const [mobile, setMobile] = useState(false);
 
+        // Authentication and brands
     useEffect(() => {
         async function fetchBrnds(){
             const url = '/api/manufacturers';
@@ -45,6 +48,22 @@ const Header = () => {
         auth();
 
     }, []);
+
+        // Nav render based on window size
+    useEffect(() => {
+        const resizeListener = () => {
+            if(window.innerWidth <= 768){
+                setMobile(true);
+            } else {
+                setMobile(false);
+            };
+        };
+        window.addEventListener('resize', resizeListener);
+
+        return () => {
+            window.removeEventListener('resize', resizeListener);
+        };
+    }, [ window.innerWidth ]);
 
     const onLogout = async () => {
         const response = await logout();
@@ -99,6 +118,13 @@ const Header = () => {
             </div>
         )
     };
+
+    let header;
+    if(mobile === true){
+        header = <MobileHeader user={user} categoryListM={categoryListM} categoryListW={categoryListW} brands={brands} onLogout={onLogout} />
+    } else {
+        header = <DesktopHeader categoryListM={categoryListM} categoryListW={categoryListW} brands={brands} actions={actions} />
+    };
     
     return(
         <header className="header" >
@@ -107,30 +133,7 @@ const Header = () => {
                     <img src={Logo} />
                 </Link>
             </div>
-            <div className="selection" >
-                <nav className='desktop-nav' >
-                    <div className="dropdown" >
-                        <p><Link to={'/products/men'} >MN</Link></p>
-                        <div className="dropdown-content">
-                            {categoryListM}
-                        </div>
-                    </div>
-                    <div className="dropdown" >
-                        <p><Link to={'/products/women'} >WMN</Link></p>
-                        <div className="dropdown-content">
-                            {categoryListW}
-                        </div>
-                    </div>
-                    <div className="dropdown" >
-                        <p>BRNDS</p>
-                        <div className="brands-drop">
-                            {brands}
-                        </div>
-                    </div>
-                </nav>
-                {actions}
-            </div>
-            <MobileHeader user={user} categoryListM={categoryListM} categoryListW={categoryListW} brands={brands} onLogout={onLogout} />
+            {header}
         </header>
     );
 };

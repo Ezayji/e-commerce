@@ -111,7 +111,7 @@ const MobileHeader = ({ user, categoryListM, categoryListW, brands, onLogout }) 
     };
 
     return(
-        <div className='mob-selection' >
+        <div data-testid='mobile-header' className='mob-selection' >
             {usernav}
             <nav>
                 <img className='burger' src={navBur} alt='open shop navigation' role='button' onClick={slideNav} />

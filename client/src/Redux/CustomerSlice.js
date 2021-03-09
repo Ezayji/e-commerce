@@ -35,6 +35,7 @@ const customerSlice = createSlice({
             state.user = initialState.user;
             state.profile = initialState.profile;
             state.address = initialState.address;
+            state.auth_status = initialState.auth_status;
             state.cus_status = initialState.cus_status;
             state.adr_status = initialState.adr_status;
             state.error = initialState.error;
