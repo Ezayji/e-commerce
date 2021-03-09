@@ -60,7 +60,7 @@ describe('* <Checkout /> (parent) *', () => {
 
             rtlRender(
                 <Provider store={store} >
-                    <Checkout store={store} />
+                    <Checkout />
                 </Provider>
             );
 
@@ -83,7 +83,7 @@ describe('* <Checkout /> (parent) *', () => {
 
             rtlRender(
                 <Provider store={store} >
-                    <Checkout store={store} onCancel={onCancel} />
+                    <Checkout onCancel={onCancel} />
                 </Provider>
             );
 
@@ -103,7 +103,7 @@ describe('* <Checkout /> (parent) *', () => {
             rtlRender(
                 <Provider store={store} >
                     <Elements stripe={promise} >
-                        <Checkout store={store} cart={twoItemCart} total={twoTotal} />
+                        <Checkout cart={twoItemCart} total={twoTotal} />
                     </Elements>
                 </Provider>
             );
@@ -125,7 +125,7 @@ describe('* <Checkout /> (parent) *', () => {
             rtlRender(
                 <Provider store={store} >
                     <Elements stripe={promise} >
-                        <Checkout store={store} cart={twoItemCart} total={twoTotal} />
+                        <Checkout cart={twoItemCart} total={twoTotal} />
                     </Elements>
                 </Provider>
             );
@@ -198,7 +198,7 @@ describe('* <Checkout /> (parent) *', () => {
 
             rtlRender(
                 <Provider store={store} >
-                    <Checkout store={store} />
+                    <Checkout />
                 </Provider>
             );
 
@@ -239,7 +239,7 @@ describe('* <Checkout /> (parent) *', () => {
 
             rtlRender(
                 <Provider store={store} >
-                    <Checkout store={store} />
+                    <Checkout />
                 </Provider>
             );
 
@@ -685,7 +685,7 @@ describe('* <SuccessPage /> *', () => {
             rtlRender(
                 <Provider store={store} >
                     <Router >
-                        <SuccessPage store={store} match={{params: {username: 'Revarz', order_id: 1000000}, isExact: true, path: '/checkout/success/:username/:order_id', url: '/checkout/success/Revarz/1000000'}} />
+                        <SuccessPage match={{params: {username: 'Revarz', order_id: 1000000}, isExact: true, path: '/checkout/success/:username/:order_id', url: '/checkout/success/Revarz/1000000'}} />
                     </Router>
                 </Provider>
             );
@@ -703,7 +703,7 @@ describe('* <SuccessPage /> *', () => {
             rtlRender(
                 <Provider store={store} >
                     <Router >
-                        <SuccessPage store={store} match={{params: {username: 'Revarz', order_id: 1000000}, isExact: true, path: '/checkout/success/:username/:order_id', url: '/checkout/success/Revarz/1000000'}} />
+                        <SuccessPage match={{params: {username: 'Revarz', order_id: 1000000}, isExact: true, path: '/checkout/success/:username/:order_id', url: '/checkout/success/Revarz/1000000'}} />
                     </Router>
                 </Provider>
             );
@@ -738,7 +738,7 @@ describe('* <SuccessPage /> *', () => {
             rtlRender(
                 <Provider store={store} >
                     <Router >
-                        <SuccessPage store={store} match={{params: {username: 'Revarz', order_id: 1000000}, isExact: true, path: '/checkout/success/:username/:order_id', url: '/checkout/success/Revarz/1000000'}} />
+                        <SuccessPage match={{params: {username: 'Revarz', order_id: 1000000}, isExact: true, path: '/checkout/success/:username/:order_id', url: '/checkout/success/Revarz/1000000'}} />
                     </Router>
                 </Provider>
             );
@@ -761,7 +761,7 @@ describe('* <SuccessPage /> *', () => {
             rtlRender(
                 <Provider store={store} >
                     <Router>
-                        <SuccessPage store={store} match={{params: {username: 'Revarz', order_id: 1000000}, isExact: true, path: '/checkout/success/:username/:order_id', url: '/checkout/success/Revarz/1000000'}} />
+                        <SuccessPage match={{params: {username: 'Revarz', order_id: 1000000}, isExact: true, path: '/checkout/success/:username/:order_id', url: '/checkout/success/Revarz/1000000'}} />
                         <Route path="/" >Main Page</Route>
                     </Router>
                 </Provider>

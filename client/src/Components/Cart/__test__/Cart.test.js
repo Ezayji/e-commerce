@@ -19,21 +19,6 @@ import { oneItemUser, twoItemUser, emptyState, noItemsUser, fullTwoItemUser} fro
 
 jest.mock('../../../Redux/Store');
 
-    // store for renders that dont dispatch actions
-function render(
-    ui,
-    {
-        initialState,
-        store = createStore(cartReducer, initialState),
-        ...renderOptions
-    } = {}
-){
-    function Wrapper({ children }){
-        return <Provider store={store} >{children}</Provider>
-    };
-    return rtlRender(ui, { wrapper: Wrapper, ...renderOptions });
-};
-
     // store for renders that dispatch actions
 function setUpStore(initialState){
     return createStore(
@@ -66,7 +51,7 @@ describe('* <Cart /> (parent) * ', () => {
             rtlRender(
                 <Provider store={store} >
                     <Router>
-                        <Cart history={history} store={store} />
+                        <Cart history={history} />
                     </Router>
                 </Provider>
             );
@@ -87,7 +72,7 @@ describe('* <Cart /> (parent) * ', () => {
             rtlRender(
                 <Provider store={store} >
                     <Router>
-                        <Cart history={history} store={store} />
+                        <Cart history={history} />
                     </Router>
                 </Provider>
             );
@@ -114,7 +99,7 @@ describe('* <Cart /> (parent) * ', () => {
             rtlRender(
                 <Provider store={store} >
                     <Router>
-                        <Cart history={history} store={store} />
+                        <Cart history={history} />
                     </Router>
                 </Provider>
             );
@@ -140,7 +125,7 @@ describe('* <Cart /> (parent) * ', () => {
             rtlRender(
                 <Provider store={store} >
                     <Router>
-                        <Cart history={history} store={store} />
+                        <Cart history={history} />
                     </Router>
                 </Provider>
             );
@@ -189,7 +174,7 @@ describe('* <Cart /> (parent) * ', () => {
             rtlRender(
                 <Provider store={store} >
                     <Router>
-                        <Cart history={history} store={store} />
+                        <Cart history={history} />
                     </Router>
                 </Provider>
             );
@@ -258,7 +243,7 @@ describe('* <Cart /> (parent) * ', () => {
             rtlRender(
                 <Provider store={store} >
                     <Router>
-                        <Cart history={history} store={store} />
+                        <Cart history={history} />
                     </Router>
                 </Provider>
             );
@@ -325,7 +310,7 @@ describe('* <Cart /> (parent) * ', () => {
             rtlRender(
                 <Provider store={store} >
                     <Router>
-                        <Cart history={history} store={store} />
+                        <Cart history={history} />
                     </Router>
                 </Provider>
             );
@@ -366,7 +351,7 @@ describe('* <Cart /> (parent) * ', () => {
             rtlRender(
                 <Provider store={store} >
                     <Router>
-                        <Cart history={history} store={store} />
+                        <Cart history={history} />
                     </Router>
                 </Provider>
             );
@@ -394,7 +379,7 @@ describe('* <Cart /> (parent) * ', () => {
             const {container} = rtlRender(
                 <Provider store={store} >
                     <Router>
-                        <Cart history={history} store={store} />
+                        <Cart history={history} />
                         <Route path='/'>Main Page</Route>
                     </Router>
                 </Provider>

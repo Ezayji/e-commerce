@@ -67,7 +67,9 @@
 }
 
 .brands-drop{
+    text-align: center;
     min-width: 200px;
+    left: -55px;
 }
 
 .dropdown-content, .brands-drop{
@@ -75,7 +77,8 @@
     display: none;
     align-items: center;
     padding: 10px 0px;
-    background: white;
+    background: rgba(255, 255, 255, 0.568);
+    border-radius: 5px;
 }
 
 .dropdown-content {

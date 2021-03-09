@@ -170,7 +170,7 @@ describe('* <Account /> (Parent Comp) * ', () => {
             rtlRender(
                 <Provider store={store} >
                     <Router>
-                        <Account store={store} />
+                        <Account />
                     </Router>
                 </Provider>
             );       
@@ -234,7 +234,7 @@ describe('* <Account /> (Parent Comp) * ', () => {
             rtlRender(
                 <Provider store={store} >
                     <Router>
-                        <Account store={store} />
+                        <Account />
                     </Router>
                 </Provider>
             );
@@ -320,7 +320,7 @@ describe('* <Account /> (Parent Comp) * ', () => {
             rtlRender(
                 <Provider store={store} >
                     <Router>
-                        <Account store={store} />
+                        <Account />
                     </Router>
                 </Provider>
             );       
@@ -871,7 +871,7 @@ describe('* <UpdatePw /> *', () => {
 
         it('Redirects to "/account/:username" if "CNCL" is clicked', async () => {
             const history = createMemoryHistory();
-            const {getByTestId, container} = render(
+            const {getByTestId} = render(
                 <Router>
                     <UpdatePw history={history} />
                 </Router>

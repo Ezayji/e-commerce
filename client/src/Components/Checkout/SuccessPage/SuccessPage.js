@@ -2,21 +2,21 @@ import './SuccessPage.css';
 
 import { resetCart } from '../../../Redux/CartSlice';
 import { fetchOrders } from '../../../Redux/OrdersSlice';
-//import store from '../../../Redux/Store';
 
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Redirect, Link } from 'react-router-dom';
 
-const SuccessPage = ({ match, store }) => {
-    
+const SuccessPage = ({ match }) => {
+    const dispatch = useDispatch();
+
     const user = useSelector(state => state.customer.user);
     const cart = useSelector(state => state.cart.products);
 
     useEffect(() => {
         if(cart !== null && user !== null){
-            store.dispatch(resetCart());
-            store.dispatch(fetchOrders());
+            dispatch(resetCart());
+            dispatch(fetchOrders());
         };
     }, []);
 

@@ -1,7 +1,7 @@
 import './Cart.css';
 
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { fetchCart, cartAdded } from '../../Redux/CartSlice';
 //import store from '../../Redux/Store';
@@ -17,8 +17,10 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 const promise = loadStripe('pk_test_51IItmKB1uegguB7b2ReRKVdoa1Bojw5VxlWF9uuCwiYdY1Z3C8wpwI8kDau5SQ8qQN2nQdJXOvwvhODgssLH5RFn00LH75oIZw');
 
+// , store
+const Cart = ({ history }) => {
+    const dispatch = useDispatch();
 
-const Cart = ({ history, store }) => {
     const [status, setStatus] = useState('Cart');
 
     const user = useSelector(state => state.customer.user);
@@ -33,7 +35,7 @@ const Cart = ({ history, store }) => {
     
     useEffect(() => {
         if(products === null && user !== null){
-            store.dispatch(fetchCart());
+            dispatch(fetchCart());
         };
     }, []);
 
@@ -50,7 +52,7 @@ const Cart = ({ history, store }) => {
         if(response.error){
             alert(response.error);
         } else {
-            store.dispatch(cartAdded(response));
+            dispatch(cartAdded(response));
         };
 
     };
@@ -71,7 +73,7 @@ const Cart = ({ history, store }) => {
             if(response.error){
                 alert(response.error);
             } else {
-                store.dispatch(cartAdded(response));
+                dispatch(cartAdded(response));
             };
 
         };
@@ -96,7 +98,7 @@ const Cart = ({ history, store }) => {
         if(response !== true){
             alert(response);
         } else {
-            store.dispatch(fetchCart());
+            dispatch(fetchCart());
         };
         
     };
@@ -132,7 +134,7 @@ const Cart = ({ history, store }) => {
     if(status === 'Checkout'){
        checkout = (
         <Elements stripe={promise} >
-            <Checkout total={total} onCancel={onCancel} cart={products} history={history} store={store} />
+            <Checkout total={total} onCancel={onCancel} cart={products} history={history} />
         </Elements>
        );
     } else if(status === 'Cart') {

@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import './Login.css';
-import {Link, Redirect} from 'react-router-dom';
-import {useSelector} from 'react-redux';
+import { Link, Redirect } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 
+import { userAdded } from '../../Redux/CustomerSlice';
 import { login } from '../../Services/Api/customer';
 
 
 const Login = () => {
+    const dispatch = useDispatch();
     const [un, setUn] = useState('');
     const [pw, setPw] = useState('');
 
@@ -24,7 +26,9 @@ const Login = () => {
         if (response === false) {
             alert('Wrong Username or Password')
             setPw('');
-        }
+        } else {
+            dispatch(userAdded(response));
+        };
 
     };
     

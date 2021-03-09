@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import './Checkout.css';
 
 import { fetchAddress, fetchCustomer } from '../../Redux/CustomerSlice';
-//import store from '../../Redux/Store';
 
 import Billing from './Billing/Billing';
 import Payment from './Payment/Payment';
 
-const Checkout = ({ total, onCancel, cart, history, store }) => {
-    
+const Checkout = ({ total, onCancel, cart, history }) => {
+    const dispatch = useDispatch();
+
     const [step, setStep] = useState(1);
     const [adr, setAdr] = useState(null);
     const [proccessing, setProcessing] = useState(false);
@@ -22,11 +22,11 @@ const Checkout = ({ total, onCancel, cart, history, store }) => {
     useEffect(() => {
 
         if(profile === null){
-            store.dispatch(fetchCustomer());
+            dispatch(fetchCustomer());
         };
 
         if(address === null){
-            store.dispatch(fetchAddress());
+            dispatch(fetchAddress());
         };
 
         // SET LOCAL STATE ADDRESS DEPENDING ON DB INFORMATION

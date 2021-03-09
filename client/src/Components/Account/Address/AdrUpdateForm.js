@@ -30,7 +30,7 @@ const AdrUpdateForm = ({
     let note;
 
     if(ap === '' && strt === '' && cty === '' && prvnc === '' && zp === '' && cntry === ''){
-        note = <p>* No Address Added *</p>
+        note = <p className='no-address' >* No Address Added *</p>
     } else {
         note = null;
     }

@@ -15,7 +15,7 @@ import Footer from '../Footer/Footer';
 
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
-function App({ store }) {
+function App() {
   return (
     <Router>
       <div className="App">
@@ -30,10 +30,10 @@ function App({ store }) {
           <Route path='/products/:gender' exact component={Products} />
           <Route path='/brands/:brand_id/:title/:productid/:product_title' exact component={ProdPage} />
           <Route path='/brands/:brand_id/:title' exact component={Products} />
-          <Route path='/account/:username/password' exact component={UpdatePw} />
-          <Route path='/account/:username' exact render={(props) => <Account {...props} store={store} />} />
-          <Route path='/cart/:username' exact render={(props) => <Cart {...props} store={store} />} />
-          <Route path='/checkout/success/:username/:order_id' exact render={(props) => <SuccessPage {...props} store={store} />} />
+          <Route path='/account/:username/password' exact render={(props) => <UpdatePw {...props} />} />
+          <Route path='/account/:username' exact render={(props) => <Account {...props} />} />
+          <Route path='/cart/:username' exact render={(props) => <Cart {...props} />} />
+          <Route path='/checkout/success/:username/:order_id' exact render={(props) => <SuccessPage {...props} />} />
           <Route path='/orders/:username' exact component={Orders} />
           <Route path='/orders/:username/order/:order_id' exact component={SingleOrder} />
         </Switch>
@@ -41,14 +41,6 @@ function App({ store }) {
     </Router>
   );
 };
-/*
-<Route path='/cart/:username' exact >
-            <Cart store={store} />
-          </Route>
-*/
-// <Route path='/checkout/success/:username/:order_id' exact component={SuccessPage} />
-// <Route path='/account/:username' exact component={Account} />
-// <Route path='/cart/:username' exact component={Cart} />
 
 // <Footer/>
 

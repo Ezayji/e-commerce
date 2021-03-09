@@ -1,7 +1,7 @@
 import './Account.css';
 
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 
 import { fetchCustomer, fetchAddress, profileAdded, addressAdded } from '../../Redux/CustomerSlice';
@@ -13,7 +13,8 @@ import UpdateForm from './Profile/UpdateForm';
 import AdrDisplay from './Address/AdrDisplay';
 import AdrUpdateForm from './Address/AdrUpdateForm';
 
-const Account = ({ store }) => {
+const Account = () => {
+    const dispatch = useDispatch();
 
     // STATES
 
@@ -45,11 +46,11 @@ const Account = ({ store }) => {
 // fetch profile and address on render
     useEffect(() => {
         if(user !== null && customer === null){
-            store.dispatch(fetchCustomer());
+            dispatch(fetchCustomer());
         }
 
         if(user !== null && address === null){
-            store.dispatch(fetchAddress());
+            dispatch(fetchAddress());
         }
 
     }, []);
@@ -110,7 +111,7 @@ const onProfSubmit = async (e) => {
         if(response.error){
             alert(response.error);
         } else {
-            store.dispatch(profileAdded(response));
+            dispatch(profileAdded(response));
             onCancelProfChange();
         };
     } else {
@@ -178,7 +179,7 @@ const onAdrSubmit = async (e) => {
         if(response === false){
             alert('Something Went Wrong, Please Try Again');
         } else {
-            store.dispatch(addressAdded(response));
+            dispatch(addressAdded(response));
             onCancelAdrChange();
         };
     } else {

@@ -1,23 +1,15 @@
 import axios from 'axios';
 import { getConfig, sendConfig } from '../config';
-import { userAdded, resetCustomer, profileAdded, addressAdded } from '../../Redux/CustomerSlice';
-//import { resetCart } from '../../Redux/CartSlice';
-import store from '../../Redux/Store';
 
 // get customer profile and add to redux state
 export async function getCustomer(username) {
     const url = `/api/customer_un/${username}`;
     try{
         const response = await axios.get(url, getConfig);
-        /*
-        store.dispatch(profileAdded(response.data));
-        */
         return response.data;
     } catch(error) {
         return null;
-        //return error;
     }
-    
 };
 
 // update customer profile and add updated profile to redux state
@@ -32,10 +24,6 @@ export async function updateProfile(data){
     try{
         const response = await axios.put(url, updatedInfo, sendConfig);
         if (response.data) {
-            /*
-            store.dispatch(profileAdded(response.data));
-            return true;
-            */
             return response.data;
         };
     } catch (error) {
@@ -53,10 +41,8 @@ export async function getAddress(username){
     try{
         const response = await axios.get(url, getConfig);
         return response.data;
-        //store.dispatch(addressAdded(response.data));
     } catch(error) {
         return null;
-        //return error;
     };
 };
 
@@ -74,10 +60,6 @@ export async function updateAddress(data){
     try{
         const response = await axios.put(url, updatedInfo, sendConfig);
         if (response.data) {
-        /*    
-            store.dispatch(addressAdded(response.data));
-            return true;
-        */
             return response.data;
         };
     } catch(error) {
@@ -120,8 +102,7 @@ export async function login(data){
             username: data.username,
             password: data.password
         }, getConfig);
-        store.dispatch(userAdded(response.data.user));
-        return true;
+        return response.data.user;
     } catch (error) {
         return false;
     }
@@ -133,13 +114,10 @@ export async function logout(){
 
     try{
         const response = await axios.get(url, getConfig);
-       // store.dispatch(resetCart());
-        store.dispatch(resetCustomer());
         return true
     } catch (error) {
         return false;
     }
-
 };
 
 // reset password
@@ -166,9 +144,8 @@ export async function checkAuth(){
     const url = '/api/auth';
     try{
         const response = await axios.get(url, getConfig);
-        store.dispatch(userAdded(response.data.user));
+        return response.data.user;
     } catch(error) {
-        store.dispatch(resetCustomer());
         return false;
     }
 };

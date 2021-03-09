@@ -1,15 +1,11 @@
 import axios from 'axios';
 import { getConfig, sendConfig } from '../config';
-import { cartAdded } from '../../Redux/CartSlice';
-import store from '../../Redux/Store';
 
 export async function getCart(username){
     const url = `/api/cart/${username}`;
     try{
         const response = await axios.get(url, getConfig);
         if(response.data.products && response.data.total){
-            //store.dispatch(cartAdded(response.data));
-            //return true;
             return response.data;
         };
     } catch(error) {
@@ -18,8 +14,6 @@ export async function getCart(username){
                 products: null,
                 total: 0
             }
-            //store.dispatch(cartAdded(data));
-            //return error.response.data;
             return data;
         } else {
             return 'Something Went wrong';
@@ -37,14 +31,13 @@ export async function addCartItem(data){
     try{
         const response = await axios.post(url, newItem, sendConfig);
         if(response.data.products && response.data.total){
-            store.dispatch(cartAdded(response.data));
-            return true;
+            return response.data;
         };
     } catch(error){
         if(error.response.data === 'Not in stock' || error.response.data === 'Item Already In Cart'){
-            return error.response.data;
+            return { error: error.response.data };
         } else {
-            return 'Something Went wrong';
+            return { error: 'Something Went wrong, check you connection and please try again' };
         };
     };
 };
@@ -60,13 +53,10 @@ export async function updateItemQty(data){
     try{
         const response = await axios.put(url, updatedItem, sendConfig);
         if(response.data.products && response.data.total){
-            //store.dispatch(cartAdded(response.data));
-            //return true;
             return response.data;
         };
     } catch(error) {
         if(error.response.data === 'Not in stock'){
-            //return error.response.data;
             return { error: error.response.data };
         } else {
             return { error: 'Something Went Wrong' };

@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import './ProdPage.css';
 
 import Left from './arrow_png_left.png';
 import Right from './arrow_png_right.png';
 
+import { cartAdded } from '../../../Redux/CartSlice';
 import { addCartItem } from '../../../Services/Api/cart';
 
 const Product = ({ prod }) => {
+    const dispatch = useDispatch();
+
     const [size, setSize] = useState('');
     const [currentImg, setCurrentImg] = useState(0);
 
@@ -27,11 +30,12 @@ const Product = ({ prod }) => {
         };
         if(size !== ''){
             const response = await addCartItem(data);
-            if(response === true){
-                //alert(`${prod.product.title} Size ${size} Added To Cart`);
-                setSize('');
+            if(response.error){
+                alert(response.error);
             } else {
-                alert(response);
+                //alert(`${prod.product.title} Size ${size} Added To Cart`);
+                dispatch(cartAdded(response))
+                setSize('');
             }
         } else {
             alert('Please Select a Size');
