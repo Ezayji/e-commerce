@@ -79,7 +79,7 @@ const Product = ({ prod }) => {
                 <p className='prod-price' >€{prod.product.unit_price_eur}</p>
                 <p className='prod-color' >{prod.product.color}</p>
                 <form onSubmit={onSubmit} >
-                    <select value={size} onChange={(e) => {setSize(e.target.value)}} >
+                    <select data-testid='select-size' value={size} onChange={(e) => {setSize(e.target.value)}} >
                         <option value='' >Select Size</option>
                         {sizes}
                     </select>
