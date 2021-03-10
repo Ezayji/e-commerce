@@ -10,10 +10,13 @@ const OrderPreview = ({ username, order }) => {
         payment = 'Not Processed';
     };
 
+    const d = new Date(order.date_utc);
+    const date = d.toLocaleDateString();
+
     return(
         <div className='order-preview' >
             <p><Link to={`/orders/${username}/order/${order.id}`} >{order.id}</Link></p>
-            <p>{order.date_utc}</p>
+            <p data-testid='date' >{date}</p>
             <p>€{order.total_eur}</p>
             <p>{payment}</p>
         </div>

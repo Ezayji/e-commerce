@@ -35,7 +35,7 @@ function App() {
           <Route path='/cart/:username' exact render={(props) => <Cart {...props} />} />
           <Route path='/checkout/success/:username/:order_id' exact render={(props) => <SuccessPage {...props} />} />
           <Route path='/orders/:username' exact render={(props) => <Orders {...props} /> } />
-          <Route path='/orders/:username/order/:order_id' exact component={SingleOrder} />
+          <Route path='/orders/:username/order/:order_id' exact render={(props) => <SingleOrder {...props} /> } />
         </Switch>
       </div>
     </Router>
