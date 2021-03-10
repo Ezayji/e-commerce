@@ -1,14 +1,14 @@
 import './Orders.css';
 
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { fetchOrders } from '../../Redux/OrdersSlice';
-import store from '../../Redux/Store';
 
 import OrderPreview from './OrderPreview/OrderPreview';
 
 const Orders = ({ history }) => {
+    const dispatch = useDispatch();
 
     const user = useSelector(state => state.customer.user);
     const orders = useSelector(state => state.orders.orders);
@@ -18,7 +18,7 @@ const Orders = ({ history }) => {
         if(user === null){
             history.push('/');
         } else if(orders === null && user !== null){
-            store.dispatch(fetchOrders());
+            dispatch(fetchOrders());
         };
     }, []);
 

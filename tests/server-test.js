@@ -4,7 +4,6 @@ const {jsdom} = require('jsdom');
 const httpMocks = require('node-mocks-http');
 
 const app = require('../server');
-const { response } = require('express');
 
 const server = request.agent(app);
 
