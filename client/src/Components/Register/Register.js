@@ -41,7 +41,7 @@ const Register = ({ history }) => {
         setPw('');
         setPwAgain('');
     };
-
+/*
     const resetFields = () => {
         setUn('');
         setfn('');
@@ -51,7 +51,7 @@ const Register = ({ history }) => {
         setPw('');
         setPwAgain('');
     };
-
+*/
     return(
         <div className="register_div" >
             <form onSubmit={onSubmit} >

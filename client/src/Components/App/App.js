@@ -23,7 +23,7 @@ function App() {
         <Switch>
           <Route path="/" exact component={Home} />
           <Route path='/login' exact component={Login} />
-          <Route path='/register' exact component={Register} />
+          <Route path='/register' exact render={(props) => <Register {...props} />} />
           <Route path='/products/:gender/list/:categoryid/:category_title/:productid/:product_title' exact render={(props) => <ProdPage {...props} />} />
           <Route path='/products/:gender/list/:categoryid/:category_title' exact render={(props) => <Products {...props} />} />
           <Route path='/products/:gender/:productid/:product_title' exact render={(props) => <ProdPage {...props} />} />
