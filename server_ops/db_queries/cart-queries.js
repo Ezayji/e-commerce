@@ -17,7 +17,7 @@ const checkCartLog = (request, response, next) => {
     } else {
         pool.query(text, [product_id, quantity, size], (error, results) => {
             if(error){
-                throw error;
+                response.status(400).send();
             } else if (results.rows[0] === undefined){
                 response.status(404).send('Not in stock');
             } else {
@@ -35,7 +35,7 @@ const checkIfNotInCart = (request, response, next) => {
 
     pool.query(text, [product_id, username, size], (error, results) => {
         if(error){
-            throw error;
+            response.status(400).send();
         } else if (results.rows[0] === undefined){
             next();
         } else {
@@ -53,11 +53,11 @@ const newCartLog = (request, response) => {
 
     pool.query(text, [product_id, quantity, size, username], (error, results) => {
         if(error){
-            throw error;
+            response.status(400).send();
         } else {
             pool.query(text2, [username], (error, results) => {
                 if(error){
-                    throw error;
+                    response.status(400).send();
                 } else {
                     let products = results.rows;
                     const totals_array = products.map(item => item.quantity * item.unit_price_eur);
@@ -84,7 +84,7 @@ const checkIfCartExists = (request, response, next) => {
 
     pool.query(text, [username], (error, results) => {
         if(error){
-            throw error;
+            response.status(400).send();
         } else if (results.rows[0] === undefined){
             response.status(404).send('No Cart Items For Customer');
         } else {
@@ -100,7 +100,7 @@ const getCustomerCart = (request, response) => {
 
     pool.query(text, [username], (error, results) => {
         if(error){
-            throw error;
+            response.status(400).send();
         } else {
             let products = results.rows;
             const totals_array = products.map(item => item.quantity * item.unit_price_eur);
@@ -125,7 +125,7 @@ const checkIfInCart = (request, response, next) => {
 
     pool.query(text, [product_id, username, size], (error, results) => {
         if(error){
-            throw error;
+            response.status(400).send();
         } else if (results.rows[0] === undefined){
             response.status(404).send('Item Not In Cart');
         } else {
@@ -142,7 +142,7 @@ const updateCartLogQty = (request, response, next) => {
 
     pool.query(text, [quantity, product_id, size, username], (error, results) => {
         if(error){
-            throw error;
+            response.status(400).send();
         } else {
             next();
         };
@@ -171,7 +171,7 @@ const checkQueryItem = (request, response, next) => {
         const product_id = parseInt(request.query.product_id);
         pool.query(text, [product_id, size, username], (error, results) => {
             if(error){
-                throw error;
+                response.status(400).send();
             } else if(results.rows[0] === undefined){
                 response.status(404).send('Item Not In Cart');
             } else {
@@ -195,7 +195,7 @@ const deleteFromCart = (request, response) => {
 
     pool.query(text, [product_id, size, username], (error, results) => {
         if(error){
-            throw error;
+            response.status(400).send();
         } else {
             response.status(204).send('Cart Item Deleted');
         };

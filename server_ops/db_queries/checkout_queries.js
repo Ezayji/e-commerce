@@ -15,7 +15,7 @@ const checkShippment = (request, response, next) => {
     } else {
         pool.query(text, [shippment, username], (error, results) => {
             if(error){
-                throw error;
+                response.status(400).send();
             } else if(results.rows[0] === undefined){
                 response.status(404).send('No shippment for user with the requested ID');
             } else {
@@ -32,7 +32,7 @@ const getCheckoutCart = (request, response, next) => {
 
     pool.query(text, [username], (error, results) => {
         if(error){
-            throw error;
+            response.status(400).send();
         } else {
             response.locals.cart = results.rows;
             next();
@@ -52,11 +52,11 @@ const createOrderItems = (request, response) => {
         const {id, product_id, quantity, size, unit_price_eur} = item;
         pool.query(text, [shippment, product_id, quantity, size, unit_price_eur], (error, results) => {
             if(error){
-                throw error;
+                response.status(400).send();
             } else {
                 pool.query(text2, [id, username], (error, results) => {
                     if(error){
-                        throw error;
+                        response.status(400).send();
                     }
                 });
             };

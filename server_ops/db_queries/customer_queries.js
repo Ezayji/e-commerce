@@ -214,7 +214,7 @@ const updateCustomer = async (request, response, next) => {
     
     pool.query(text, [first_name, last_name, email, phone, username], (error, results) => {
         if(error){
-            throw error;
+            response.status(400).send();
         } else {
             next();
         };
@@ -234,7 +234,7 @@ const checkOldPw = (request, response, next) => {
     } else {
         pool.query(text, [username], async (error, results) => {
             if(error){
-                throw error;
+                response.status(400).send();
             } else if(await bcrypt.compare(password, results.rows[0].password)){
                 next();
             } else {
@@ -253,7 +253,7 @@ const updatePw = async (request, response) => {
 
     pool.query(text, [cryptedPw, username], (error, results) => {
         if(error){
-            throw error;
+            response.status(400).send();
         } else {
             response.status(200).send('Password Updated Succesfully');
         };
@@ -270,7 +270,7 @@ const getCustomerAddress = (request, response) => {
 
     pool.query(text, [username], (error, results) => {
         if(error){
-            throw error;
+            response.status(400).send();
         } else {
             response.status(200).send(results.rows[0])
         };
@@ -301,7 +301,7 @@ const updateCustomerAddress = (request, response, next) => {
 
     pool.query(text, [appartment_nr, street, city, province, zip, country, username], (error, results) => {
         if(error){
-            throw error;
+            response.status(400).send();
         } else {
             next();
         };

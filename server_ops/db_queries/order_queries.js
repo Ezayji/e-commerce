@@ -81,7 +81,7 @@ const getUserOrder = (request, response, next) => {
     } else {
         pool.query(text, [username, order], (error, results) => {
             if(error){
-                throw error;
+                response.status(400).send();
             } else if(results.rows[0] === undefined){
                 response.status(404).send('No Order With Requested ID For Customer');
             } else {
@@ -99,7 +99,7 @@ const getSingleOrderItems = (request, response) => {
 
     pool.query(text, [order], (error, results) => {
         if(error){
-            throw error;
+            response.status(400).send();
         } else {
             const {order} = response.locals;
             order.products = results.rows;

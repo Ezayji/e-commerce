@@ -334,7 +334,7 @@ describe('* <Account /> (Parent Comp) * ', () => {
             expect(screen.getByText('selnaknewemail@testapi.com')).toBeInTheDocument();
             expect(screen.getByText('+372 99999999')).toBeInTheDocument();
             // address info
-            expect(screen.getByText('somestreet')).toBeInTheDocument();
+            await waitFor(() => expect(screen.getByText('somestreet')).toBeInTheDocument());
             expect(screen.getByText('somecity')).toBeInTheDocument();
             expect(screen.getByText('someprovince')).toBeInTheDocument();
             expect(screen.getByText('75607')).toBeInTheDocument();
@@ -446,10 +446,10 @@ describe('* <UpdateForm /> (profile update form) *', () => {
             );
 
             expect(screen.getByText('Revarz')).toBeInTheDocument();
-            expect(screen.getByDisplayValue('Selna')).toBeInTheDocument();
-            expect(screen.getByDisplayValue('Kaszk')).toBeInTheDocument();
-            expect(screen.getByDisplayValue('selnaknewemail@testapi.com')).toBeInTheDocument();
-            expect(screen.getByDisplayValue('+372 99999999')).toBeInTheDocument();
+            expect(screen.getByTestId('fn-field').value).toBe('Selna');
+            expect(screen.getByTestId('ln-field').value).toBe('Kaszk');
+            expect(screen.getByTestId('email-field').value).toBe('selnaknewemail@testapi.com');
+            expect(screen.getByTestId('phne-field').value).toEqual('+372 99999999');
         });
 
         it('setState functions from props are called on input value change', () => {

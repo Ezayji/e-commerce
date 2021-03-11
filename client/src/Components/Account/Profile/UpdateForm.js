@@ -23,19 +23,19 @@ const UpdateForm = ({ username,
             </div>
             <div className='account-value'>
                 <p>FRST NM: </p>
-                <input data-testid='fn-field' type='text' value={fn} placeholder='FIRST NAME' onChange={(e) => setfn(e.target.value)} required />
+                <input data-testid='fn-field' type='text' min='2' max='20' value={fn} placeholder='FIRST NAME' onChange={(e) => setfn(e.target.value)} required />
             </div>
             <div className='account-value'>
                 <p>LST NM: </p>
-                <input data-testid='ln-field' type='text' value={ln} placeholder='LAST NAME' onChange={(e) => setLn(e.target.value)} required />
+                <input data-testid='ln-field' type='text' min='2' max='20' value={ln} placeholder='LAST NAME' onChange={(e) => setLn(e.target.value)} required />
             </div>
             <div className='account-value'>
                 <p>EML: </p>
-                <input data-testid='email-field' type='text' value={email} placeholder='EMAIL' onChange={(e) => setEmail(e.target.value)} required />
+                <input data-testid='email-field' type='email' min='10' max='31' value={email} placeholder='EMAIL' onChange={(e) => setEmail(e.target.value)} required />
             </div>
             <div className='account-value'>
                 <p>PHN: </p>
-                <input data-testid='phne-field' type='text' value={phne} placeholder='PHONE' onChange={(e) => setPhne(e.target.value)} required />
+                <input data-testid='phne-field' type='tel' value={phne} placeholder='PHONE' onChange={(e) => setPhne(e.target.value)} required />
             </div>
             <div className='info-buttons' >
                 <input data-testid='profile-edit-submit' className='info-submit' type='submit' value='SBMT' />

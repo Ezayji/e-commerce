@@ -6,7 +6,7 @@ const getManufacturers = (request, response) => {
 
     pool.query(text, (error, results) => {
         if(error){
-            throw error;
+            response.status(400).send();
         } else {
             response.status(200).send(results.rows);
         };
@@ -19,7 +19,7 @@ const getCategories = (request, response) => {
 
     pool.query(text, (error, results) => {
         if(error){
-            throw error;
+            response.status(400).send();
         } else {
             response.status(200).send(results.rows);
         };
@@ -38,7 +38,7 @@ const getProductsByGenderAndCategory = (request, response) => {
     if((gender === 'men' || gender === 'women') && request.query.categoryid === undefined){
         pool.query(text, [gender], (error, results) => {
             if(error){
-                throw error;
+                response.status(400).send();
             } else {
                 response.status(200).send(results.rows);
             };
@@ -47,7 +47,7 @@ const getProductsByGenderAndCategory = (request, response) => {
         const category = parseInt(request.query.categoryid);
         pool.query(text2, [gender, category], (error, results) => {
             if(error){
-                throw error;
+                response.status(400).send();
             } else if(results.rows[0] === undefined){
                 response.status(404).send('No matching category');
             } else {
@@ -76,7 +76,7 @@ const getProductsByManufacturerId = (request, response) => {
                 const text = 'SELECT * FROM manufacturer WHERE id = $1';
                 pool.query(text, [man_id], (error, results) => {
                     if(error){
-                        throw error;
+                        response.status(400).send();
                     } else {
                         let manufacturer = results.rows[0];
                         const result = {
@@ -106,7 +106,7 @@ const getProductById = (request, response, next) => {
             if(results.rows[0] === undefined){
                 response.status(404).send('No product with called ID');
             } else if (error) {
-                throw error;
+                response.status(400).send();
             } else {
                 response.locals.product = results.rows[0];
                 next();
@@ -122,7 +122,7 @@ const getProductImages = (request, response, next) => {
 
     pool.query(text, [product_id], (error, results) => {
         if(error){
-            throw error;
+            response.status(400).send();
         } else {
             response.locals.images = results.rows;
             next();
@@ -137,7 +137,7 @@ const getProductSizes = (request, response) => {
 
     pool.query(text, [product_id], (error, results) => {
         if(error){
-            throw error;
+            response.status(400).send();
         } else {
             let product = response.locals.product;
             let images = response.locals.images;

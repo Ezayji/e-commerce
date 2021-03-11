@@ -57,17 +57,17 @@ const Register = ({ history }) => {
             <form onSubmit={onSubmit} >
                 <input className="register_cred" type='text' onChange={(e) => {
                     setUn(e.target.value);
-                }} value={un} placeholder="USERNAME" required />
+                }} value={un} min='5' max='20' placeholder="USERNAME" required />
                 <input className="register_cred" type='text' onChange={(e) => {
                     setfn(e.target.value);
-                }} value={fn} placeholder="FIRST NAME" required />
+                }} value={fn} min='2' max='20' placeholder="FIRST NAME" required />
                 <input className="register_cred" type='text' onChange={(e) => {
                     setLn(e.target.value);
-                }} value={ln} placeholder="LAST NAME" required />
+                }} value={ln} min='2' max='20' placeholder="LAST NAME" required />
                 <input className="register_cred" type='email' onChange={(e) => {
                     setEmail(e.target.value);
-                }} value={email} placeholder="EMAIL" required />
-                <input className="register_cred" type='number' onChange={(e) => {
+                }} value={email} min='10' max='31' placeholder="EMAIL" required />
+                <input className="register_cred" type='tel' onChange={(e) => {
                     setPhone(e.target.value);
                 }} value={phone} placeholder="PHONE" required />
                 <input className="register_cred" type='password' onChange={(e) => {
