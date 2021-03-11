@@ -21,7 +21,7 @@ export const fetchGender = createAsyncThunk('products/fetchGender', async (_, { 
 export const fetchCategory = createAsyncThunk('products/fetchCategory', async (_, { getState }) => {
     const gender = getState().products.gender;
     const category = getState().products.category_id;
-    const url = `/api/products?gender=${gender}&categoryid=${category}`
+    const url = `/api/products?gender=${gender}&categoryid=${category}`;
     const response = await axios.get(url);
     return response.data;
 });

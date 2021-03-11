@@ -1,14 +1,14 @@
 import React, { useEffect } from 'react';
 import './Products.css';
 import { genderAdded, categoryIdAdded, brandIdAdded, fetchGender, fetchCategory, fetchBrnds } from '../../Redux/ProductsSlice';
-import store from '../../Redux/Store';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import ProductsList from './ProdList/ProductsList';
 import GenderHeader from './ProdHeaders/GenderHeader';
 import BrandHeader from './ProdHeaders/BrandHeader';
 
 const Products = ({ match }) => {
+    const dispatch = useDispatch();
 
     const prodState = useSelector(state => state.products.status);
     const products = useSelector(state => state.products.list);
@@ -29,23 +29,23 @@ const Products = ({ match }) => {
         if((match.path === categoryPath && prodState !== 'category') || (match.path === categoryPath && prodState === 'category' && (genderParams !== genderState || parseInt(categoryParams) !== categoryState))){
             const category = parseInt(match.params.categoryid)
             const gender = match.params.gender;
-            store.dispatch(genderAdded(gender))
-            store.dispatch(categoryIdAdded(category));
-            store.dispatch(brandIdAdded(0));
-            store.dispatch(fetchCategory());
+            dispatch(genderAdded(gender))
+            dispatch(categoryIdAdded(category));
+            dispatch(brandIdAdded(0));
+            dispatch(fetchCategory());
             
         } else if((match.path === genderPath && prodState !== 'gender') || (match.path === genderPath && prodState === 'gender' && genderParams !== genderState)){
             const gender = match.params.gender;
-            store.dispatch(genderAdded(gender));
-            store.dispatch(categoryIdAdded(0));
-            store.dispatch(brandIdAdded(0));
-            store.dispatch(fetchGender());
+            dispatch(genderAdded(gender));
+            dispatch(categoryIdAdded(0));
+            dispatch(brandIdAdded(0));
+            dispatch(fetchGender());
         } else if((match.path === brndsPath && prodState !== 'brand') || (match.path === brndsPath && prodState === 'brand' && brndState !== brndParams)){
             const brand = parseInt(match.params.brand_id);
-            store.dispatch(genderAdded(''));
-            store.dispatch(categoryIdAdded(0));
-            store.dispatch(brandIdAdded(brand));
-            store.dispatch(fetchBrnds());
+            dispatch(genderAdded(''));
+            dispatch(categoryIdAdded(0));
+            dispatch(brandIdAdded(brand));
+            dispatch(fetchBrnds());
         };
     }, [match.url]);
 

@@ -79,3 +79,68 @@ export const product = {
         }
     ]
 };
+
+export const categoryRes = [
+    {
+        id: 1,
+        category_id: 1,
+        title: 'Product',
+        unit_price_eur: 10,
+        thumbnail_url: 'url',
+        manufacturer: 'Brand'
+    },
+    {
+        id: 2,
+        category_id: 1,
+        title: 'Product2',
+        unit_price_eur: 20,
+        thumbnail_url: 'url2',
+        manufacturer: 'Brand2' 
+    }
+];
+
+export const genderRes = [
+    {
+        id: 3,
+        category_id: 3,
+        title: 'Product3',
+        unit_price_eur: 30,
+        thumbnail_url: 'url3',
+        manufacturer: 'Brand3'
+    },
+    {
+        id: 4,
+        category_id: 4,
+        title: 'Product4',
+        unit_price_eur: 40,
+        thumbnail_url: 'url4',
+        manufacturer: 'Brand4' 
+    }
+];
+
+export const brandRes = {
+    manufacturer: {
+        id: 1,
+        title: 'Brand',
+        description: 'Brand Description',
+        logo_url: 'Logo.Url'
+    },
+    products: [
+        {
+            id: 5,
+            category_id: 1,
+            title: 'Product5',
+            unit_price_eur: 50,
+            thumbnail_url: 'url5',
+            manufacturer: 'Brand'
+        },
+        {
+            id: 6,
+            category_id: 2,
+            title: 'Product6',
+            unit_price_eur: 60,
+            thumbnail_url: 'url6',
+            manufacturer: 'Brand'
+        }
+    ]
+};

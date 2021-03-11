@@ -24,7 +24,7 @@ import ProductPreview from '../ProdList/ProductPreview';
 import ProdPage from '../ProdPage/ProdPage';
 import Product from '../ProdPage/Product';
 
-import { anonymous, loggedIn, product } from './utils/state';
+import { anonymous, loggedIn, product, categoryRes, genderRes, brandRes } from './utils/state';
 
 jest.mock('../../../Redux/Store');
 
@@ -42,6 +42,101 @@ function setUpStore(initialState){
 };
 
 describe('* <Products /> *', () => {
+
+    it('Fetches products to Redux and renders "${CATEGORY} FR ${GNDR}" + Products if match.path is "/products/:gender/list/:categoryid/:category_title"', async () => {
+        const store = setUpStore( anonymous );
+
+        const scope = nock('http://localhost')
+            .get('/api/products?gender=men&categoryid=1')
+            .reply(200, categoryRes);
+        
+        rtlRender(
+            <Provider store={store} >
+                <Router>
+                    <Products match={{params: { gender: 'men', categoryid: 1, category_title: 'HTS' }, isExact: true, path: '/products/:gender/list/:categoryid/:category_title', url: '/products/men/list/1/HTS'}} />
+                </Router>
+            </Provider>
+        );
+
+        await waitFor(() => {
+            expect(screen.getByText('HTS FR MN')).toBeInTheDocument();
+        });
+        expect(screen.getByText('Product')).toBeInTheDocument();
+        expect(screen.getByText('Product2')).toBeInTheDocument();
+        const reduxState = store.getState().products;
+        expect(reduxState).toEqual({
+            list: categoryRes,
+            status: 'category',
+            error: null,
+            gender: 'men',
+            category_id: 1,
+            brand_id: 0
+        });
+    });
+
+    it('Fetches products to Redux and renders "PRDCTS FR ${GNDR}" + Products if match.path is "/products/:gender"', async () => {
+        const store = setUpStore( anonymous );
+
+        const scope = nock('http://localhost')
+            .get('/api/products?gender=women')
+            .reply(200, genderRes);
+        
+        rtlRender(
+            <Provider store={store} >
+                <Router>
+                    <Products match={{params: { gender: 'women' }, isExact: true, path: '/products/:gender', url: '/products/women'}} />
+                </Router>
+            </Provider>
+        );
+
+        await waitFor(() => {
+            expect(screen.getByText('PRDCTS FR WMN')).toBeInTheDocument();
+        });
+        expect(screen.getByText('Product3')).toBeInTheDocument();
+        expect(screen.getByText('Product4')).toBeInTheDocument();
+        const reduxState = store.getState().products;
+        expect(reduxState).toEqual({
+            list: genderRes,
+            status: 'gender',
+            error: null,
+            gender: 'women',
+            category_id: 0,
+            brand_id: 0
+        });
+    });
+
+    it('Fetches products to Redux and renders Brand description and an Logo image + Products if match.path is "/brands/:brand_id/:title"', async () => {
+        const store = setUpStore( anonymous );
+
+        const scope = nock('http://localhost')
+            .get('/api/manufacturer/1')
+            .reply(200, brandRes);
+        
+        rtlRender(
+            <Provider store={store} >
+                <Router>
+                    <Products match={{params: { brand_id: 1, title: 'Brand' }, isExact: true, path: '/brands/:brand_id/:title', url: '/brands/1/Brand'}} />
+                </Router>
+            </Provider>
+        );
+
+        await waitFor(() => {
+            expect(screen.getByText('Brand Description')).toBeInTheDocument();
+        });
+        const img = screen.getByAltText('Brand');
+        expect(img.src).toContain('Logo.Url');
+        expect(screen.getByText('Product5')).toBeInTheDocument();
+        expect(screen.getByText('Product6')).toBeInTheDocument();
+        const reduxState = store.getState().products;
+        expect(reduxState).toEqual({
+            list: brandRes,
+            status: 'brand',
+            error: null,
+            gender: '',
+            category_id: 0,
+            brand_id: 1
+        });
+    });
 
     describe('-- <BrandHeader /> --', () => {
         it('Renders a description and an Logo image', () => {
@@ -70,7 +165,7 @@ describe('* <Products /> *', () => {
             expect(screen.getByText('PRDCTS FR MN')).toBeInTheDocument();
         });
 
-        it('Renders "${CATEGORY} FR "MN" if "men" and category is passed in props', () => {
+        it('Renders "${CATEGORY} FR MN" if "men" and category is passed in props', () => {
             rtlRender(
                 <GenderHeader data={{
                     gender: 'men',
@@ -81,7 +176,7 @@ describe('* <Products /> *', () => {
             expect(screen.getByText('JCKTS FR MN')).toBeInTheDocument();
         });
         
-        it('Renders "PRDCTS FR "WMN" if only "women" is passed in props', () => {
+        it('Renders "PRDCTS FR WMN" if only "women" is passed in props', () => {
             rtlRender(
                 <GenderHeader data={{
                     gender: 'women'
@@ -91,7 +186,7 @@ describe('* <Products /> *', () => {
             expect(screen.getByText('PRDCTS FR WMN')).toBeInTheDocument();
         });
 
-        it('Renders "${CATEGORY} FR "WMN" if "women" and category is passed in props', () => {
+        it('Renders "${CATEGORY} FR WMN" if "women" and category is passed in props', () => {
             rtlRender(
                 <GenderHeader data={{
                     gender: 'women',

@@ -24,12 +24,12 @@ function App() {
           <Route path="/" exact component={Home} />
           <Route path='/login' exact component={Login} />
           <Route path='/register' exact component={Register} />
-          <Route path='/products/:gender/list/:categoryid/:category_title/:productid/:product_title' exact component={ProdPage} />
-          <Route path='/products/:gender/list/:categoryid/:category_title' exact component={Products} />
-          <Route path='/products/:gender/:productid/:product_title' exact component={ProdPage} />
-          <Route path='/products/:gender' exact component={Products} />
-          <Route path='/brands/:brand_id/:title/:productid/:product_title' exact component={ProdPage} />
-          <Route path='/brands/:brand_id/:title' exact component={Products} />
+          <Route path='/products/:gender/list/:categoryid/:category_title/:productid/:product_title' exact render={(props) => <ProdPage {...props} />} />
+          <Route path='/products/:gender/list/:categoryid/:category_title' exact render={(props) => <Products {...props} />} />
+          <Route path='/products/:gender/:productid/:product_title' exact render={(props) => <ProdPage {...props} />} />
+          <Route path='/products/:gender' exact render={(props) => <Products {...props} />} />
+          <Route path='/brands/:brand_id/:title/:productid/:product_title' exact render={(props) => <ProdPage {...props} />} />
+          <Route path='/brands/:brand_id/:title' exact render={(props) => <Products {...props} />} />
           <Route path='/account/:username/password' exact render={(props) => <UpdatePw {...props} />} />
           <Route path='/account/:username' exact render={(props) => <Account {...props} />} />
           <Route path='/cart/:username' exact render={(props) => <Cart {...props} />} />

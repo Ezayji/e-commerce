@@ -103,6 +103,7 @@
 
 .dropdown:hover .dropdown-content{
     display:flex;
+    align-items: center;
 }
 
 .dropdown:hover .brands-drop{
