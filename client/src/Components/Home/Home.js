@@ -3,7 +3,7 @@ import Background from './background.jpg';
 
 const Home = () => {
     return(
-        <div className='home' >
+        <div data-testid='home' className='home' >
             
         </div>
     );
