@@ -3,14 +3,15 @@
 .orders-div{
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     text-align: center;
+    min-height: calc(100vh - 100px);
 }
 
 .orders-div h2{
     font-family: 'Teko';
     font-size: 2em;
+    margin: 25px 0px;
 }
 
 /* ORDERS HEAD */

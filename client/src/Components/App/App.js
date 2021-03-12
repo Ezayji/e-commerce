@@ -37,6 +37,7 @@ function App() {
           <Route path='/orders/:username' exact render={(props) => <Orders {...props} /> } />
           <Route path='/orders/:username/order/:order_id' exact render={(props) => <SingleOrder {...props} /> } />
         </Switch>
+        <Footer/>
       </div>
     </Router>
   );

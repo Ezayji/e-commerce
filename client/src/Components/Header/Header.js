@@ -47,6 +47,11 @@ const Header = () => {
         };
         auth();
 
+        if(window.innerWidth <= 768){
+            setMobile(true);
+        } else {
+            setMobile(false);
+        };
     }, []);
 
         // Nav render based on window size
