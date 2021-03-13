@@ -4,7 +4,6 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { fetchCart, cartAdded } from '../../Redux/CartSlice';
-//import store from '../../Redux/Store';
 import { updateItemQty, deleteFromCart } from '../../Services/Api/cart';
 
 import { Redirect } from 'react-router-dom';
@@ -17,7 +16,6 @@ import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 const promise = loadStripe('pk_test_51IItmKB1uegguB7b2ReRKVdoa1Bojw5VxlWF9uuCwiYdY1Z3C8wpwI8kDau5SQ8qQN2nQdJXOvwvhODgssLH5RFn00LH75oIZw');
 
-// , store
 const Cart = ({ history }) => {
     const dispatch = useDispatch();
 

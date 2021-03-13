@@ -19,18 +19,36 @@ import { oneItemUser, twoItemUser, emptyState, noItemsUser, fullTwoItemUser} fro
 
 jest.mock('../../../Redux/Store');
 
-    // store for renders that dispatch actions
-function setUpStore(initialState){
-    return createStore(
-        combineReducers({ 
-            customer: customerReducer,
-            cart: cartReducer,
-        }),
+    // render helper function
+function render(
+    ui,
+    {
         initialState,
-        applyMiddleware(thunk)
-    );
+        store = createStore(
+            combineReducers({
+                customer: customerReducer,
+                cart: cartReducer
+            }),
+            initialState,
+            applyMiddleware(thunk)
+        ),
+        ...renderOptions
+    } = {}
+){
+    function Wrapper({ children }){
+        return (
+            <Provider store={store} >
+                <Router>
+                    {children}
+                    <Route path='/'>Main Page</Route>
+                </Router>
+            </Provider>
+        )
+    };
+    return rtlRender(ui, { wrapper: Wrapper, ...renderOptions });
 };
 
+    // <CartItem /> props state
 const item = {
     color: 'White / Green',
     manufacturer: 'Stuzzy',
@@ -43,19 +61,12 @@ const item = {
 
 describe('* <Cart /> (parent) * ', () => {
     describe('-- Logged in customer --', () => {
+
         it('Renders 1 Cart Item and Total without crashing', () => {
-
-            const history = createMemoryHistory();
-            const store = setUpStore( oneItemUser );
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Cart history={history} />
-                    </Router>
-                </Provider>
+            render(
+                <Cart />,
+                { initialState: oneItemUser }
             );
-
             expect(screen.getByText('White / Green')).toBeInTheDocument();
             expect(screen.getByText('Stuzzy')).toBeInTheDocument();
             expect(screen.getByText('Stuzzy and Nike Insulated Pullover')).toBeInTheDocument();
@@ -66,15 +77,10 @@ describe('* <Cart /> (parent) * ', () => {
         });
 
         it('Renders 2 Cart Items and Total without crashing', () => {
-            const history = createMemoryHistory();
-            const store = setUpStore( twoItemUser );
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Cart history={history} />
-                    </Router>
-                </Provider>
+            
+            render(
+                <Cart />,
+                { initialState: twoItemUser }
             );
 
             expect(screen.getByText('White / Green')).toBeInTheDocument();
@@ -93,24 +99,15 @@ describe('* <Cart /> (parent) * ', () => {
         });
 
         it('Renders "No Items In Cart" if server responds with 404 "No Cart Items For Customer"', async () => {
-            const history = createMemoryHistory();
-            const store = setUpStore( noItemsUser );
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Cart history={history} />
-                    </Router>
-                </Provider>
+        
+            render(
+                <Cart />,
+                { initialState: noItemsUser }
             );
-
+            
             const scope = nock('http://localhost')
                 .get('/api/cart/Revarz')
-                .replyWithError(404, {
-                    statusCode: 404,
-                    error: 'Not Found',
-                    message: 'No Cart Items For Customer'
-                });
+                .reply(404, 'No Cart Items For Customer');
             
             await waitFor(() => {
                 expect(screen.getByText('No Items In Cart')).toBeInTheDocument();
@@ -119,17 +116,12 @@ describe('* <Cart /> (parent) * ', () => {
         });
 
         it('Fetches Delete request to server and dispatches Redux Fetch for remaining Cart items if "REMOVE ITEM" is clicked for an Item', async () => {
-            const history = createMemoryHistory();
-            const store = setUpStore( twoItemUser );
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Cart history={history} />
-                    </Router>
-                </Provider>
+            
+            render(
+                <Cart />,
+                { initialState: twoItemUser }
             );
-
+            
             const scope = nock('http://localhost')
                 .delete('/api/cart/Revarz?product_id=19&size=Universal')
                 .reply(204)
@@ -168,15 +160,10 @@ describe('* <Cart /> (parent) * ', () => {
         });
 
         it('Fetches item quantity update and Dispatches results to Redux if "+" is clicked', async () => {
-            const history = createMemoryHistory();
-            const store = setUpStore( twoItemUser );
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Cart history={history} />
-                    </Router>
-                </Provider>
+            
+            render(
+                <Cart />,
+                { initialState: twoItemUser }
             );
 
             const scope = nock('http://localhost')
@@ -237,15 +224,10 @@ describe('* <Cart /> (parent) * ', () => {
         });
 
         it('Fetches item quantity update and Dispatches results to Redux if "-" is clicked', async () => {
-            const history = createMemoryHistory();
-            const store = setUpStore( twoItemUser );
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Cart history={history} />
-                    </Router>
-                </Provider>
+            
+            render(
+                <Cart />,
+                { initialState: twoItemUser }
             );
 
             const scope = nock('http://localhost')
@@ -304,15 +286,10 @@ describe('* <Cart /> (parent) * ', () => {
         });
 
         it('Fetches customer Cart Items on render if Redux Cart is empty and displays them', async () => {
-            const history = createMemoryHistory();
-            const store = setUpStore( noItemsUser );
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Cart history={history} />
-                    </Router>
-                </Provider>
+            
+            render(
+                <Cart />,
+                { initialState: noItemsUser }
             );
 
             const scope = nock('http://localhost')
@@ -346,14 +323,10 @@ describe('* <Cart /> (parent) * ', () => {
 
         it('Renders Checkout div if "CHECKOUT" is clicked and removes it if "Cancel Checkout" is clicked', async () => {
             const history = createMemoryHistory();
-            const store = setUpStore( fullTwoItemUser );
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Cart history={history} />
-                    </Router>
-                </Provider>
+            
+            render(
+                <Cart history={history} />,
+                { initialState: fullTwoItemUser }
             );
 
             const toCheckout = screen.getByText('CHECKOUT');
@@ -373,19 +346,13 @@ describe('* <Cart /> (parent) * ', () => {
 
     describe('-- Not Logged in Customer --', () => {
         it('Redirects to "/"', () => {
-            const history = createMemoryHistory();
-            const store = setUpStore( emptyState );
-
-            const {container} = rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Cart history={history} />
-                        <Route path='/'>Main Page</Route>
-                    </Router>
-                </Provider>
+            
+            render(
+                <Cart />,
+                { initialState: emptyState }
             );
 
-            expect(container).toHaveTextContent('Main Page');
+            expect(screen.getByText('Main Page')).toBeInTheDocument();
 
         });
     });

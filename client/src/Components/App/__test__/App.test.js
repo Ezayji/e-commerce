@@ -1,8 +1,4 @@
 import React from 'react';
-/*
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { createMemoryHistory } from 'history';
-*/
 import { render as rtlRender, fireEvent, screen, waitFor, act } from '@testing-library/react';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
@@ -26,19 +22,6 @@ import { anonymous, product, categoryRes, genderRes, brandRes, user, orderRes, i
 
 jest.mock('../../../Redux/Store');
 
-    // store mock
-function setUpStore(initialState){
-    return createStore(
-        combineReducers({
-            customer: customerReducer,
-            products: productsReducer,
-            cart: cartReducer,
-            orders: ordersReducer
-        }),
-        initialState,
-        applyMiddleware(thunk)
-    );
-};
     // helper for rendering
 function render(
     ui,

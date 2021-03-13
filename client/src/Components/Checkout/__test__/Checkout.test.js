@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 
-import { render as rtlRender, fireEvent, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
+import { render as rtlRender, fireEvent, screen, waitFor } from '@testing-library/react';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -27,41 +27,47 @@ import { noAddressUser, savedAddressUser, notFetchedProfile, emptyCartUser, notL
 
 jest.mock('../../../Redux/Store');
 
-    // store with customer and cart states
-function setUpStore(initialState){
-    return createStore(
-        combineReducers({ 
-            customer: customerReducer,
-            cart: cartReducer,
-        }),
+    // render helper function, return screen and store
+function render(
+    ui,
+    {
         initialState,
-        applyMiddleware(thunk)
-    );
-};
-
-    // store with customer, cart and order states
-function makeStore(initialState){
-    return createStore(
-        combineReducers({ 
-            customer: customerReducer,
-            cart: cartReducer,
-            orders: ordersReducer
-        }),
-        initialState,
-        applyMiddleware(thunk)
-    );
+        store = createStore(
+            combineReducers({
+                customer: customerReducer,
+                cart: cartReducer,
+                orders: ordersReducer
+            }),
+            initialState,
+            applyMiddleware(thunk)
+        ),
+        ...renderOptions
+    } = {}
+){
+    function Wrapper({ children }){
+        return (
+            <Provider store={store} >
+                <Router>
+                    {children}
+                    <Route path='/'>Main Page</Route>
+                </Router>
+            </Provider>
+        )
+    };
+    return [
+        rtlRender(ui, { wrapper: Wrapper, ...renderOptions }),
+        store
+    ]
 };
 
 describe('* <Checkout /> (parent) *', () => {
     describe('-- Customer With Saved Address --', () => {
 
         it("Renders without crashing and displays <Billing /> with Customer's saved address", async () => {
-            const store = setUpStore( savedAddressUser );
-
-            rtlRender(
-                <Provider store={store} >
-                    <Checkout />
-                </Provider>
+            
+            render(
+                <Checkout />,
+                { initialState: savedAddressUser }
             );
 
             await waitFor(() => {
@@ -78,13 +84,11 @@ describe('* <Checkout /> (parent) *', () => {
         });
 
         it('onCancel from props is called if "Cancel Checkout" is clicked', async () => {
-            const store = setUpStore( savedAddressUser );
             const onCancel = jest.fn();
-
-            rtlRender(
-                <Provider store={store} >
-                    <Checkout onCancel={onCancel} />
-                </Provider>
+            
+            render(
+                <Checkout onCancel={onCancel} />,
+                { initialState: savedAddressUser }
             );
 
             await waitFor(() => {
@@ -98,14 +102,12 @@ describe('* <Checkout /> (parent) *', () => {
         });
 
         it('Renders <Payment /> if "NEXT" is clicked', async () => {
-            const store = setUpStore( savedAddressUser );
-
-            rtlRender(
-                <Provider store={store} >
-                    <Elements stripe={promise} >
-                        <Checkout cart={twoItemCart} total={twoTotal} />
-                    </Elements>
-                </Provider>
+            
+            render(
+                <Elements stripe={promise} >
+                    <Checkout cart={twoItemCart} total={twoTotal} />
+                </Elements>,
+                { initialState: savedAddressUser }
             );
 
             await waitFor(() => {
@@ -120,14 +122,12 @@ describe('* <Checkout /> (parent) *', () => {
         });
 
         it('Renders <Billing /> with selected address info if "CHANGE ADDRESS" is clicked on <Payment /> component', async () => {
-            const store = setUpStore( savedAddressUser );
-
-            rtlRender(
-                <Provider store={store} >
-                    <Elements stripe={promise} >
-                        <Checkout cart={twoItemCart} total={twoTotal} />
-                    </Elements>
-                </Provider>
+            
+            render(
+                <Elements stripe={promise} >
+                    <Checkout cart={twoItemCart} total={twoTotal} />
+                </Elements>,
+                { initialState: savedAddressUser }
             );
 
             await waitFor(() => {
@@ -164,7 +164,6 @@ describe('* <Checkout /> (parent) *', () => {
         });
 
         it('Dispatches Profile and Address Fetch to Redux if not present', async () => {
-            const store = setUpStore( notFetchedProfile );
 
             const reqAddress = {
                 username: 'Revarz',
@@ -195,11 +194,10 @@ describe('* <Checkout /> (parent) *', () => {
                     zip: 76607,
                     country: 'Estonia'
             });
-
-            rtlRender(
-                <Provider store={store} >
-                    <Checkout />
-                </Provider>
+            
+            const [ screen, store ] = render(
+               <Checkout />,
+               { initialState: notFetchedProfile }
             );
 
             await waitFor(() => {
@@ -215,7 +213,6 @@ describe('* <Checkout /> (parent) *', () => {
         });
 
         it('Renders <Billing /> with the option "Save address" and empty fields if no address was found from the database', async () => {
-            const store = setUpStore( notFetchedProfile );
 
             const scope = nock('http://localhost')
                 .get('/api/customer_un/Revarz')
@@ -236,11 +233,10 @@ describe('* <Checkout /> (parent) *', () => {
                     zip: null,
                     country: null
                 });
-
-            rtlRender(
-                <Provider store={store} >
-                    <Checkout />
-                </Provider>
+            
+            render(
+                <Checkout />,
+                { initialState: notFetchedProfile }
             );
 
             await waitFor(() => {
@@ -262,7 +258,6 @@ describe('* <Checkout /> (parent) *', () => {
 
 describe('* <Billing /> (child) *', () => {
     it('Renders without crashing if Saved Address is supplied and provides checkbox option "Use existing address"', async () => {
-        const store = setUpStore( savedAddressUser );
         
         const address = {
             appartment_nr: '1',
@@ -272,11 +267,10 @@ describe('* <Billing /> (child) *', () => {
             zip: '76607',
             country: 'Estonia',
         };
-        
-        rtlRender(
-            <Provider store={store} >
-                <Billing address={address} />
-            </Provider>
+    
+        render(
+            <Billing address={address} />,
+            { initialState: savedAddressUser }
         );
         
         await waitFor(() => {
@@ -292,14 +286,12 @@ describe('* <Billing /> (child) *', () => {
     });
 
     it('Renders without crashing if no address is supplied and provides checkbox option "Save address"', () => {
-        const store = setUpStore( noAddressUser );
         
         const address = '';
         
-        rtlRender(
-            <Provider store={store} >
-                <Billing address={address} />
-            </Provider>
+        render(
+            <Billing address={address} />,
+            { initialState: noAddressUser }
         );
 
         expect(screen.getByTestId('appartment').value).toBe('');
@@ -312,7 +304,6 @@ describe('* <Billing /> (child) *', () => {
     });
 
     it('Clears fields if first render with Saved Address and "Use existing address" is then unchecked', async () => {
-        const store = setUpStore( savedAddressUser );
         
         const address = {
             appartment_nr: '1',
@@ -323,12 +314,11 @@ describe('* <Billing /> (child) *', () => {
             country: 'Estonia',
         };
         
-        rtlRender(
-            <Provider store={store} >
-                <Billing address={address} />
-            </Provider>
+        render(
+            <Billing address={address} />,
+            { initialState: savedAddressUser }
         );
-        
+
         await waitFor(() => {
             expect(screen.getByDisplayValue('Estonia')).toBeInTheDocument();
         });
@@ -347,7 +337,6 @@ describe('* <Billing /> (child) *', () => {
     });
 
     it('Clears fields if first render with Saved Address and any field is changed', async () => {
-        const store = setUpStore( savedAddressUser );
         
         const address = {
             appartment_nr: '1',
@@ -357,11 +346,10 @@ describe('* <Billing /> (child) *', () => {
             zip: '76607',
             country: 'Estonia',
         };
-        
-        rtlRender(
-            <Provider store={store} >
-                <Billing address={address} />
-            </Provider>
+
+        render(
+            <Billing address={address} />,
+            { initialState: savedAddressUser }
         );
         
         await waitFor(() => {
@@ -381,14 +369,12 @@ describe('* <Billing /> (child) *', () => {
     });
 
     it('Does not change input values if No Supplied Address, fields are then filled and "Save address" is then unchecked', () => {
-        const store = setUpStore( noAddressUser );
         
         const address = '';
         
-        rtlRender(
-            <Provider store={store} >
-                <Billing address={address} />
-            </Provider>
+        render(
+            <Billing address={address} />,
+            { initialState: noAddressUser }
         );
 
         const appartment = screen.getByTestId('appartment');
@@ -416,7 +402,6 @@ describe('* <Billing /> (child) *', () => {
     });
 
     it('onNext from props is called with selected address info if "NEXT" is clicked', async () => {
-        const store = setUpStore( savedAddressUser );
         const onNext = jest.fn();
 
         const address = {
@@ -427,11 +412,10 @@ describe('* <Billing /> (child) *', () => {
             zip: '76607',
             country: 'Estonia',
         };
-        
-        rtlRender(
-            <Provider store={store} >
-                <Billing address={address} onNext={onNext} />
-            </Provider>
+    
+        render(
+            <Billing address={address} onNext={onNext} />,
+            { initialState: savedAddressUser }
         );
         
         await waitFor(() => {
@@ -457,7 +441,6 @@ describe('* <Billing /> (child) *', () => {
     describe('-- Second render with address in Parent state --', () => {
     
         it('Can switch between Custom Address info and Saved address if "Use existing address" is checked and unchecked (renders with *Unchecked* and has custom in fields)', async () => {
-            const store = setUpStore( savedAddressUser );
         
             const address = {
                 appartment_nr: '2',
@@ -469,11 +452,10 @@ describe('* <Billing /> (child) *', () => {
                 status: 'Existing',
                 check: false
             };
-        
-            rtlRender(
-                <Provider store={store} >
-                    <Billing address={address} />
-                </Provider>
+            
+            render(
+                <Billing address={address} />,
+                { initialState: savedAddressUser }
             );
 
             await waitFor(() => {
@@ -510,7 +492,6 @@ describe('* <Billing /> (child) *', () => {
         });
 
         it('Customer with saved address has saved info in fields and "Use existing address" *Checked*', async () => {
-            const store = setUpStore( savedAddressUser );
         
             const address = {
                 appartment_nr: '1',
@@ -523,10 +504,9 @@ describe('* <Billing /> (child) *', () => {
                 check: true
             };
             
-            rtlRender(
-                <Provider store={store} >
-                    <Billing address={address} />
-                </Provider>
+            render(
+                <Billing address={address} />,
+                { initialState: savedAddressUser }
             );
             
             await waitFor(() => {
@@ -544,7 +524,6 @@ describe('* <Billing /> (child) *', () => {
         });
 
         it('Customer without saved address has custom address in fields and "Save address" remains *Unchecked*', async () => {
-            const store = setUpStore( noAddressUser );
         
             const address = {
                 appartment_nr: '1',
@@ -556,11 +535,10 @@ describe('* <Billing /> (child) *', () => {
                 status: 'New',
                 check: false
             };
-        
-            rtlRender(
-                <Provider store={store} >
-                    <Billing address={address} />
-                </Provider>
+            
+            render(
+                <Billing address={address} />,
+                { initialState: noAddressUser }
             );
 
             await waitFor(() => {
@@ -578,7 +556,6 @@ describe('* <Billing /> (child) *', () => {
         });
 
         it('Customer without saved address has custom address in fields and "Save address" remains *Checked*', async () => {
-            const store = setUpStore( noAddressUser );
         
             const address = {
                 appartment_nr: '1',
@@ -590,11 +567,10 @@ describe('* <Billing /> (child) *', () => {
                 status: 'New',
                 check: true
             };
-        
-            rtlRender(
-                <Provider store={store} >
-                    <Billing address={address} />
-                </Provider>
+            
+            render(
+                <Billing address={address} />,
+                { initialState: noAddressUser }
             );
 
             await waitFor(() => {
@@ -617,14 +593,11 @@ describe('* <Billing /> (child) *', () => {
 describe('* <Payment /> (child) *', () => {
 
     it('Renders without crashing and displays 1 cart item', () => {
-        const history = createMemoryHistory();
         
-        rtlRender(
-            <Router>
-                <Elements stripe={promise} >
-                    <Payment history={history} total={oneTotal} cart={oneItemCart} />
-                </Elements>
-            </Router>
+        render(
+            <Elements stripe={promise} >
+                <Payment total={oneTotal} cart={oneItemCart} />
+            </Elements> 
         );
 
         expect(screen.getByText('ITEMS')).toBeInTheDocument();
@@ -636,14 +609,11 @@ describe('* <Payment /> (child) *', () => {
     });
 
     it('Renders without crashing and displays 2 cart items', () => {
-        const history = createMemoryHistory();
         
-        rtlRender(
-            <Router>
-                <Elements stripe={promise} >
-                    <Payment history={history} total={twoTotal} cart={twoItemCart} />
-                </Elements>
-            </Router>
+        render(
+            <Elements stripe={promise} >
+                <Payment total={twoTotal} cart={twoItemCart} />
+            </Elements>
         );
 
         expect(screen.getByText('ITEMS')).toBeInTheDocument();
@@ -657,15 +627,13 @@ describe('* <Payment /> (child) *', () => {
     });
 
     it('onPrev from props is called if "CHANGE ADDRESS" is clicked', () => {
-        const history = createMemoryHistory();
+        
         const onPrev = jest.fn()
-
-        rtlRender(
-            <Router>
-                <Elements stripe={promise} >
-                    <Payment history={history} total={oneTotal} cart={oneItemCart} onPrev={onPrev} />
-                </Elements>
-            </Router>
+        
+        render(
+            <Elements stripe={promise} >
+                <Payment total={oneTotal} cart={oneItemCart} onPrev={onPrev} />
+            </Elements>
         );
 
         const changeAddress = screen.getByText('CHANGE ADDRESS');
@@ -680,14 +648,10 @@ describe('* <SuccessPage /> *', () => {
     describe('-- Logged in customer redirected after succesful purchase --', () => {
 
         it('Renders without crashing, displays Order ID and username ', async () => {
-
-            const store = setUpStore( emptyCartUser );
-            rtlRender(
-                <Provider store={store} >
-                    <Router >
-                        <SuccessPage match={{params: {username: 'Revarz', order_id: 1000000}, isExact: true, path: '/checkout/success/:username/:order_id', url: '/checkout/success/Revarz/1000000'}} />
-                    </Router>
-                </Provider>
+            
+            render(
+                <SuccessPage match={{params: {username: 'Revarz', order_id: 1000000}, isExact: true, path: '/checkout/success/:username/:order_id', url: '/checkout/success/Revarz/1000000'}} />,
+                { initialState: emptyCartUser }
             );
 
             await waitFor(() => {
@@ -699,13 +663,10 @@ describe('* <SuccessPage /> *', () => {
         });
 
         it('Renders a link to order details page', async () => {
-            const store = setUpStore( emptyCartUser );
-            rtlRender(
-                <Provider store={store} >
-                    <Router >
-                        <SuccessPage match={{params: {username: 'Revarz', order_id: 1000000}, isExact: true, path: '/checkout/success/:username/:order_id', url: '/checkout/success/Revarz/1000000'}} />
-                    </Router>
-                </Provider>
+            
+            render(
+                <SuccessPage match={{params: {username: 'Revarz', order_id: 1000000}, isExact: true, path: '/checkout/success/:username/:order_id', url: '/checkout/success/Revarz/1000000'}} />,
+                { initialState: emptyCartUser }
             );
 
             await waitFor(() => {
@@ -716,7 +677,7 @@ describe('* <SuccessPage /> *', () => {
         });
 
         it('Resets Redux Cart state and fetches Orders on render', async () => {
-            const store = makeStore( fullUserWOrders );
+            
             const order = [{
                 id: 1001,
                 date_utc: "2021-03-08T11:22:09.184Z",
@@ -734,13 +695,10 @@ describe('* <SuccessPage /> *', () => {
             const scope = nock('http://localhost')
                 .get('/api/orders/Revarz')
                 .reply(200, order);
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router >
-                        <SuccessPage match={{params: {username: 'Revarz', order_id: 1000000}, isExact: true, path: '/checkout/success/:username/:order_id', url: '/checkout/success/Revarz/1000000'}} />
-                    </Router>
-                </Provider>
+            
+            const [ screen, store ] = render(
+                <SuccessPage match={{params: {username: 'Revarz', order_id: 1000000}, isExact: true, path: '/checkout/success/:username/:order_id', url: '/checkout/success/Revarz/1000000'}} />,
+                { initialState: fullUserWOrders }
             );
                 // timeout for redux to finish actions
             await new Promise((r) => setTimeout(r, 1000));
@@ -757,14 +715,10 @@ describe('* <SuccessPage /> *', () => {
     describe('-- Not logged in customer trying to access via Url --', () => {
         
         it('Redirects to "/"', async () => {
-            const store = setUpStore( notLoggedIn );
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <SuccessPage match={{params: {username: 'Revarz', order_id: 1000000}, isExact: true, path: '/checkout/success/:username/:order_id', url: '/checkout/success/Revarz/1000000'}} />
-                        <Route path="/" >Main Page</Route>
-                    </Router>
-                </Provider>
+            
+            render(
+                <SuccessPage match={{params: {username: 'Revarz', order_id: 1000000}, isExact: true, path: '/checkout/success/:username/:order_id', url: '/checkout/success/Revarz/1000000'}} />,
+                { initialState: notLoggedIn }
             );
 
             await waitFor(() => {
