@@ -47,22 +47,19 @@ const Header = () => {
         };
         auth();
 
+    }, []);
+
+    // Nav render based on window size
+    const resizeListener = () => {
         if(window.innerWidth <= 768){
             setMobile(true);
         } else {
             setMobile(false);
         };
-    }, []);
+    };
 
-        // Nav render based on window size
     useEffect(() => {
-        const resizeListener = () => {
-            if(window.innerWidth <= 768){
-                setMobile(true);
-            } else {
-                setMobile(false);
-            };
-        };
+        resizeListener();
         window.addEventListener('resize', resizeListener);
 
         return () => {

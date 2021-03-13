@@ -342,11 +342,11 @@ describe('* <Header /> *', () => {
                     </Router>
                 </Provider>
             );
-                
+            /*    
             await waitFor(() => {
                 expect(screen.getByText('Carhartt WIP')).toBeInTheDocument();
             });
-
+            */
             act(() => resizeWindow(760, 480) );
 
             expect(screen.getByTestId('mobile-header')).toBeInTheDocument();
@@ -399,14 +399,18 @@ describe('* <Header /> *', () => {
                 </Provider>
             );
                 
+            /*    
             await waitFor(() => {
                 expect(screen.getByText('Carhartt WIP')).toBeInTheDocument();
             });
+            */
 
             act(() => resizeWindow(760, 480) );
 
             expect(screen.getByTestId('mobile-header')).toBeInTheDocument();
-            expect(screen.getByTestId('user-letter')).toBeInTheDocument();
+            await waitFor(() => {
+                expect(screen.getByTestId('user-letter')).toBeInTheDocument();
+            });
             fireEvent.click(screen.getByTestId('user-letter'));
             expect(screen.getByText('ACNT')).toBeInTheDocument();
             expect(screen.getByText('CART')).toBeInTheDocument();
@@ -453,9 +457,11 @@ describe('* <Header /> *', () => {
                 </Provider>
             );
                 
+            /*    
             await waitFor(() => {
                 expect(screen.getByText('Carhartt WIP')).toBeInTheDocument();
             });
+            */
 
             act(() => resizeWindow(760, 480) );
             expect(screen.getByTestId('mobile-header')).toBeInTheDocument();
@@ -509,9 +515,11 @@ describe('* <Header /> *', () => {
                 </Provider>
             );
                 
+            /*    
             await waitFor(() => {
                 expect(screen.getByText('Carhartt WIP')).toBeInTheDocument();
             });
+            */
 
             act(() => resizeWindow(760, 480) );
             expect(screen.getByTestId('mobile-header')).toBeInTheDocument();
@@ -567,9 +575,11 @@ describe('* <Header /> *', () => {
                     </Router>
                 </Provider>
             );
+            /*    
             await waitFor(() => {
                 expect(screen.getByText('Carhartt WIP')).toBeInTheDocument();
             });
+            */
 
             act(() => resizeWindow(760, 480) );
 
@@ -623,9 +633,11 @@ describe('* <Header /> *', () => {
                     </Router>
                 </Provider>
             );
+            /*    
             await waitFor(() => {
                 expect(screen.getByText('Carhartt WIP')).toBeInTheDocument();
             });
+            */
 
             act(() => resizeWindow(760, 480) );
 
