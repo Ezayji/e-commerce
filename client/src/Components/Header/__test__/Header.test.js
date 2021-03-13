@@ -13,24 +13,41 @@ import customerReducer from '../../../Redux/CustomerSlice';
 import ordersReducer from '../../../Redux/OrdersSlice';
 
 import Header from '../Header';
-import MobileHeader from '../Views/MobileHeader';
-import DesktopHeader from '../Views/DesktopHeader';
+// <MobileHeader /> and <DesktopHeader /> get tested through the parent <Header />
 
 import { notLoggedIn, fullUser } from './utils/state';
 
-jest.mock('../../../Redux/Store');
-
-    // store mock
-function setUpStore(initialState){
-    return createStore(
-        combineReducers({ 
-            customer: customerReducer,
-            cart: cartReducer,
-            orders: ordersReducer
-        }),
+    // render helper function, returns screen and store
+function render(
+    ui,
+    {
         initialState,
-        applyMiddleware(thunk)
-    );
+        store = createStore(
+            combineReducers({
+                customer: customerReducer,
+                cart: cartReducer,
+                orders: ordersReducer
+            }),
+            initialState,
+            applyMiddleware(thunk)
+        ),
+        ...renderOptions
+    } = {}
+){
+    function Wrapper({ children }){
+        return (
+            <Provider store={store} >
+                <Router>
+                    {children}
+                    <Route path='/products/:gender/list/:categoryid/:category_title' exact >HATS PAGE</Route>
+                </Router>
+            </Provider>
+        )
+    };
+    return [
+        rtlRender(ui, { wrapper: Wrapper, ...renderOptions }),
+        store
+    ]
 };
 
 function resizeWindow(x, y){
@@ -42,7 +59,6 @@ function resizeWindow(x, y){
 describe('* <Header /> *', () => {
     describe('-- Desktop --', () => {
         it('It Renders without crashing, displays <DesktopHeader />, fetches Brands to local state and Fetches successful Authentication check that adds Username to Redux state', async () => {
-            const store = setUpStore( notLoggedIn );
 
             const scope = nock('http://localhost')
                 .get('/api/manufacturers')
@@ -70,13 +86,10 @@ describe('* <Header /> *', () => {
                         username: 'Revarz'
                     }
                 });
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Header />
-                    </Router>
-                </Provider>
+            
+            const [ screen, store ] = render(
+                <Header />,
+                { initialState: notLoggedIn }
             );
             
             expect(screen.getByTestId('desktop-header')).toBeInTheDocument();
@@ -88,13 +101,16 @@ describe('* <Header /> *', () => {
             expect(screen.getByText('RIPNDIP')).toBeInTheDocument();
             expect(screen.getByText('Stüssy')).toBeInTheDocument();
 
+            await waitFor(() => {
+                expect(screen.getByText('REVARZ')).toBeInTheDocument()
+            })
+            
             const user = store.getState().customer.user;
             expect(user.username).toBe('Revarz');
             
         });
 
         it('Renders user actions for logged in customer', async () => {
-            const store = setUpStore( notLoggedIn );
 
             const scope = nock('http://localhost')
                 .get('/api/manufacturers')
@@ -122,13 +138,10 @@ describe('* <Header /> *', () => {
                         username: 'Revarz'
                     }
                 });
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Header />
-                    </Router>
-                </Provider>
+            
+            render(
+                <Header />,
+                { initialState: notLoggedIn }
             );
             
             expect(screen.getByTestId('desktop-header')).toBeInTheDocument();
@@ -143,7 +156,6 @@ describe('* <Header /> *', () => {
         });
 
         it('Fetches log out request and Resets customer, cart and orders state if "EXIT" is clicked', async () => {
-            const store = setUpStore( fullUser );
 
             const scope = nock('http://localhost')
                 .get('/api/manufacturers')
@@ -173,13 +185,10 @@ describe('* <Header /> *', () => {
                 })
                 .get('/api/logout')
                 .reply(200);
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Header />
-                    </Router>
-                </Provider>
+            
+            const [ screen, store ] = render(
+                <Header />,
+                { initialState: fullUser }
             );
             
             expect(screen.getByTestId('desktop-header')).toBeInTheDocument();
@@ -205,7 +214,6 @@ describe('* <Header /> *', () => {
         });
 
         it('Displays login button if browser is Not Authenticated', async () => {
-            const store = setUpStore( notLoggedIn );
 
             const scope = nock('http://localhost')
                 .get('/api/manufacturers')
@@ -228,16 +236,13 @@ describe('* <Header /> *', () => {
                     }
                 ])
                 .get('/api/auth')
-                .replyWithError(400, 'Not Authenticated');
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Header />
-                    </Router>
-                </Provider>
-            );
+                .reply(400, 'Not Authenticated');
             
+            render(
+                <Header />,
+                { initialState: notLoggedIn }
+            );
+
             expect(screen.getByTestId('desktop-header')).toBeInTheDocument();
 
             await waitFor(() => {
@@ -250,8 +255,12 @@ describe('* <Header /> *', () => {
     });
 
     describe('-- Mobile --', () => {
+
+        beforeAll(() => {
+            resizeWindow(760, 480)
+        });
+
         it('It Renders without crashing, displays <MobileHeader />, fetches Brands to local state and Fetches successful Authentication check that adds Username to Redux state', async () => {
-            const store = setUpStore( notLoggedIn );
 
             const scope = nock('http://localhost')
                 .get('/api/manufacturers')
@@ -280,20 +289,11 @@ describe('* <Header /> *', () => {
                     }
                 });
             
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Header />
-                    </Router>
-                </Provider>
+            const [ screen, store ] = render(
+                <Header />,
+                { initialState: notLoggedIn }
             );
-                
-            await waitFor(() => {
-                expect(screen.getByText('Carhartt WIP')).toBeInTheDocument();
-            });
-
-            act(() => resizeWindow(760, 480) );
-
+        
             expect(screen.getByTestId('mobile-header')).toBeInTheDocument();
 
             await waitFor(() => {
@@ -306,7 +306,6 @@ describe('* <Header /> *', () => {
         });
 
         it('Renders Category selection items if clicked on "MN" or "WMN" and Brands selection if clicked on "BRNDS"', async () => {
-            const store = setUpStore( notLoggedIn );
 
             const scope = nock('http://localhost')
                 .get('/api/manufacturers')
@@ -335,19 +334,10 @@ describe('* <Header /> *', () => {
                     }
                 });
             
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Header />
-                    </Router>
-                </Provider>
+            render(
+                <Header />,
+                { initialState: notLoggedIn }
             );
-            /*    
-            await waitFor(() => {
-                expect(screen.getByText('Carhartt WIP')).toBeInTheDocument();
-            });
-            */
-            act(() => resizeWindow(760, 480) );
 
             expect(screen.getByTestId('mobile-header')).toBeInTheDocument();
             const mn = screen.getByText('MN');
@@ -362,7 +352,6 @@ describe('* <Header /> *', () => {
         });
 
         it('Renders First Letter of Username that opens user actions menu if clicked', async () => {
-            const store = setUpStore( notLoggedIn );
 
             const scope = nock('http://localhost')
                 .get('/api/manufacturers')
@@ -391,21 +380,10 @@ describe('* <Header /> *', () => {
                     }
                 });
             
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Header />
-                    </Router>
-                </Provider>
+            render(
+                <Header />,
+                { initialState: notLoggedIn }
             );
-                
-            /*    
-            await waitFor(() => {
-                expect(screen.getByText('Carhartt WIP')).toBeInTheDocument();
-            });
-            */
-
-            act(() => resizeWindow(760, 480) );
 
             expect(screen.getByTestId('mobile-header')).toBeInTheDocument();
             await waitFor(() => {
@@ -420,7 +398,6 @@ describe('* <Header /> *', () => {
         });
 
         it('Shop Items Selection gets ".active" class if "Burger image" is clicked and the class removed if clicked again', async () => {
-            const store = setUpStore( notLoggedIn );
 
             const scope = nock('http://localhost')
                 .get('/api/manufacturers')
@@ -449,21 +426,11 @@ describe('* <Header /> *', () => {
                     }
                 });
             
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Header />
-                    </Router>
-                </Provider>
+            render(
+                <Header />,
+                { initialState: notLoggedIn }
             );
                 
-            /*    
-            await waitFor(() => {
-                expect(screen.getByText('Carhartt WIP')).toBeInTheDocument();
-            });
-            */
-
-            act(() => resizeWindow(760, 480) );
             expect(screen.getByTestId('mobile-header')).toBeInTheDocument();
 
             const burger = screen.getByTestId('burger-icon');
@@ -477,7 +444,6 @@ describe('* <Header /> *', () => {
         });
 
         it('".active" class is removed from Shop Items Selection if a category is selected', async () => {
-            const store = setUpStore( notLoggedIn );
 
             const scope = nock('http://localhost')
                 .get('/api/manufacturers')
@@ -506,22 +472,11 @@ describe('* <Header /> *', () => {
                     }
                 });
             
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Header />
-                        <Route path='/products/:gender/list/:categoryid/:category_title' exact >HATS PAGE</Route>
-                    </Router>
-                </Provider>
+            render(
+                <Header />,
+                { initialState: notLoggedIn }
             );
-                
-            /*    
-            await waitFor(() => {
-                expect(screen.getByText('Carhartt WIP')).toBeInTheDocument();
-            });
-            */
-
-            act(() => resizeWindow(760, 480) );
+            
             expect(screen.getByTestId('mobile-header')).toBeInTheDocument();
 
             const burger = screen.getByTestId('burger-icon');
@@ -537,7 +492,6 @@ describe('* <Header /> *', () => {
         });
 
         it('Fetches log out request and Resets customer, cart and orders state if "EXIT" is clicked', async () => {
-            const store = setUpStore( fullUser );
 
             const scope = nock('http://localhost')
                 .get('/api/manufacturers')
@@ -567,21 +521,11 @@ describe('* <Header /> *', () => {
                 })
                 .get('/api/logout')
                 .reply(200);
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Header />
-                    </Router>
-                </Provider>
+            
+            const [ screen, store ] = render(
+                <Header />,
+                { initialState: fullUser }
             );
-            /*    
-            await waitFor(() => {
-                expect(screen.getByText('Carhartt WIP')).toBeInTheDocument();
-            });
-            */
-
-            act(() => resizeWindow(760, 480) );
 
             expect(screen.getByTestId('mobile-header')).toBeInTheDocument();
 
@@ -601,7 +545,6 @@ describe('* <Header /> *', () => {
         });
 
         it('Renders login button if browser is Not Authenticated', async () => {
-            const store = setUpStore( notLoggedIn );
 
             const scope = nock('http://localhost')
                 .get('/api/manufacturers')
@@ -624,31 +567,17 @@ describe('* <Header /> *', () => {
                     }
                 ])
                 .get('/api/auth')
-                .replyWithError(400, 'Not Authenticated');
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Header />
-                    </Router>
-                </Provider>
+                .reply(400, 'Not Authenticated');
+            
+            render(
+                <Header />,
+                { initialState: notLoggedIn }
             );
-            /*    
-            await waitFor(() => {
-                expect(screen.getByText('Carhartt WIP')).toBeInTheDocument();
-            });
-            */
-
-            act(() => resizeWindow(760, 480) );
-
+            
             expect(screen.getByTestId('mobile-header')).toBeInTheDocument();
             expect(screen.getByText('LOGIN')).toBeInTheDocument();
         });
 
     });
-
-});
-
-xdescribe('* <MobileHeader /> *', () => {
 
 });

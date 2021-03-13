@@ -65,7 +65,7 @@ const Header = () => {
         return () => {
             window.removeEventListener('resize', resizeListener);
         };
-    }, [ window.innerWidth ]);
+    }, []);
 
     const onLogout = async () => {
         const response = await logout();
