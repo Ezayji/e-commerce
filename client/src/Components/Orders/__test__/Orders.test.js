@@ -1,16 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 
-import { render as rtlRender, fireEvent, screen, waitFor, act } from '@testing-library/react';
-import { createStore, applyMiddleware, combineReducers } from 'redux';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { render } from '../../../testHelper';
 
 import nock from 'nock';
-
-import customerReducer from '../../../Redux/CustomerSlice';
-import ordersReducer from '../../../Redux/OrdersSlice';
 
 import Orders from '../Orders';
 import SingleOrder from '../SingleOrder/SingleOrder';
@@ -18,37 +12,6 @@ import SingleProductLine from '../SingleOrder/SingleProductLine';
 import OrderPreview from '../OrderPreview/OrderPreview';
 
 import { oneItemOrder, twoItemOrder, orderPreview, orderPreviewFalse, ordersResponse, emptyUserState, fetchedUserState1, fetchedUserState2, anonymous } from './utils/state';
-
-    // render helper function, returns screen and store
-function render(
-    ui,
-    {
-        initialState,
-        store = createStore(
-            combineReducers({
-                customer: customerReducer,
-                orders: ordersReducer
-            }),
-            initialState,
-            applyMiddleware(thunk)
-        ),
-        ...renderOptions
-    } = {}
-){
-    function Wrapper({ children }){
-        return (
-            <Provider store={store} >
-                <Router>
-                    {children}
-                </Router>
-            </Provider>
-        )
-    };
-    return [
-        rtlRender(ui, { wrapper: Wrapper, ...renderOptions }),
-        store
-    ]
-};
 
 describe('* <Orders /> *', () => {
     

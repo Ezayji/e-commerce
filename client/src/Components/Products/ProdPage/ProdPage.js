@@ -23,7 +23,7 @@ const ProdPage = ({ match }) => {
     };
 
     return(
-        <div>
+        <div className='product-page' >
             {content}
         </div>
     );

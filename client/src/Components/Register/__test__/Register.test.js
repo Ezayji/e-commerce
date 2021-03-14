@@ -1,7 +1,7 @@
 import React from 'react';
 import { createMemoryHistory } from 'history';
 
-import { render as rtlRender, fireEvent, screen, waitFor, act } from '@testing-library/react';
+import { render as rtlRender, fireEvent, screen, waitFor } from '@testing-library/react';
 
 import nock from 'nock';
 

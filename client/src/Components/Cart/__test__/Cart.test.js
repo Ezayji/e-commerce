@@ -1,52 +1,15 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 
-import { render as rtlRender, fireEvent, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
-import { createStore, applyMiddleware, combineReducers } from 'redux';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
+import { fireEvent, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react';
+import { render } from '../../../testHelper';
 
 import nock from 'nock';
-
-import cartReducer from '../../../Redux/CartSlice';
-import customerReducer from '../../../Redux/CustomerSlice';
 
 import Cart from '../Cart';
 import CartItem from '../CartItem';
 
 import { oneItemUser, twoItemUser, emptyState, noItemsUser, fullTwoItemUser} from './utils/cartState';
-
-jest.mock('../../../Redux/Store');
-
-    // render helper function
-function render(
-    ui,
-    {
-        initialState,
-        store = createStore(
-            combineReducers({
-                customer: customerReducer,
-                cart: cartReducer
-            }),
-            initialState,
-            applyMiddleware(thunk)
-        ),
-        ...renderOptions
-    } = {}
-){
-    function Wrapper({ children }){
-        return (
-            <Provider store={store} >
-                <Router>
-                    {children}
-                    <Route path='/'>Main Page</Route>
-                </Router>
-            </Provider>
-        )
-    };
-    return rtlRender(ui, { wrapper: Wrapper, ...renderOptions });
-};
 
     // <CartItem /> props state
 const item = {
@@ -361,7 +324,7 @@ describe('* <Cart /> (parent) * ', () => {
 
 describe('* <CartItem /> *', () => {
     it('Renders without crashing and displays item details', () => {
-        rtlRender(<CartItem item={item}  />);
+        render(<CartItem item={item}  />);
 
         expect(screen.getByText('White / Green')).toBeInTheDocument();
         expect(screen.getByText('Stuzzy')).toBeInTheDocument();
@@ -372,7 +335,7 @@ describe('* <CartItem /> *', () => {
 
     it('onIncrement from props is called if "+" is clicked', () => {
         const onIncrement = jest.fn();
-        rtlRender(<CartItem item={item} onIncrement={onIncrement} />);
+        render(<CartItem item={item} onIncrement={onIncrement} />);
 
         fireEvent.click(screen.getByText('+'));
         expect(onIncrement).toHaveBeenCalled();
@@ -380,7 +343,7 @@ describe('* <CartItem /> *', () => {
 
     it('onDecrement from props is called if "-" is clicked', () => {
         const onDecrement = jest.fn();
-        rtlRender(<CartItem item={item} onDecrement={onDecrement} />);
+        render(<CartItem item={item} onDecrement={onDecrement} />);
 
         fireEvent.click(screen.getByText('-'));
         expect(onDecrement).toHaveBeenCalled();
@@ -388,7 +351,7 @@ describe('* <CartItem /> *', () => {
 
     it('onDelete from props is called if "REMOVE ITEM" is clicked', () => {
         const onDelete = jest.fn();
-        rtlRender(<CartItem item={item} onDelete={onDelete}  />);
+        render(<CartItem item={item} onDelete={onDelete}  />);
 
         fireEvent.click(screen.getByText('REMOVE ITEM'));
         expect(onDelete).toHaveBeenCalled();

@@ -1,12 +1,14 @@
+import { render as rtlRender } from '@testing-library/react';
+
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
 
-import customerReducer from './src/Redux/CustomerSlice';
-import productsReducer from './src/Redux/ProductsSlice';
-import cartReducer from './src/Redux/CartSlice';
-import ordersReducer from './src/Redux/OrdersSlice';
+import customerReducer from './Redux/CustomerSlice';
+import productsReducer from './Redux/ProductsSlice';
+import cartReducer from './Redux/CartSlice';
+import ordersReducer from './Redux/OrdersSlice';
 
     // render helper function, returns screen and store
 export function render(

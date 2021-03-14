@@ -1,15 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 
-import { render as rtlRender, fireEvent, screen, waitFor } from '@testing-library/react';
-import { createStore, applyMiddleware, combineReducers } from 'redux';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { render } from '../../../testHelper';
 
 import nock from 'nock';
-
-import customerReducer from '../../../Redux/CustomerSlice';
 
 import Account from '../Account';
 import AdrUpdateForm from '../Address/AdrUpdateForm';
@@ -17,37 +12,6 @@ import UpdateForm from '../Profile/UpdateForm';
 import UpdatePw from '../UpdatePw/UpdatePw';
 
 import { fullUser, noAddressUser, anonymous, emptyUser } from './utils/user';
-
-function render(
-    ui,
-    {
-        initialState,
-        store = createStore(
-            combineReducers({
-                customer: customerReducer
-            }),
-            initialState,
-            applyMiddleware(thunk)
-        ),
-        ...renderOptions
-    } = {}
-){
-    function Wrapper({ children }){
-        return (
-            <Provider store={store} >
-                <Router>
-                    {children}
-                    <Route path='/' exact >Main Page</Route>
-                    <Route path='/account/:username/password' exact >Password Change</Route>
-                </Router>
-            </Provider>
-        )
-    };
-    return [
-        rtlRender(ui, { wrapper: Wrapper, ...renderOptions }),
-        store
-    ]
-};
 
 describe('* <Account /> (Parent Comp) * ', () => {
     

@@ -1,16 +1,9 @@
 import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
 
-import { render as rtlRender, fireEvent, screen, waitFor, act } from '@testing-library/react';
-import { createStore, applyMiddleware, combineReducers } from 'redux';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { render } from '../../../testHelper';
 
 import nock from 'nock';
-
-import productsReducer from '../../../Redux/ProductsSlice';
-import customerReducer from '../../../Redux/CustomerSlice';
-import cartReducer from '../../../Redux/CartSlice';
 
 import Products from '../Products';
 
@@ -24,38 +17,6 @@ import ProdPage from '../ProdPage/ProdPage';
 import Product from '../ProdPage/Product';
 
 import { anonymous, loggedIn, product, categoryRes, genderRes, brandRes } from './utils/state';
-
-    // render helper function, returns screen and store
-function render(
-    ui,
-    {
-        initialState,
-        store = createStore(
-            combineReducers({
-                customer: customerReducer,
-                products: productsReducer,
-                cart: cartReducer
-            }),
-            initialState,
-            applyMiddleware(thunk)
-        ),
-        ...renderOptions
-    } = {}
-){
-    function Wrapper({ children }){
-        return (
-            <Provider store={store} >
-                <Router>
-                    {children}
-                </Router>
-            </Provider>
-        )
-    };
-    return [
-        rtlRender(ui, { wrapper: Wrapper, ...renderOptions }),
-        store
-    ]
-};
 
 describe('* <Products /> *', () => {
 

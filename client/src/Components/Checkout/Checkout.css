@@ -10,7 +10,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(12px);
+    backdrop-filter: blur(20px);
 }
 
 /* checkout form */

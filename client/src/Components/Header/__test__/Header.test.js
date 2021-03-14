@@ -1,54 +1,14 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import { render as rtlRender, fireEvent, screen, waitFor, act } from '@testing-library/react';
-import { createStore, applyMiddleware, combineReducers } from 'redux';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
+import { fireEvent, screen, waitFor, act } from '@testing-library/react';
+import { render } from '../../../testHelper';
 
 import nock from 'nock';
-
-import cartReducer from '../../../Redux/CartSlice';
-import customerReducer from '../../../Redux/CustomerSlice';
-import ordersReducer from '../../../Redux/OrdersSlice';
 
 import Header from '../Header';
 // <MobileHeader /> and <DesktopHeader /> get tested through the parent <Header />
 
 import { notLoggedIn, fullUser } from './utils/state';
-
-    // render helper function, returns screen and store
-function render(
-    ui,
-    {
-        initialState,
-        store = createStore(
-            combineReducers({
-                customer: customerReducer,
-                cart: cartReducer,
-                orders: ordersReducer
-            }),
-            initialState,
-            applyMiddleware(thunk)
-        ),
-        ...renderOptions
-    } = {}
-){
-    function Wrapper({ children }){
-        return (
-            <Provider store={store} >
-                <Router>
-                    {children}
-                    <Route path='/products/:gender/list/:categoryid/:category_title' exact >HATS PAGE</Route>
-                </Router>
-            </Provider>
-        )
-    };
-    return [
-        rtlRender(ui, { wrapper: Wrapper, ...renderOptions }),
-        store
-    ]
-};
 
 function resizeWindow(x, y){
     window.innerWidth = x;

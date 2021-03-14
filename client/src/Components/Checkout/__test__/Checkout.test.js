@@ -1,20 +1,13 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 
 import { render as rtlRender, fireEvent, screen, waitFor } from '@testing-library/react';
-import { createStore, applyMiddleware, combineReducers } from 'redux';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
+import { render } from '../../../testHelper';
 
 import nock from 'nock';
 
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
-
-import cartReducer from '../../../Redux/CartSlice';
-import customerReducer from '../../../Redux/CustomerSlice';
-import ordersReducer from '../../../Redux/OrdersSlice';
 
 import Checkout from '../Checkout';
 import Billing from '../Billing/Billing';
@@ -24,41 +17,6 @@ import SuccessPage from '../SuccessPage/SuccessPage';
 const promise = loadStripe('pk_test_51IItmKB1uegguB7b2ReRKVdoa1Bojw5VxlWF9uuCwiYdY1Z3C8wpwI8kDau5SQ8qQN2nQdJXOvwvhODgssLH5RFn00LH75oIZw');
 
 import { noAddressUser, savedAddressUser, notFetchedProfile, emptyCartUser, notLoggedIn, fullUserWOrders, twoItemCart, twoTotal, oneItemCart, oneTotal, profile, address } from './utils/customers';
-
-jest.mock('../../../Redux/Store');
-
-    // render helper function, return screen and store
-function render(
-    ui,
-    {
-        initialState,
-        store = createStore(
-            combineReducers({
-                customer: customerReducer,
-                cart: cartReducer,
-                orders: ordersReducer
-            }),
-            initialState,
-            applyMiddleware(thunk)
-        ),
-        ...renderOptions
-    } = {}
-){
-    function Wrapper({ children }){
-        return (
-            <Provider store={store} >
-                <Router>
-                    {children}
-                    <Route path='/'>Main Page</Route>
-                </Router>
-            </Provider>
-        )
-    };
-    return [
-        rtlRender(ui, { wrapper: Wrapper, ...renderOptions }),
-        store
-    ]
-};
 
 describe('* <Checkout /> (parent) *', () => {
     describe('-- Customer With Saved Address --', () => {
