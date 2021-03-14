@@ -27,17 +27,44 @@ function setUpStore(initialState){
     );
 };
 
+    // render helper function
+function render(
+    ui,
+    {
+        initialState,
+        store = createStore(
+            combineReducers({
+                customer: customerReducer
+            }),
+            initialState,
+            applyMiddleware(thunk)
+        ),
+        ...renderOptions
+    } = {}
+){
+    function Wrapper({ children }){
+        return (
+            <Provider store={store} >
+                <Router>
+                    {children}
+                    <Route path="/" exact >Main Page</Route>
+                </Router>
+            </Provider>
+        )
+    };
+    return [
+        rtlRender(ui, { wrapper: Wrapper, ...renderOptions }),
+        store
+    ]
+};
+
 describe('* <Login /> *', () => {
     
     it('Renders without crashing ,displays empty username and password fields and a link to Registering page', () => {
-        const store = setUpStore( anonymous );
-
-        rtlRender(
-            <Provider store={store} >
-                <Router>
-                    <Login />
-                </Router>
-            </Provider>
+        
+        render(
+            <Login />,
+            { initialState: anonymous }
         );
 
         expect(screen.getByTestId('login-username').value).toBe('');
@@ -47,22 +74,16 @@ describe('* <Login /> *', () => {
     });
 
     it('Redirects to "/" if user is already logged in', () => {
-        const store = setUpStore( loggedIn );
-
-        rtlRender(
-            <Provider store={store} >
-                <Router>
-                    <Login />
-                    <Route path="/" exact >Main Page</Route>
-                </Router>
-            </Provider>
+        
+        render(
+            <Login />,
+            { initialState: loggedIn }
         );
 
         expect(screen.getByText('Main Page')).toBeInTheDocument();
     });
 
     it('Fetches a login request with input data and redirects to "/" on success + adds username to Redux state', async () => {
-        const store = setUpStore( anonymous );
 
         const scope = nock('http://localhost')
             .post('/api/login', {
@@ -74,14 +95,10 @@ describe('* <Login /> *', () => {
                     username: 'Revarz'
                 }
             });
-
-        rtlRender(
-            <Provider store={store} >
-                <Router>
-                    <Login />
-                    <Route path="/" exact >Main Page</Route>
-                </Router>
-            </Provider>
+        
+        const [ screen, store ] = render(
+            <Login />,
+            { initialState: anonymous }
         );
 
         const username = screen.getByTestId('login-username');
@@ -100,7 +117,7 @@ describe('* <Login /> *', () => {
     });
 
     it('Throws an alert and clears password field after a bad login request', async () => {
-        const store = setUpStore( anonymous );
+        
         window.alert = jest.fn();
 
         const scope = nock('http://localhost')
@@ -108,14 +125,11 @@ describe('* <Login /> *', () => {
                 username: 'Revarz',
                 password: 'testpassword'
             })
-            .replyWithError(400);
-
-        rtlRender(
-            <Provider store={store} >
-                <Router>
-                    <Login />
-                </Router>
-            </Provider>
+            .reply(400);
+        
+        render(
+            <Login />,
+            { initialState: anonymous }
         );
 
         const username = screen.getByTestId('login-username');

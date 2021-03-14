@@ -18,36 +18,36 @@ import UpdatePw from '../UpdatePw/UpdatePw';
 
 import { fullUser, noAddressUser, anonymous, emptyUser } from './utils/user';
 
-
-
-    // to avoid console errors
-jest.mock('../../../Redux/Store');
-
-    // renders that don't dispatch actions
 function render(
     ui,
     {
         initialState,
-        store = createStore(customerReducer, initialState, applyMiddleware(thunk)),
+        store = createStore(
+            combineReducers({
+                customer: customerReducer
+            }),
+            initialState,
+            applyMiddleware(thunk)
+        ),
         ...renderOptions
     } = {}
 ){
     function Wrapper({ children }){
-        return <Provider store={store} >{children}</Provider>
+        return (
+            <Provider store={store} >
+                <Router>
+                    {children}
+                    <Route path='/' exact >Main Page</Route>
+                    <Route path='/account/:username/password' exact >Password Change</Route>
+                </Router>
+            </Provider>
+        )
     };
-    return rtlRender(ui, { wrapper: Wrapper, ...renderOptions });
+    return [
+        rtlRender(ui, { wrapper: Wrapper, ...renderOptions }),
+        store
+    ]
 };
-
-    // store for renders that dispatch actions
-function setUpStore(initialState){
-    return createStore(
-        combineReducers({ customer: customerReducer }),
-        initialState,
-        applyMiddleware(thunk)
-    );
-};
-
-
 
 describe('* <Account /> (Parent Comp) * ', () => {
     
@@ -55,10 +55,8 @@ describe('* <Account /> (Parent Comp) * ', () => {
 
         it('Renders without crashing', () => {
             render(
-                <Router>  
-                    <Account />
-                </Router> 
-                , { initialState: fullUser }
+                <Account />, 
+                { initialState: fullUser }
             );
             // profile info
             expect(screen.getByText('Revarz')).toBeInTheDocument();
@@ -74,15 +72,13 @@ describe('* <Account /> (Parent Comp) * ', () => {
             expect(screen.getByText('someprovince')).toBeInTheDocument();
             expect(screen.getByText('75607')).toBeInTheDocument();
             expect(screen.getByText('highrise')).toBeInTheDocument();
-
+            
         });
 
         it('Renders <AdrDisplay /> and <Display /> (profile info display)', () => {
             render(
-                <Router>
-                    <Account />
-                </Router>
-                , { initialState: fullUser }
+                <Account />, 
+                { initialState: fullUser }
             );
 
             const profile = screen.getByTestId('profile-display');
@@ -94,62 +90,53 @@ describe('* <Account /> (Parent Comp) * ', () => {
         });
 
         it('Renders <UpdateForm/> (profile update) if "CHNGE" button is clicked and <Display /> if "CNCL" button is clicked', () => {
-            const { getByTestId } = render(
-                <Router>
-                    <Account />
-                </Router>
-                , { initialState: fullUser }
+            render(
+                <Account />, 
+                { initialState: fullUser }
             );
             
             //const profile = getByTestId('profile-display');
-            expect(getByTestId('profile-display')).toBeInTheDocument();
-            const chngeButton = getByTestId('profile-edit');
+            expect(screen.getByTestId('profile-display')).toBeInTheDocument();
+            const chngeButton = screen.getByTestId('profile-edit');
             fireEvent.click(chngeButton);
 
             //const profileUpdateForm = getByTestId('profile-edit-form');
-            expect(getByTestId('profile-edit-form')).toBeInTheDocument();
-            const cnclButton = getByTestId('profile-edit-cancel');
+            expect(screen.getByTestId('profile-edit-form')).toBeInTheDocument();
+            const cnclButton = screen.getByTestId('profile-edit-cancel');
             fireEvent.click(cnclButton);
-            expect(getByTestId('profile-display')).toBeInTheDocument();
+            expect(screen.getByTestId('profile-display')).toBeInTheDocument();
         });
 
         it('Renders <AdrUpdateForm /> if "CHNGE" button is clicked and <AdrDisplay /> if "CNCL" button is clicked', () => {
-            const { getByTestId } = render(
-                <Router>
-                    <Account />
-                </Router>
-                , { initialState: fullUser }
+            render(
+                <Account />, 
+                { initialState: fullUser }
             );
 
-            expect(getByTestId('address-display')).toBeInTheDocument();
-            const chngeButton = getByTestId('address-edit');
+            expect(screen.getByTestId('address-display')).toBeInTheDocument();
+            const chngeButton = screen.getByTestId('address-edit');
             fireEvent.click(chngeButton);
 
-            expect(getByTestId('address-edit-form')).toBeInTheDocument();
-            const cnclButton = getByTestId('address-edit-cancel');
+            expect(screen.getByTestId('address-edit-form')).toBeInTheDocument();
+            const cnclButton = screen.getByTestId('address-edit-cancel');
             fireEvent.click(cnclButton);
-            expect(getByTestId('address-display')).toBeInTheDocument();
+            expect(screen.getByTestId('address-display')).toBeInTheDocument();
         });
 
         it('Redirects to "/account/:username/password" if "UPDT PW" is clicked', () => {
-            const { getByTestId, container } = render(
-                <Router>
-                    <Account />
-                    <Route path='/account/:username/password' exact >Password Change</Route>
-                </Router>
-                , { initialState: fullUser }
+            render(
+                <Account />, 
+                { initialState: fullUser }
             );
 
-            const changePw = getByTestId('profile-password-change');
+            const changePw = screen.getByTestId('profile-password-change');
             fireEvent.click(changePw);
 
-            expect(container).toHaveTextContent('Password Change');
+            expect(screen.getByText('Password Change')).toBeInTheDocument();
 
         });
 
         it('Fetches PUT call to Update Profile info and Renders new updated profile with <Display /> if <UpdateForm /> is submited', async () => {
-
-            const store = setUpStore( fullUser );
 
             const scope = nock('http://localhost')
                 .put('/api/customer_un/Revarz', {
@@ -166,14 +153,11 @@ describe('* <Account /> (Parent Comp) * ', () => {
                     email: 'selnaknewemail@testapi.com',
                     id: 2
             });
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Account />
-                    </Router>
-                </Provider>
-            );       
+            
+            render(
+                <Account />,
+                { initialState: fullUser }
+            );
 
             // initial profile info
             expect(screen.getByText('Revarz')).toBeInTheDocument();
@@ -210,8 +194,6 @@ describe('* <Account /> (Parent Comp) * ', () => {
 
         it('Fetches PUT call to Update Address info and Renders new address with <AdrDisplay /> if <AdrUpdateForm /> is submited', async () => {
 
-            const store = setUpStore( fullUser );
-
             const scope = nock('http://localhost')
                 .put('/api/customer_address/Revarz', {
                     appartment_nr: '6',
@@ -230,13 +212,10 @@ describe('* <Account /> (Parent Comp) * ', () => {
                     zip: 77777,
                     country: 'country'
             });
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Account />
-                    </Router>
-                </Provider>
+            
+            render(
+                <Account />,
+                { initialState: fullUser }
             );
             
             // initial address info
@@ -295,8 +274,6 @@ describe('* <Account /> (Parent Comp) * ', () => {
 
         it('Dispatches a call to get Profile + Address info and Displays result', async () => {
 
-            const store = setUpStore( emptyUser );
-
             const scope = nock('http://localhost')
                 .get('/api/customer_un/Revarz')
                 .reply(200, {
@@ -316,14 +293,11 @@ describe('* <Account /> (Parent Comp) * ', () => {
                     zip: '75607',
                     country: 'highrise'
             });
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Account />
-                    </Router>
-                </Provider>
-            );       
+            
+            render(
+                <Account />,
+                { initialState: emptyUser }
+            );
          
             await waitFor(() => expect(screen.getByText('Revarz')).toBeInTheDocument());
             
@@ -346,73 +320,64 @@ describe('* <Account /> (Parent Comp) * ', () => {
     
     describe('-- Logged in Customer without Saved Address --', () => {
         it('Renders <Display /> (profile info display) and <AdrUpdateForm />', () => {
-            const { getByTestId } = render(
-                <Router>
-                    <Account />
-                </Router>
-                , { initialState: noAddressUser }
+            render(
+                <Account />, 
+                { initialState: noAddressUser }
             );
 
-            expect(getByTestId('profile-display')).toBeInTheDocument();
-            expect(getByTestId('address-edit-form')).toBeInTheDocument();
+            expect(screen.getByTestId('profile-display')).toBeInTheDocument();
+            expect(screen.getByTestId('address-edit-form')).toBeInTheDocument();
 
-            const cnclButton = getByTestId('address-edit-cancel');
+            const cnclButton = screen.getByTestId('address-edit-cancel');
             fireEvent.click(cnclButton);
 
-            expect(getByTestId('address-edit-form')).toBeInTheDocument();
+            expect(screen.getByTestId('address-edit-form')).toBeInTheDocument();
 
         });
 
         it('Does not render <AdrDisplay /> if "CNCL" is clicked', () => {
-            const { getByTestId } = render(
-                <Router>
-                    <Account />
-                </Router>
-                , { initialState: noAddressUser }
+            render(
+                <Account />, 
+                { initialState: noAddressUser }
             );
 
-            expect(getByTestId('address-edit-form')).toBeInTheDocument();
+            expect(screen.getByTestId('address-edit-form')).toBeInTheDocument();
 
-            const cnclButton = getByTestId('address-edit-cancel');
+            const cnclButton = screen.getByTestId('address-edit-cancel');
             fireEvent.click(cnclButton);
 
-            expect(getByTestId('address-edit-form')).toBeInTheDocument();
+            expect(screen.getByTestId('address-edit-form')).toBeInTheDocument();
 
         });
 
         it('Renders <UpdateForm /> (profile update form) if "CHNGE" button is clicked and <Display /> (profile display) if "CNCL" is clicked', () => {
-            const { getByTestId } = render(
-                <Router>
-                    <Account />
-                </Router>
-                , { initialState: noAddressUser }
+            render(
+                <Account />, 
+                { initialState: noAddressUser }
             );
             
             //const profile = getByTestId('profile-display');
-            expect(getByTestId('profile-display')).toBeInTheDocument();
-            const chngeButton = getByTestId('profile-edit');
+            expect(screen.getByTestId('profile-display')).toBeInTheDocument();
+            const chngeButton = screen.getByTestId('profile-edit');
             fireEvent.click(chngeButton);
 
             //const profileUpdateForm = getByTestId('profile-edit-form');
-            expect(getByTestId('profile-edit-form')).toBeInTheDocument();
-            const cnclButton = getByTestId('profile-edit-cancel');
+            expect(screen.getByTestId('profile-edit-form')).toBeInTheDocument();
+            const cnclButton = screen.getByTestId('profile-edit-cancel');
             fireEvent.click(cnclButton);
-            expect(getByTestId('profile-display')).toBeInTheDocument();
+            expect(screen.getByTestId('profile-display')).toBeInTheDocument();
         });
 
         it('Redirects to "/account/:username/password" if "UPDT PW" is clicked', () => {
-            const { getByTestId, container } = render(
-                <Router>
-                    <Account />
-                    <Route path='/account/:username/password' exact >Password Change</Route>
-                </Router>
-                , { initialState: noAddressUser }
+            render(
+                <Account />, 
+                { initialState: noAddressUser }
             );
 
-            const changePw = getByTestId('profile-password-change');
+            const changePw = screen.getByTestId('profile-password-change');
             fireEvent.click(changePw);
 
-            expect(container).toHaveTextContent('Password Change');
+            expect(screen.getByText('Password Change')).toBeInTheDocument();
 
         });
 
@@ -420,15 +385,12 @@ describe('* <Account /> (Parent Comp) * ', () => {
     
     describe('-- Customer not logged in --', () => {
         it('Redirects to "/"', () => {
-            const {container} = render(
-                <Router>
-                    <Account />
-                    <Route path='/'>Main Page</Route>
-                </Router>
-                , { initialState: anonymous }
+            render(
+                <Account />, 
+                { initialState: anonymous }
             );
         
-            expect(container).toHaveTextContent('Main Page');
+            expect(screen.getByText('Main Page')).toBeInTheDocument();
         });
     });
 
@@ -437,7 +399,9 @@ describe('* <Account /> (Parent Comp) * ', () => {
 describe('* <UpdateForm /> (profile update form) *', () => {
     describe('-- Logged in user with data in state --', () => {
         it('Renders without crashing and displays profile info in fields', () => {
-            rtlRender(<UpdateForm
+            
+            render(
+                <UpdateForm
                 username={'Revarz'}
                 fn={'Selna'}
                 ln={'Kaszk'}
@@ -458,7 +422,8 @@ describe('* <UpdateForm /> (profile update form) *', () => {
             const setEmail = jest.fn();
             const setPhne = jest.fn();
             
-            const { getByTestId } = rtlRender(<UpdateForm
+            render(
+                <UpdateForm
                 username={'Revarz'}
                 fn={'Selna'}
                 ln={'Kaszk'}
@@ -467,22 +432,22 @@ describe('* <UpdateForm /> (profile update form) *', () => {
                 setfn={setfn}
                 setLn={setLn}
                 setEmail={setEmail}
-                setPhne={setPhne} />
+                setPhne={setPhne} /> 
             );
 
-            const fnField = getByTestId('fn-field');
+            const fnField = screen.getByTestId('fn-field');
             fireEvent.change(fnField, { target: { value: 'Sigma' } });
             expect(setfn).toHaveBeenLastCalledWith('Sigma');
 
-            const lnField = getByTestId('ln-field');
+            const lnField = screen.getByTestId('ln-field');
             fireEvent.change(lnField, { target: { value: 'LIMA' } });
             expect(setLn).toHaveBeenLastCalledWith('LIMA');
 
-            const emailField = getByTestId('email-field');
+            const emailField = screen.getByTestId('email-field');
             fireEvent.change(emailField, { target: { value: 'lima@gmail.com' } });
             expect(setEmail).toHaveBeenLastCalledWith('lima@gmail.com');
 
-            const phneField = getByTestId('phne-field');
+            const phneField = screen.getByTestId('phne-field');
             fireEvent.change(phneField, { target: { value: '66666666' } });
             expect(setPhne).toHaveBeenLastCalledWith('66666666');
 
@@ -498,7 +463,8 @@ describe('* <UpdateForm /> (profile update form) *', () => {
                 e.preventDefault();
             })
             
-            const { getByTestId } = rtlRender(<UpdateForm
+            render(
+                <UpdateForm
                 username={'Revarz'}
                 fn={'Selna'}
                 ln={'Kaszk'}
@@ -511,23 +477,23 @@ describe('* <UpdateForm /> (profile update form) *', () => {
                 onSubmit={onSubmit} />
             );
 
-            const fnField = getByTestId('fn-field');
+            const fnField = screen.getByTestId('fn-field');
             fireEvent.change(fnField, { target: { value: 'Sigma' } });
             expect(setfn).toHaveBeenLastCalledWith('Sigma');
 
-            const lnField = getByTestId('ln-field');
+            const lnField = screen.getByTestId('ln-field');
             fireEvent.change(lnField, { target: { value: 'LIMA' } });
             expect(setLn).toHaveBeenLastCalledWith('LIMA');
 
-            const emailField = getByTestId('email-field');
+            const emailField = screen.getByTestId('email-field');
             fireEvent.change(emailField, { target: { value: 'lima@gmail.com' } });
             expect(setEmail).toHaveBeenLastCalledWith('lima@gmail.com');
 
-            const phneField = getByTestId('phne-field');
+            const phneField = screen.getByTestId('phne-field');
             fireEvent.change(phneField, { target: { value: '66666666' } });
             expect(setPhne).toHaveBeenLastCalledWith('66666666');
 
-            const submit = getByTestId('profile-edit-submit')
+            const submit = screen.getByTestId('profile-edit-submit')
             fireEvent.click(submit);
             await waitFor(() => expect(onSubmit).toHaveBeenCalled());
         });
@@ -536,16 +502,17 @@ describe('* <UpdateForm /> (profile update form) *', () => {
             
             const onCancel = jest.fn();
             
-            const { getByTestId } = rtlRender(<UpdateForm
+            render(
+                <UpdateForm
                 username={'Revarz'}
                 fn={'Selna'}
                 ln={'Kaszk'}
                 email={'selnaknewemail@testapi.com'}
                 phne={'+372 99999999'}
-                onCancel={onCancel} />
+                onCancel={onCancel} /> 
             );
 
-            const cancel = getByTestId('profile-edit-cancel');
+            const cancel = screen.getByTestId('profile-edit-cancel');
             fireEvent.click(cancel);
             expect(onCancel).toHaveBeenCalled();
         });
@@ -556,7 +523,9 @@ describe('* <UpdateForm /> (profile update form) *', () => {
 describe('* <AdrUpdateForm /> *', () => {
     describe('-- Logged in user with saved address --', () => {
         it('Renders without crashing and Displays current address in fields', () => {
-            rtlRender(<AdrUpdateForm
+            
+            render(
+                <AdrUpdateForm
                 ap={5}
                 strt={'somestreet'}
                 cty={'somecity'}
@@ -581,8 +550,9 @@ describe('* <AdrUpdateForm /> *', () => {
             const setPrvnc = jest.fn();
             const setZp = jest.fn();
             const setCntry = jest.fn();
-
-            const { getByTestId } = rtlRender(<AdrUpdateForm
+            
+            render(
+                <AdrUpdateForm
                 ap={5}
                 strt={'somestreet'}
                 cty={'somecity'}
@@ -597,27 +567,27 @@ describe('* <AdrUpdateForm /> *', () => {
                 setCntry={setCntry} />
             );
 
-            const apField = getByTestId('appartment-field');
+            const apField = screen.getByTestId('appartment-field');
             fireEvent.change(apField, { target: { value: '22' } });
             expect(setAp).toHaveBeenLastCalledWith('22');
 
-            const strtField = getByTestId('street-field');
+            const strtField = screen.getByTestId('street-field');
             fireEvent.change(strtField, { target: { value: 'street' } });
             expect(setStrt).toHaveBeenLastCalledWith('street');
 
-            const ctyField = getByTestId('city-field');
+            const ctyField = screen.getByTestId('city-field');
             fireEvent.change(ctyField, { target: { value: 'city' } });
             expect(setCty).toHaveBeenLastCalledWith('city');
 
-            const prvncField = getByTestId('province-field');
+            const prvncField = screen.getByTestId('province-field');
             fireEvent.change(prvncField, { target: { value: 'province' } });
             expect(setPrvnc).toHaveBeenLastCalledWith('province');
 
-            const zpField = getByTestId('zip-field');
+            const zpField = screen.getByTestId('zip-field');
             fireEvent.change(zpField, { target: { value: 76607 } });
             expect(setZp).toHaveBeenLastCalledWith('76607');
 
-            const cntryField = getByTestId('country-field');
+            const cntryField = screen.getByTestId('country-field');
             fireEvent.change(cntryField, { target: { value: 'country' } });
             expect(setCntry).toHaveBeenLastCalledWith('country');
         });
@@ -634,8 +604,9 @@ describe('* <AdrUpdateForm /> *', () => {
             onSubmit.mockImplementation((e) => {
                 e.preventDefault();
             });
-
-            const { getByTestId } = rtlRender(<AdrUpdateForm
+            
+            render(
+                <AdrUpdateForm
                 ap={5}
                 strt={'somestreet'}
                 cty={'somecity'}
@@ -651,31 +622,31 @@ describe('* <AdrUpdateForm /> *', () => {
                 onSubmit={onSubmit} />
             );
 
-            const apField = getByTestId('appartment-field');
+            const apField = screen.getByTestId('appartment-field');
             fireEvent.change(apField, { target: { value: '22' } });
             expect(setAp).toHaveBeenLastCalledWith('22');
 
-            const strtField = getByTestId('street-field');
+            const strtField = screen.getByTestId('street-field');
             fireEvent.change(strtField, { target: { value: 'street' } });
             expect(setStrt).toHaveBeenLastCalledWith('street');
 
-            const ctyField = getByTestId('city-field');
+            const ctyField = screen.getByTestId('city-field');
             fireEvent.change(ctyField, { target: { value: 'city' } });
             expect(setCty).toHaveBeenLastCalledWith('city');
 
-            const prvncField = getByTestId('province-field');
+            const prvncField = screen.getByTestId('province-field');
             fireEvent.change(prvncField, { target: { value: 'province' } });
             expect(setPrvnc).toHaveBeenLastCalledWith('province');
 
-            const zpField = getByTestId('zip-field');
+            const zpField = screen.getByTestId('zip-field');
             fireEvent.change(zpField, { target: { value: 76607 } });
             expect(setZp).toHaveBeenLastCalledWith('76607');
 
-            const cntryField = getByTestId('country-field');
+            const cntryField = screen.getByTestId('country-field');
             fireEvent.change(cntryField, { target: { value: 'country' } });
             expect(setCntry).toHaveBeenLastCalledWith('country');
 
-            const submit = getByTestId('address-edit-submit');
+            const submit = screen.getByTestId('address-edit-submit');
             fireEvent.click(submit);
             await waitFor(() => expect(onSubmit).toHaveBeenCalled());
 
@@ -683,8 +654,9 @@ describe('* <AdrUpdateForm /> *', () => {
 
         it('onCancel from props is called if "CNCL" is clicked', () => {
             const onCancel = jest.fn();
-
-            const {getByTestId} = rtlRender(<AdrUpdateForm
+            
+            render(
+                <AdrUpdateForm
                 ap={5}
                 strt={'somestreet'}
                 cty={'somecity'}
@@ -694,7 +666,7 @@ describe('* <AdrUpdateForm /> *', () => {
                 onCancel={onCancel} />
             );
 
-            const cancel = getByTestId('address-edit-cancel');
+            const cancel = screen.getByTestId('address-edit-cancel');
             fireEvent.click(cancel);
             expect(onCancel).toHaveBeenCalled();
         });
@@ -703,7 +675,9 @@ describe('* <AdrUpdateForm /> *', () => {
 
     describe('-- Logged in user without saved address --', () => {
         it('Renders empty input fields without crashing and displays "* No Address Added *"', () => {
-            rtlRender(<AdrUpdateForm
+            
+            render(
+                <AdrUpdateForm
                 ap={''}
                 strt={''}
                 cty={''}
@@ -724,8 +698,9 @@ describe('* <AdrUpdateForm /> *', () => {
 
         it('onCancel from props is not called if "CNCL" is clicked', () => {
             const onCancel = jest.fn();
-
-            const {getByTestId} = rtlRender(<AdrUpdateForm
+            
+            render(
+                <AdrUpdateForm
                 ap={''}
                 strt={''}
                 cty={''}
@@ -735,7 +710,7 @@ describe('* <AdrUpdateForm /> *', () => {
                 onCancel={onCancel} />
             );
 
-            const cancel = getByTestId('address-edit-cancel');
+            const cancel = screen.getByTestId('address-edit-cancel');
             fireEvent.click(cancel);
             expect(onCancel).toHaveBeenCalledTimes(0);
         });
@@ -748,8 +723,9 @@ describe('* <AdrUpdateForm /> *', () => {
             const setPrvnc = jest.fn();
             const setZp = jest.fn();
             const setCntry = jest.fn();
-
-            const { getByTestId } = rtlRender(<AdrUpdateForm
+            
+            render(
+                <AdrUpdateForm
                 ap={''}
                 strt={''}
                 cty={''}
@@ -764,27 +740,27 @@ describe('* <AdrUpdateForm /> *', () => {
                 setCntry={setCntry} />
             );
 
-            const apField = getByTestId('appartment-field');
+            const apField = screen.getByTestId('appartment-field');
             fireEvent.change(apField, { target: { value: '22' } });
             expect(setAp).toHaveBeenLastCalledWith('22');
 
-            const strtField = getByTestId('street-field');
+            const strtField = screen.getByTestId('street-field');
             fireEvent.change(strtField, { target: { value: 'street' } });
             expect(setStrt).toHaveBeenLastCalledWith('street');
 
-            const ctyField = getByTestId('city-field');
+            const ctyField = screen.getByTestId('city-field');
             fireEvent.change(ctyField, { target: { value: 'city' } });
             expect(setCty).toHaveBeenLastCalledWith('city');
 
-            const prvncField = getByTestId('province-field');
+            const prvncField = screen.getByTestId('province-field');
             fireEvent.change(prvncField, { target: { value: 'province' } });
             expect(setPrvnc).toHaveBeenLastCalledWith('province');
 
-            const zpField = getByTestId('zip-field');
+            const zpField = screen.getByTestId('zip-field');
             fireEvent.change(zpField, { target: { value: 76607 } });
             expect(setZp).toHaveBeenLastCalledWith('76607');
 
-            const cntryField = getByTestId('country-field');
+            const cntryField = screen.getByTestId('country-field');
             fireEvent.change(cntryField, { target: { value: 'country' } });
             expect(setCntry).toHaveBeenLastCalledWith('country');
         });
@@ -801,8 +777,9 @@ describe('* <AdrUpdateForm /> *', () => {
             onSubmit.mockImplementation((e) => {
                 e.preventDefault();
             });
-
-            const { getByTestId } = rtlRender(<AdrUpdateForm
+            
+            render(
+                <AdrUpdateForm
                 ap={''}
                 strt={''}
                 cty={''}
@@ -818,31 +795,31 @@ describe('* <AdrUpdateForm /> *', () => {
                 onSubmit={onSubmit} />
             );
 
-            const apField = getByTestId('appartment-field');
+            const apField = screen.getByTestId('appartment-field');
             fireEvent.change(apField, { target: { value: '22' } });
             expect(setAp).toHaveBeenLastCalledWith('22');
 
-            const strtField = getByTestId('street-field');
+            const strtField = screen.getByTestId('street-field');
             fireEvent.change(strtField, { target: { value: 'street' } });
             expect(setStrt).toHaveBeenLastCalledWith('street');
 
-            const ctyField = getByTestId('city-field');
+            const ctyField = screen.getByTestId('city-field');
             fireEvent.change(ctyField, { target: { value: 'city' } });
             expect(setCty).toHaveBeenLastCalledWith('city');
 
-            const prvncField = getByTestId('province-field');
+            const prvncField = screen.getByTestId('province-field');
             fireEvent.change(prvncField, { target: { value: 'province' } });
             expect(setPrvnc).toHaveBeenLastCalledWith('province');
 
-            const zpField = getByTestId('zip-field');
+            const zpField = screen.getByTestId('zip-field');
             fireEvent.change(zpField, { target: { value: 76607 } });
             expect(setZp).toHaveBeenLastCalledWith('76607');
 
-            const cntryField = getByTestId('country-field');
+            const cntryField = screen.getByTestId('country-field');
             fireEvent.change(cntryField, { target: { value: 'country' } });
             expect(setCntry).toHaveBeenLastCalledWith('country');
 
-            const submit = getByTestId('address-edit-submit');
+            const submit = screen.getByTestId('address-edit-submit');
             fireEvent.click(submit);
             await waitFor(() => expect(onSubmit).toHaveBeenCalled());
         });
@@ -853,15 +830,13 @@ describe('* <AdrUpdateForm /> *', () => {
 describe('* <UpdatePw /> *', () => {
     describe('-- Logged in user with Profile in Redux state --', () => {
         it('Renders without crashing and has empty fields', () => {
-            const history = createMemoryHistory();
-            const { getByTestId } = render(
-                <Router>
-                    <UpdatePw history={history} />
-                </Router>
-                , { initialState: noAddressUser }
+            
+            render(
+                <UpdatePw />,
+                { initialState: noAddressUser }
             );
 
-            const form = getByTestId('password-change-form');
+            const form = screen.getByTestId('password-change-form');
             expect(form).toBeInTheDocument();
 
             expect(screen.getByTestId('old-password-field')).toHaveTextContent('');
@@ -871,14 +846,13 @@ describe('* <UpdatePw /> *', () => {
 
         it('Redirects to "/account/:username" if "CNCL" is clicked', async () => {
             const history = createMemoryHistory();
-            const {getByTestId} = render(
-                <Router>
-                    <UpdatePw history={history} />
-                </Router>
-                , { initialState: noAddressUser }
+            
+            render(
+                <UpdatePw history={history} />,
+                { initialState: noAddressUser }
             );
 
-            const cancel = getByTestId('cancel-password-field');
+            const cancel = screen.getByTestId('cancel-password-field');
             fireEvent.click(cancel);
             expect(history.location.pathname).toBe('/account/Revarz');
         });
@@ -887,7 +861,6 @@ describe('* <UpdatePw /> *', () => {
             window.alert = jest.fn();
 
             const history = createMemoryHistory();
-            const store = setUpStore( noAddressUser );
 
             const scope = nock('http://localhost')
                 .put('/api/customer_un/Revarz/password', {
@@ -895,13 +868,10 @@ describe('* <UpdatePw /> *', () => {
                     new_password: 'newpassword'
                 })
                 .reply(200);
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <UpdatePw history={history} />
-                    </Router>
-                </Provider>
+            
+            render(
+                <UpdatePw history={history} />,
+                { initialState: noAddressUser }
             );
 
             expect(history.location.pathname).toEqual(expect.not.stringContaining('/account/Revarz'));
@@ -932,14 +902,10 @@ describe('* <UpdatePw /> *', () => {
             window.alert = jest.fn();
 
             const history = createMemoryHistory();
-            const store = setUpStore( noAddressUser );
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <UpdatePw history={history} />
-                    </Router>
-                </Provider>
+            
+            render(
+                <UpdatePw history={history} />,
+                { initialState: noAddressUser }
             );
 
             expect(history.location.pathname).toEqual(expect.not.stringContaining('/account/Revarz'));
@@ -973,14 +939,10 @@ describe('* <UpdatePw /> *', () => {
             window.alert = jest.fn();
 
             const history = createMemoryHistory();
-            const store = setUpStore( noAddressUser );
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <UpdatePw history={history} />
-                    </Router>
-                </Provider>
+            
+            render(
+                <UpdatePw history={history} />,
+                { initialState: noAddressUser }
             );
 
             expect(history.location.pathname).toEqual(expect.not.stringContaining('/account/Revarz'));
@@ -1013,16 +975,13 @@ describe('* <UpdatePw /> *', () => {
 
     describe('-- Not logged in user --', () => {
         it('Redirects to "/"', () => {
-            const history = createMemoryHistory();
-            const {container} = render(
-                <Router>
-                    <UpdatePw history={history} />
-                    <Route path='/' exact >Main Page</Route>
-                </Router>
-                , { initialState: anonymous }
+            
+            render(
+                <UpdatePw />,
+                { initialState: anonymous }
             );
 
-            expect(container).toHaveTextContent('Main Page');
+            expect(screen.getByText('Main Page')).toBeInTheDocument();
         });
     });
 });

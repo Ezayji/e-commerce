@@ -1,6 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { createMemoryHistory } from 'history';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 import { render as rtlRender, fireEvent, screen, waitFor, act } from '@testing-library/react';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
@@ -26,36 +25,49 @@ import Product from '../ProdPage/Product';
 
 import { anonymous, loggedIn, product, categoryRes, genderRes, brandRes } from './utils/state';
 
-jest.mock('../../../Redux/Store');
-
-    // store mock
-function setUpStore(initialState){
-    return createStore(
-        combineReducers({
-            customer: customerReducer,
-            products: productsReducer,
-            cart: cartReducer
-        }),
+    // render helper function, returns screen and store
+function render(
+    ui,
+    {
         initialState,
-        applyMiddleware(thunk)
-    );
+        store = createStore(
+            combineReducers({
+                customer: customerReducer,
+                products: productsReducer,
+                cart: cartReducer
+            }),
+            initialState,
+            applyMiddleware(thunk)
+        ),
+        ...renderOptions
+    } = {}
+){
+    function Wrapper({ children }){
+        return (
+            <Provider store={store} >
+                <Router>
+                    {children}
+                </Router>
+            </Provider>
+        )
+    };
+    return [
+        rtlRender(ui, { wrapper: Wrapper, ...renderOptions }),
+        store
+    ]
 };
 
 describe('* <Products /> *', () => {
 
     it('Fetches products to Redux and renders "${CATEGORY} FR ${GNDR}" + Products if match.path is "/products/:gender/list/:categoryid/:category_title"', async () => {
-        const store = setUpStore( anonymous );
 
         const scope = nock('http://localhost')
             .get('/api/products?gender=men&categoryid=1')
             .reply(200, categoryRes);
         
-        rtlRender(
-            <Provider store={store} >
-                <Router>
-                    <Products match={{params: { gender: 'men', categoryid: 1, category_title: 'HTS' }, isExact: true, path: '/products/:gender/list/:categoryid/:category_title', url: '/products/men/list/1/HTS'}} />
-                </Router>
-            </Provider>
+        const [ screen, store ] = render(
+            <Products match={{params: { gender: 'men', categoryid: 1, category_title: 'HTS' }, isExact: true, path: '/products/:gender/list/:categoryid/:category_title', url: '/products/men/list/1/HTS'}} />,
+            { initialState: anonymous }
         );
 
         await waitFor(() => {
@@ -75,18 +87,14 @@ describe('* <Products /> *', () => {
     });
 
     it('Fetches products to Redux and renders "PRDCTS FR ${GNDR}" + Products if match.path is "/products/:gender"', async () => {
-        const store = setUpStore( anonymous );
 
         const scope = nock('http://localhost')
             .get('/api/products?gender=women')
             .reply(200, genderRes);
         
-        rtlRender(
-            <Provider store={store} >
-                <Router>
-                    <Products match={{params: { gender: 'women' }, isExact: true, path: '/products/:gender', url: '/products/women'}} />
-                </Router>
-            </Provider>
+        const [ screen, store ] = render(
+            <Products match={{params: { gender: 'women' }, isExact: true, path: '/products/:gender', url: '/products/women'}} />,
+            { initialState: anonymous }
         );
 
         await waitFor(() => {
@@ -106,18 +114,14 @@ describe('* <Products /> *', () => {
     });
 
     it('Fetches products to Redux and renders Brand description and an Logo image + Products if match.path is "/brands/:brand_id/:title"', async () => {
-        const store = setUpStore( anonymous );
 
         const scope = nock('http://localhost')
             .get('/api/manufacturer/1')
             .reply(200, brandRes);
         
-        rtlRender(
-            <Provider store={store} >
-                <Router>
-                    <Products match={{params: { brand_id: 1, title: 'Brand' }, isExact: true, path: '/brands/:brand_id/:title', url: '/brands/1/Brand'}} />
-                </Router>
-            </Provider>
+        const [ screen, store ] = render(
+            <Products match={{params: { brand_id: 1, title: 'Brand' }, isExact: true, path: '/brands/:brand_id/:title', url: '/brands/1/Brand'}} />,
+            { initialState: anonymous }
         );
 
         await waitFor(() => {
@@ -140,7 +144,8 @@ describe('* <Products /> *', () => {
 
     describe('-- <BrandHeader /> --', () => {
         it('Renders a description and an Logo image', () => {
-            rtlRender(
+            
+            render(
                 <BrandHeader data={{
                     logo_url: 'TestUrl',
                     title: 'Test',
@@ -156,17 +161,19 @@ describe('* <Products /> *', () => {
     
     describe('-- <GenderHeader /> --', () => {
         it('Renders "PRDCTS FR MN" if only "men" is passed in props', () => {
-            rtlRender(
+            
+            render(
                 <GenderHeader data={{
                     gender: 'men'
-                }} />
+                }} /> 
             );
 
             expect(screen.getByText('PRDCTS FR MN')).toBeInTheDocument();
         });
 
         it('Renders "${CATEGORY} FR MN" if "men" and category is passed in props', () => {
-            rtlRender(
+            
+            render(
                 <GenderHeader data={{
                     gender: 'men',
                     category_title: 'JCKTS'
@@ -177,7 +184,8 @@ describe('* <Products /> *', () => {
         });
         
         it('Renders "PRDCTS FR WMN" if only "women" is passed in props', () => {
-            rtlRender(
+            
+            render(
                 <GenderHeader data={{
                     gender: 'women'
                 }} />
@@ -187,7 +195,8 @@ describe('* <Products /> *', () => {
         });
 
         it('Renders "${CATEGORY} FR WMN" if "women" and category is passed in props', () => {
-            rtlRender(
+            
+            render(
                 <GenderHeader data={{
                     gender: 'women',
                     category_title: 'PNTS'
@@ -201,22 +210,21 @@ describe('* <Products /> *', () => {
     describe('-- <ProductsList /> --', () => {
 
         it('Renders the products that are passed in props', () => {
-            rtlRender(
-                <Router>
-                    <ProductsList products={[{
-                        id: 1,
-                        title: 'Product',
-                        manufacturer: 'Brand',
-                        unit_price_eur: 22,
+            
+            render(
+                <ProductsList products={[{
+                    id: 1,
+                    title: 'Product',
+                    manufacturer: 'Brand',
+                    unit_price_eur: 22,
+                    thumbnail_url: 'url'
+                }, {
+                    id: 2,
+                        title: 'Product2',
+                        manufacturer: 'Brand2',
+                        unit_price_eur: 44,
                         thumbnail_url: 'url'
-                    }, {
-                        id: 2,
-                            title: 'Product2',
-                            manufacturer: 'Brand2',
-                            unit_price_eur: 44,
-                            thumbnail_url: 'url'
-                    }]} url='/products/women' />
-                </Router>
+                }]} url='/products/women' />
             );
 
             expect(screen.getByText('Product')).toBeInTheDocument();
@@ -225,16 +233,15 @@ describe('* <Products /> *', () => {
     
         describe('--* <ProductPreview /> *--', () => {
             it('Renders product Details, Image and a Link to product page', () => {
-                rtlRender(
-                    <Router>
-                        <ProductPreview product={{
-                            id: 1,
-                            title: 'Product',
-                            manufacturer: 'Brand',
-                            unit_price_eur: 22,
-                            thumbnail_url: 'url'
-                        }} url='/products/women' />
-                    </Router>
+                
+                render(
+                    <ProductPreview product={{
+                        id: 1,
+                        title: 'Product',
+                        manufacturer: 'Brand',
+                        unit_price_eur: 22,
+                        thumbnail_url: 'url'
+                    }} url='/products/women' />
                 );
 
                 expect(screen.getByText('Product')).toBeInTheDocument();
@@ -254,18 +261,14 @@ describe('* <Products /> *', () => {
 describe('* <ProdPage /> *', () => {
 
     it('Fetches a Request for product details by match params and then displays the item', async () => {
-        const store = setUpStore( loggedIn );
 
         const scope = nock('http://localhost')
             .get('/api/products/1')
             .reply(200, product)
-
-        rtlRender(
-            <Provider store={store} >
-                <Router>
-                    <ProdPage match={{params: { gender: 'men', productid: 1, product_title: 'Product' }, isExact: true, path: '/products/:gender/:productid/:product_title', url: '/products/men/1/Product'}} />
-                </Router>
-            </Provider>
+        
+        render(
+            <ProdPage match={{params: { gender: 'men', productid: 1, product_title: 'Product' }, isExact: true, path: '/products/:gender/:productid/:product_title', url: '/products/men/1/Product'}} />,
+            { initialState: loggedIn }
         );
 
         await waitFor(() => {
@@ -277,14 +280,10 @@ describe('* <ProdPage /> *', () => {
     describe('-- <Product /> --', () => {
         
         it('Renders Product details, First Image and Maps sizes to options', () => {
-            const store = setUpStore( loggedIn );
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Product prod={product} />
-                    </Router>
-                </Provider>
+            
+            render(
+                <Product prod={product} />,
+                { initialState: loggedIn }
             );
 
             expect(screen.getByText('Product')).toBeInTheDocument();
@@ -300,42 +299,30 @@ describe('* <ProdPage /> *', () => {
         });
 
         it('Renders "ADD TO CART" if user is logged in', () => {
-            const store = setUpStore( loggedIn );
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Product prod={product} />
-                    </Router>
-                </Provider>
+            
+            render(
+                <Product prod={product} />,
+                { initialState: loggedIn }
             );
 
             expect(screen.getByText('ADD TO CART')).toBeInTheDocument();
         });
 
         it('Renders "LOG IN OR REGISTER" if user is not logged in', () => {
-            const store = setUpStore( anonymous );
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Product prod={product} />
-                    </Router>
-                </Provider>
+            
+            render(
+                <Product prod={product} />,
+                { initialState: anonymous }
             );
 
             expect(screen.getByText('LOG IN OR REGISTER')).toBeInTheDocument();
         });
 
         it('Renders the second image if "Right Arrow" is clicked and the first image if "Left Arrow" is then clicked', () => {
-            const store = setUpStore( anonymous );
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Product prod={product} />
-                    </Router>
-                </Provider>
+            
+            render(
+                <Product prod={product} />,
+                { initialState: anonymous }
             );
 
             const img = screen.getByAltText('Product');
@@ -349,14 +336,10 @@ describe('* <ProdPage /> *', () => {
         });
 
         it('Renders the first image if navigated to the last image and "Right Arrow" is clicked', () => {
-            const store = setUpStore( anonymous );
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Product prod={product} />
-                    </Router>
-                </Provider>
+            
+            render(
+                <Product prod={product} />,
+                { initialState: anonymous }
             );
 
             const right = screen.getByAltText('navigate right');
@@ -367,14 +350,10 @@ describe('* <ProdPage /> *', () => {
         });
 
         it('Renders last image if "Left Arrow" is clicked while viewing the first image', () => {
-            const store = setUpStore( anonymous );
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Product prod={product} />
-                    </Router>
-                </Provider>
+            
+            render(
+                <Product prod={product} />,
+                { initialState: anonymous }
             );
 
             const img = screen.getByAltText('Product');
@@ -384,7 +363,6 @@ describe('* <ProdPage /> *', () => {
         });
 
         it('Fetches a post request if a size is added to cart and Dispatches updated cart to Redux state', async () => {
-            const store = setUpStore( loggedIn );
 
             const res = {
                 products: [{
@@ -408,13 +386,10 @@ describe('* <ProdPage /> *', () => {
                     size: 'L'
                 })
                 .reply(200, res);
-
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Product prod={product} />
-                    </Router>
-                </Provider>
+            
+            const [ screen, store ] = render(
+                <Product prod={product} />,
+                { initialState: loggedIn }
             );
 
             const select = screen.getByTestId('select-size');
@@ -433,14 +408,12 @@ describe('* <ProdPage /> *', () => {
         });
 
         it('Throws an Alert if no size is selected and "ADD TO CART" is clicked', () => {
-            const store = setUpStore( loggedIn );
+            
             window.alert = jest.fn();
-            rtlRender(
-                <Provider store={store} >
-                    <Router>
-                        <Product prod={product} />
-                    </Router>
-                </Provider>
+            
+            render(
+                <Product prod={product} />,
+                { initialState: loggedIn }
             );
 
             const add = screen.getByText('ADD TO CART');

@@ -19,35 +19,48 @@ import OrderPreview from '../OrderPreview/OrderPreview';
 
 import { oneItemOrder, twoItemOrder, orderPreview, orderPreviewFalse, ordersResponse, emptyUserState, fetchedUserState1, fetchedUserState2, anonymous } from './utils/state';
 
-jest.mock('../../../Redux/Store');
-
-    // store mock
-function setUpStore(initialState){
-    return createStore(
-        combineReducers({ 
-            customer: customerReducer,
-            orders: ordersReducer,
-        }),
+    // render helper function, returns screen and store
+function render(
+    ui,
+    {
         initialState,
-        applyMiddleware(thunk)
-    );
+        store = createStore(
+            combineReducers({
+                customer: customerReducer,
+                orders: ordersReducer
+            }),
+            initialState,
+            applyMiddleware(thunk)
+        ),
+        ...renderOptions
+    } = {}
+){
+    function Wrapper({ children }){
+        return (
+            <Provider store={store} >
+                <Router>
+                    {children}
+                </Router>
+            </Provider>
+        )
+    };
+    return [
+        rtlRender(ui, { wrapper: Wrapper, ...renderOptions }),
+        store
+    ]
 };
 
 describe('* <Orders /> *', () => {
     
     it('Fetches Orders, dispatches them to Redux state and Renders them', async () => {
-        const store = setUpStore( emptyUserState );
 
         const scope = nock('http://localhost')
             .get('/api/orders/Revarz')
             .reply(200, ordersResponse);
-
-        rtlRender(
-            <Provider store={store} >
-                <Router>
-                    <Orders />
-                </Router>
-            </Provider>
+        
+        const [ screen, store ] = render(
+            <Orders />,
+            { initialState: emptyUserState }
         );
 
         await waitFor(() => {
@@ -61,19 +74,14 @@ describe('* <Orders /> *', () => {
     });
 
     it("Renders 'You Haven't Ordered Anything Yet' if server responds with 404", async () => {
-        const store = setUpStore( emptyUserState );
-        const history = createMemoryHistory();
 
         const scope = nock('http://localhost')
             .get('/api/orders/Revarz')
-            .replyWithError(404);
-
-        rtlRender(
-            <Provider store={store} >
-                <Router>
-                    <Orders history={history} />
-                </Router>
-            </Provider>
+            .reply(404);
+        
+        render(
+            <Orders />,
+            { initialState: emptyUserState }
         );
 
         await waitFor(() => {
@@ -83,15 +91,12 @@ describe('* <Orders /> *', () => {
     });
 
     it('Redirects to "/" if user is not logged in', async () => {
-        const store = setUpStore( anonymous );
+        
         const history = createMemoryHistory();
-
-        rtlRender(
-            <Provider store={store} >
-                <Router>
-                    <Orders history={history} />
-                </Router>
-            </Provider>
+        
+        render(
+            <Orders history={history} />,
+            { initialState: anonymous }
         );
 
         await waitFor(() => {
@@ -104,12 +109,10 @@ describe('* <Orders /> *', () => {
 describe('* <OrderPreview /> *', () => {
 
     it('Renders without crashing and displays order details', () => {
-
-        rtlRender(
-            <Router>
-                <OrderPreview username='Revarz' order={orderPreview} />
-            </Router>
-        )
+        
+        render(
+            <OrderPreview username='Revarz' order={orderPreview} />
+        );
 
         expect(screen.getByText('1001')).toBeInTheDocument();
         //expect(screen.getByText('3/10/2021')).toBeInTheDocument();
@@ -118,21 +121,18 @@ describe('* <OrderPreview /> *', () => {
     });
 
     it('Order date is formated DD/MM/YYYY', () => {
-
-        rtlRender(
-            <Router>
-                <OrderPreview username='Revarz' order={orderPreview} />
-            </Router>
+        
+        render(
+            <OrderPreview username='Revarz' order={orderPreview} /> 
         );
 
         expect(screen.getByTestId('date')).toHaveTextContent('3/10/2021');
     });
 
     it('Renders "Not Processed" if Order Payment is false', () => {
-        rtlRender(
-            <Router>
-                <OrderPreview username='Revarz' order={orderPreviewFalse} />
-            </Router>
+        
+        render(
+            <OrderPreview username='Revarz' order={orderPreviewFalse} />
         );
 
         expect(screen.getByText('Not Processed')).toBeInTheDocument();
@@ -143,18 +143,14 @@ describe('* <OrderPreview /> *', () => {
 describe('* <SingleOrder /> (Order Page) *', () => {
 
     it('Fetches and Renders Order Address and 1 Item without crashing', async () => {
-        const store = setUpStore( emptyUserState );
 
         const scope = nock('http://localhost')
             .get('/api/orders/Revarz/1001')
             .reply(200, oneItemOrder);
-
-        rtlRender(
-            <Provider store={store} >
-                <Router>
-                    <SingleOrder match={{params: {username: 'Revarz', order_id: 1001}, isExact: true, path: '/orders/:username/order/:order_id', url: '/orders/Revarz/order/1001'}} />
-                </Router>
-            </Provider>
+        
+        render(
+            <SingleOrder match={{params: {username: 'Revarz', order_id: 1001}, isExact: true, path: '/orders/:username/order/:order_id', url: '/orders/Revarz/order/1001'}} />,
+            { initialState: emptyUserState }
         );
 
         await waitFor(() => {
@@ -170,18 +166,14 @@ describe('* <SingleOrder /> (Order Page) *', () => {
     });
 
     it('Fetches and Renders Order Address and 2 items without crashing', async () => {
-        const store = setUpStore( emptyUserState );
 
         const scope = nock('http://localhost')
             .get('/api/orders/Revarz/1002')
             .reply(200, twoItemOrder);
-
-        rtlRender(
-            <Provider store={store} >
-                <Router>
-                    <SingleOrder match={{params: {username: 'Revarz', order_id: 1002}, isExact: true, path: '/orders/:username/order/:order_id', url: '/orders/Revarz/order/1002'}} />
-                </Router>
-            </Provider>
+        
+        render(
+            <SingleOrder match={{params: {username: 'Revarz', order_id: 1002}, isExact: true, path: '/orders/:username/order/:order_id', url: '/orders/Revarz/order/1002'}} />,
+            { initialState: emptyUserState }
         );
 
         await waitFor(() => {
@@ -198,18 +190,14 @@ describe('* <SingleOrder /> (Order Page) *', () => {
 
     it('Redirects to "/orders/:username" if Order Fetch Fails', async () => {
         const history = createMemoryHistory();
-        const store = setUpStore( emptyUserState );
 
         const scope = nock('http://localhost')
             .get('/api/orders/Revarz/1002')
-            .replyWithError(400);
-
-        rtlRender(
-            <Provider store={store} >
-                <Router>
-                    <SingleOrder history={history} match={{params: {username: 'Revarz', order_id: 1002}, isExact: true, path: '/orders/:username/order/:order_id', url: '/orders/Revarz/order/1002'}} />
-                </Router>
-            </Provider>
+            .reply(400);
+        
+        render(
+            <SingleOrder history={history} match={{params: {username: 'Revarz', order_id: 1002}, isExact: true, path: '/orders/:username/order/:order_id', url: '/orders/Revarz/order/1002'}} />,
+            { initialState: emptyUserState }
         );
 
         await waitFor(() => {
@@ -219,14 +207,10 @@ describe('* <SingleOrder /> (Order Page) *', () => {
 
     it('Redirects to "/" if user is not logged in', async () => {
         const history = createMemoryHistory();
-        const store = setUpStore( anonymous );
-
-        rtlRender(
-            <Provider store={store} >
-                <Router>
-                    <SingleOrder history={history} match={{params: {username: 'Revarz', order_id: 1002}, isExact: true, path: '/orders/:username/order/:order_id', url: '/orders/Revarz/order/1002'}} />
-                </Router>
-            </Provider>
+        
+        render(
+            <SingleOrder history={history} match={{params: {username: 'Revarz', order_id: 1002}, isExact: true, path: '/orders/:username/order/:order_id', url: '/orders/Revarz/order/1002'}} />,
+            { initialState: anonymous } 
         );
 
         expect(history.location.pathname).toBe('/');
@@ -235,8 +219,8 @@ describe('* <SingleOrder /> (Order Page) *', () => {
 
     describe('-- <SingleProductLine /> --', () => {
         it('Renders product info', () => {
-
-            rtlRender(
+            
+            render(
                 <SingleProductLine prod={{
                     product_id: 12,
                     quantity: 1,
