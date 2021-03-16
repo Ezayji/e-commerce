@@ -1,7 +1,7 @@
 /* ACCOUNT PAGE DIV */
 .account-page{
     width: 100%;
-    height: calc(100vh - 200px);
+    height: calc(100vh - 175px);
     display: flex;
     flex-direction: column;
     justify-content: center;

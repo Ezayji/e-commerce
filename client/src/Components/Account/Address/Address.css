@@ -9,6 +9,8 @@
 .address h2{
     font-family: 'Teko';
     font-size: 2em;
+    text-decoration: underline;
+    margin-bottom: 10px;
 }
 
 /* ADDRESS FIELDS */
@@ -47,6 +49,7 @@
     background-color: black;
     border: none;
     cursor: pointer;
+    border-radius: 5px;
 }
 
 .adr-cancel, .info-submit {

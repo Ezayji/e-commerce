@@ -18,7 +18,11 @@
     font-family: 'Teko';
     display: flex;
     z-index: 10;
-    backdrop-filter: blur(6px);
+    background: linear-gradient(to right bottom, rgba(150, 193, 241, 0.5), rgba(236, 77, 228, 0.212));
+    /*
+    border-radius: 10px;
+    */
+    border-radius: 0px 0 15px 15px;
 }
 
 
@@ -40,7 +44,7 @@
 }
 
 .logo img:hover{
-    filter: drop-shadow(0px 0px 2px #6610d63a)
+    filter: drop-shadow(0px 0px 2px #6610d63a);
 }
 
 /* NAV AND LOGIN DIV */
@@ -77,8 +81,9 @@
     display: none;
     align-items: center;
     padding: 10px 0px;
-    background: rgba(255, 255, 255, 0.568);
-    border-radius: 5px;
+    backdrop-filter: blur(6px);
+    background: rgba(255, 255, 255, 0.267);
+    border-radius: 10px;
 }
 
 .dropdown-content {
@@ -117,6 +122,7 @@
     padding: 0px 5px;
     display: flex;
     align-items: center;
+    border-radius: 0 0 0 20px;
 }
 
 .user_actions{
@@ -147,6 +153,7 @@
     display: none;
     left: -5px;
     padding: 0px 5px;
+    
 }
 
 .logout{

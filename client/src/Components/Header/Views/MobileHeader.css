@@ -38,7 +38,8 @@
         width: 100%;
         
         transform: translateX(100%);
-        background-color: white;
+        backdrop-filter: blur(20px);   
+        
         z-index: 19;
         transition: transform 0.5s ease-in;
         overflow: scroll;
@@ -59,7 +60,7 @@
 
     .mob-shop-nav-actions a{
         text-decoration: none !important;
-        color: rgba(0, 0, 0, 0.692);
+        color: rgb(70, 70, 70);
     }
 
     .active{
@@ -82,8 +83,10 @@
 
     .mob-dropdown-content{
         position: absolute;
-        background-color: white;
-        width: 100vw;
+        background: linear-gradient(to right bottom, rgb(211, 241, 250), rgb(241, 192, 192));
+        width: 80%;
+        border-radius: 10px;
+        padding: 10px 0px;
         top: +50px;
         z-index: 19;
     }
@@ -118,25 +121,16 @@
         height: calc(100vh - 100px);
         z-index: 21;
         overflow: scroll;
-        background: rgba(255, 255, 255, 0.568);
-        /*
-        backdrop-filter: blur(6px)
-        */
+        backdrop-filter: blur(20px)
     }
 
     .mob-user-actions{
-        
         height: 100vh;
         width: 100%;
         display: flex;
         flex-direction: column;
         justify-content: space-evenly;
         align-items: center;
-          
-        /*
-        backdrop-filter: blur(6px) !important;
-        */
-        
     }
 
     .mob-user-actions p {

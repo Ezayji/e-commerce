@@ -4,7 +4,8 @@
     width: 100%;
     color: white;
     background-color: black;
-    margin: 10px 0px;
+    margin-bottom: 15px;
+    border-radius: 5px;
 }
 
 .submit-payment:hover{
@@ -14,6 +15,7 @@
 .previous{
     width: 25%;
     background-color: transparent;
+    border-radius: 5px;
 }
 
 .previous:hover{
@@ -21,7 +23,8 @@
 }
 
 .card-element-div{
-    margin: 5px 0px;
+    margin-top: 15px;
+    margin-bottom:18px;
 }
 
 /* PAYMENT ITEMS */
@@ -34,6 +37,8 @@
 
 .payment-item-div{
     border-bottom: 2px solid rgba(0, 0, 0, 0.178);
+    display: flex;
+    justify-content: space-between;
 }
 
 .payment-item-div {
@@ -41,11 +46,18 @@
 }
 
 .payment-total{
+    text-align: right;
+    margin-top: 10px;
     margin-bottom: 16px;
 }
 
-.payment-item-div p, .checkout-payment h2 {
-    margin-bottom: 5px;
+.checkout-payment h2{
+    margin-bottom: 10px;
+    text-decoration: underline;
+}
+
+.payment-item-div p {
+    margin-bottom: 10px;
 }
 
 

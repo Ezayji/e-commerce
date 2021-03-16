@@ -28,6 +28,7 @@
     align-items: center;
     width: 40%;
     height:auto;
+    margin-right: 20px;
 }
 
 .product img {
@@ -65,6 +66,7 @@
     background-color: black;
     border: none;
     cursor: pointer;
+    border-radius: 5px;
 }
 
 .product form a{
@@ -115,7 +117,7 @@
 
     .prod-image-div{
         width: 90%;
-
+        margin-right: 0;
     }
 
     .prod-info{
