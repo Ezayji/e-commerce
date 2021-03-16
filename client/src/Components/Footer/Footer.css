@@ -23,7 +23,8 @@ footer{
     */
     border-radius: 10px 10px 0 0;
     color: black;
+    background: linear-gradient(to right bottom, rgba(150, 193, 241, 0.5), rgba(236, 77, 228, 0.212));
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-};
+}; 
