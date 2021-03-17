@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Product from './Product';
+import Loader from '../../Loader/Loader';
 
 const ProdPage = ({ match }) => {
     const [prod, setProd] = useState(0);
@@ -17,7 +18,7 @@ const ProdPage = ({ match }) => {
     let content;
     
     if(prod === 0){
-        content = null;
+        content = <Loader />;
     } else if (prod !== 0) {
         content = <Product prod={prod} />
     };

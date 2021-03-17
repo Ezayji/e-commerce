@@ -10,6 +10,7 @@ import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 
 const Payment = ({ total, profile, address, cart, onPrev, history, onPayment }) => {
     const [processing, setProcessing] = useState(false);
+    const [filling, setFilling] = useState(true);
 
     countries.registerLocale(require("i18n-iso-countries/langs/en.json"));
 
@@ -92,7 +93,6 @@ const Payment = ({ total, profile, address, cart, onPrev, history, onPayment }) 
             <p>€{item.quantity * item.unit_price_eur}</p>
         </div>
     ));
-    
     return(
         <form className='checkout-payment' onSubmit={onSubmit} >
             <div className='payment-items' >
@@ -103,10 +103,12 @@ const Payment = ({ total, profile, address, cart, onPrev, history, onPayment }) 
             <div>
                 <h2>PAYMENT</h2>
                 <div className='card-element-div' >
-                    <CardElement />
+                    <CardElement
+                        onChange={async (e) => e.complete === true ? setFilling(false) : setFilling(true)}
+                    />
                 </div>
             </div>
-            <button className='submit-payment' disabled={processing} type='submit' >CONFIRM</button>
+            <button className='submit-payment' disabled={processing || filling} type='submit' >CONFIRM</button>
             <div>
                 <button className='previous' disabled={processing} type='button' onClick={onPrev} >CHANGE ADDRESS</button>
             </div>

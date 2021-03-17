@@ -7,6 +7,8 @@ import ProductsList from './ProdList/ProductsList';
 import GenderHeader from './ProdHeaders/GenderHeader';
 import BrandHeader from './ProdHeaders/BrandHeader';
 
+import Loader from '../Loader/Loader';
+
 const Products = ({ match }) => {
     const dispatch = useDispatch();
 
@@ -55,7 +57,7 @@ const Products = ({ match }) => {
 // Render header for products list based on prodState and Path
     if(prodState === 'loading'){
         head = null;
-        body = null;
+        body = <Loader />;
     } else if (prodState === 'gender' && match.path === "/products/:gender"){
         const gender = match.params.gender;
         const data = {

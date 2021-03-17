@@ -20,7 +20,7 @@ const Orders = ({ history }) => {
         } else if(orders === null && user !== null){
             dispatch(fetchOrders());
         };
-    }, []);
+    }, [ user ]);
 
     let ordersBody;
     let orderHead;

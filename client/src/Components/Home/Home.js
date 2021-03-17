@@ -1,5 +1,4 @@
 import './Home.css'
-import Background from './background.jpg';
 
 const Home = () => {
     return(
@@ -8,7 +7,5 @@ const Home = () => {
         </div>
     );
 };
-
-// <img src={Background} />
 
 export default Home;
