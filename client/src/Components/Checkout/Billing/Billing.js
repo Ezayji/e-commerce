@@ -2,7 +2,10 @@ import './Billing.css';
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
+import countries from 'i18n-iso-countries';
+
 const Billing = ({ onNext, address }) => {
+    countries.registerLocale(require("i18n-iso-countries/langs/en.json"));
     
     const [ap, setAp] = useState('');
     const [strt, setStrt] = useState('');
@@ -79,20 +82,24 @@ const Billing = ({ onNext, address }) => {
         };
     };
 
-    // Move to Payment page
+    // Check if the entered country is valid and Move to Payment page
     const next = (e) => {
         e.preventDefault();
-        const info = {
-            appartment_nr: ap,
-            street: strt,
-            city: cty,
-            province: prvnc,
-            zip: zp,
-            country: cntry,
-            status: adrInfo,
-            check: check
-        };
-        onNext(info);
+        if((countries.getAlpha2Code(cntry, 'en') === undefined && cntry !== '') || cntry === ''){
+            document.getElementById('country-field').setCustomValidity('Please Enter a Valid Country');
+        } else {
+            const info = {
+                appartment_nr: ap,
+                street: strt,
+                city: cty,
+                province: prvnc,
+                zip: zp,
+                country: cntry,
+                status: adrInfo,
+                check: check
+            };
+            onNext(info);
+        }
     };
     
     let adrInfoSelect;
@@ -156,9 +163,10 @@ const Billing = ({ onNext, address }) => {
                         checkAdrStatus();
                         setPrvnc(e.target.value);
                     }} required />
-                    <input data-testid='country' className='billing-info-row' type='text' value={cntry} placeholder='COUNTRY' onChange={(e) => {
+                    <input data-testid='country' className='billing-info-row' id='country-field' type='text' value={cntry} placeholder='COUNTRY' onChange={(e) => {
                         checkAdrStatus();
                         setCntry(e.target.value);
+                        document.getElementById('country-field').setCustomValidity('');
                     }} required />
                 </div>
                 {adrInfoSelect}

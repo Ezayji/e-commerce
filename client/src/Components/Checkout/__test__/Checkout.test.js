@@ -396,6 +396,33 @@ describe('* <Billing /> (child) *', () => {
         
     });
 
+    it('onNext from props is not called if an invalid Country is entered', async () => {
+        const onNext = jest.fn();
+
+        const address = {
+            appartment_nr: '1',
+            street: 'street',
+            city: 'city',
+            province: 'province',
+            zip: '76607',
+            country: 'notcountry',
+        };
+    
+        render(
+            <Billing address={address} onNext={onNext} />,
+            { initialState: savedAddressUser }
+        );
+        
+        await waitFor(() => {
+            expect(screen.getByDisplayValue('notcountry')).toBeInTheDocument();
+        });
+
+        const next = screen.getByText('NEXT');
+        fireEvent.click(next);
+
+        expect(onNext).toHaveBeenCalledTimes(0);
+    })
+
     describe('-- Second render with address in Parent state --', () => {
     
         it('Can switch between Custom Address info and Saved address if "Use existing address" is checked and unchecked (renders with *Unchecked* and has custom in fields)', async () => {
@@ -598,6 +625,16 @@ describe('* <Payment /> (child) *', () => {
         fireEvent.click(changeAddress);
         expect(onPrev).toHaveBeenCalled();
 
+    });
+
+    it('"CONFIRM" is disabled if Credit Card field is empty', () => {
+        render(
+            <Elements stripe={promise} >
+                <Payment total={oneTotal} cart={oneItemCart} />
+            </Elements> 
+        );
+
+        expect(screen.getByText('CONFIRM')).toBeDisabled();
     });
 
 });

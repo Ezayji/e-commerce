@@ -11,6 +11,8 @@ import { Redirect } from 'react-router-dom';
 import CartItem from './CartItem';
 import Checkout from '../Checkout/Checkout';
 
+import Loader from '../Loader/Loader';
+
 // * STRIPE.js *
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
@@ -124,7 +126,7 @@ const Cart = ({ history }) => {
         </div>
         );
     } else if(cartStatus === 'loading'){
-        cartItems = null;
+        cartItems = <Loader />;
     } else {
         cartItems = <p>No Items In Cart</p>
     };

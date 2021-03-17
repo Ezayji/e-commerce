@@ -7,6 +7,8 @@ import { fetchOrders } from '../../Redux/OrdersSlice';
 
 import OrderPreview from './OrderPreview/OrderPreview';
 
+import Loader from '../Loader/Loader';
+
 const Orders = ({ history }) => {
     const dispatch = useDispatch();
 
@@ -26,7 +28,7 @@ const Orders = ({ history }) => {
     let orderHead;
 
     if(orderStatus === 'loading'){
-        ordersBody = null;
+        ordersBody = <Loader />;
         orderHead = null;
     } else if (orderStatus === 'succeeded'){
         orderHead = (

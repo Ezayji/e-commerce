@@ -13,6 +13,8 @@ import UpdateForm from './Profile/UpdateForm';
 import AdrDisplay from './Address/AdrDisplay';
 import AdrUpdateForm from './Address/AdrUpdateForm';
 
+import Loader from '../Loader/Loader';
+
 const Account = () => {
     const dispatch = useDispatch();
 
@@ -78,7 +80,7 @@ const onCancelAdrChange = () => {
     }
 };
 
-    let profile;
+    let profile = <Loader />;
     let addressDiv;
     let redirect;
 

@@ -7,3 +7,7 @@
     max-width: 90%;
     border-bottom: 2px solid rgba(0, 0, 0, 0.178);
 }
+
+.order-preview p {
+    margin: 5px 0;
+}

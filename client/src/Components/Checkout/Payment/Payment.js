@@ -13,7 +13,7 @@ const Payment = ({ total, profile, address, cart, onPrev, history, onPayment }) 
     const [filling, setFilling] = useState(true);
 
     countries.registerLocale(require("i18n-iso-countries/langs/en.json"));
-
+    
     const stripe = useStripe();
     const elements = useElements();
 

@@ -8,7 +8,7 @@
     border-radius: 5px;
 }
 
-.submit-payment:hover{
+.submit-payment:hover, .submit-payment:disabled{
     background-color: rgba(0, 0, 0, 0.89);
 }
 
@@ -18,7 +18,7 @@
     border-radius: 5px;
 }
 
-.previous:hover{
+.previous:hover, .previous:disabled{
     background-color: rgba(0, 0, 0, 0.11);
 }
 

@@ -7,6 +7,8 @@ import { fetchAddress, fetchCustomer } from '../../Redux/CustomerSlice';
 import Billing from './Billing/Billing';
 import Payment from './Payment/Payment';
 
+import Loader from '../Loader/Loader';
+
 const Checkout = ({ total, onCancel, cart, history }) => {
     const dispatch = useDispatch();
 
@@ -66,6 +68,7 @@ const Checkout = ({ total, onCancel, cart, history }) => {
         <div data-testid='checkout-div' className='checkout' >
             {form}
             <button disabled={proccessing} className='cancel-checkout' type='button' onClick={onCancel} >Cancel Checkout</button>
+            {proccessing && <Loader />}
         </div>
     );
 };

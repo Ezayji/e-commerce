@@ -11,7 +11,8 @@
 .orders-div h2{
     font-family: 'Teko';
     font-size: 2em;
-    margin: 25px 0px;
+    margin-top: 40px;
+    margin-bottom: 20px;
     text-decoration: underline;
 }
 
@@ -23,4 +24,5 @@
     max-width: 90%;
     justify-content: space-evenly;
     border-bottom: 2px solid rgba(0, 0, 0, 0.178);
+    padding-bottom: 3px;
 }

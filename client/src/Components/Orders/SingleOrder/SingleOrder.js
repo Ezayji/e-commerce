@@ -7,6 +7,8 @@ import { getSingleOrder } from '../../../Services/Api/orders';
 
 import SingleProductLine from './SingleProductLine';
 
+import Loader from '../../Loader/Loader';
+
 const SingleOrder = ({ match, history }) => {
     
     const [order, setOrder] = useState('');
@@ -60,6 +62,8 @@ const SingleOrder = ({ match, history }) => {
             </div>
         );
         total = <p>TOTAL: €{order.total_eur}</p>
+    } else {
+        content = <Loader />
     };
 
     return(

@@ -18,7 +18,7 @@
 /* SINGLE ORDER DIV */
 
 .single-order{
-    min-height: 80vh;
+    min-height: calc(100vh - 175px);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -29,12 +29,14 @@
     font-family: 'Bentham';
     font-size: 2em;
     margin-bottom: 16px;
+    text-decoration: underline;
 }
 
 .single-order h3{
     font-family: 'Teko';
     font-size: 2em;
     margin-bottom: 4px;
+    text-decoration: underline;
 }
 
 /* ORDER CONTENTS DIV */
