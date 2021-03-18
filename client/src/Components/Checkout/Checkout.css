@@ -22,11 +22,6 @@
 
 .checkout form button{
     height: 35px;
-    /*
-    width: 100%;
-    color: white;
-    background-color: black;
-    */
     border: none;
     cursor: pointer;
 }
