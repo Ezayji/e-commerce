@@ -1,6 +1,6 @@
 import { render as rtlRender } from '@testing-library/react';
 
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, MemoryRouter } from 'react-router-dom';
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
@@ -44,4 +44,29 @@ export function render(
         rtlRender(ui, { wrapper: Wrapper, ...renderOptions }),
         store
     ]
+};
+
+    // render helper with MemoryRouter for rendering <App />
+export function memoryRender(
+    ui,
+    {
+        initialState,
+        path,
+        store = createStore(
+            combineReducers({
+                customer: customerReducer,
+                products: productsReducer,
+                cart: cartReducer,
+                orders: ordersReducer
+            }),
+            initialState,
+            applyMiddleware(thunk)
+        ),
+        ...renderOptions
+    } = {}
+){
+    function Wrapper({ children }){
+        return <Provider store={store} ><MemoryRouter initialEntries={[path]} initialIndex={0} >{children}</MemoryRouter></Provider>
+    };
+    return rtlRender(ui, { wrapper: Wrapper, ...renderOptions });
 };

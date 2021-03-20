@@ -15,11 +15,4 @@ const Home = () => {
     );
 };
 
-/*
-<div className='home-info' >
-                    <p>Find Your New Style From Handpicked Collections</p>
-                    <p>Free Shipping On All Orders</p>
-                </div>
-*/
-
 export default Home;

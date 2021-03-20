@@ -1,51 +1,15 @@
 import React from 'react';
-import { render as rtlRender, fireEvent, screen, waitFor, act } from '@testing-library/react';
-import { createStore, applyMiddleware, combineReducers } from 'redux';
-import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
+import { screen, waitFor } from '@testing-library/react';
+import { memoryRender as render } from '../../../testHelper';
 
 import nock from 'nock';
-
-import productsReducer from '../../../Redux/ProductsSlice';
-import customerReducer from '../../../Redux/CustomerSlice';
-import cartReducer from '../../../Redux/CartSlice';
-import ordersReducer from '../../../Redux/OrdersSlice';
 
 import App from '../App';
 
 const reactRouterDom = require('react-router-dom');
 reactRouterDom.BrowserRouter = ({ children }) => <div>{children}</div>
 
-import { MemoryRouter } from 'react-router-dom';
-
 import { anonymous, product, categoryRes, genderRes, brandRes, user, orderRes, itemOrderRes } from './utils/state';
-
-jest.mock('../../../Redux/Store');
-
-    // helper for rendering
-function render(
-    ui,
-    {
-        initialState,
-        path,
-        store = createStore(
-            combineReducers({
-                customer: customerReducer,
-                products: productsReducer,
-                cart: cartReducer,
-                orders: ordersReducer
-            }),
-            initialState,
-            applyMiddleware(thunk)
-        ),
-        ...renderOptions
-    } = {}
-){
-    function Wrapper({ children }){
-        return <Provider store={store} ><MemoryRouter initialEntries={[path]} initialIndex={0} >{children}</MemoryRouter></Provider>
-    };
-    return rtlRender(ui, { wrapper: Wrapper, ...renderOptions });
-};
 
 describe('* <App /> *', () => {
     beforeAll(() => {

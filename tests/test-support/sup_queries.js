@@ -1,5 +1,20 @@
 const pool = require('../../server_ops/db_queries/postgres_pool');
 
+// delete test user from database
+
+async function deleteTestUser(){
+    const text = 'DELETE FROM customer WHERE username = $1';
+    const username = 'Revarz';
+    try{
+        const result = await pool.query(text, [username]);
+        if(result.rows){
+            return;
+        }
+    } catch(error){
+        throw error;
+    };    
+};
+
 // insert shippment into postgres
 
 async function insertOrder(){
@@ -48,6 +63,7 @@ async function deleteOrder(){
 };
 
 module.exports = {
+                deleteTestUser,
                 insertOrder,
                 deleteItems,
                 deleteOrder

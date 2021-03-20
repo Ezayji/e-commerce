@@ -7,6 +7,12 @@ const app = require('../server');
 
 const server = request.agent(app);
 
+// -- the testing suite leaves a test user into the database --
+// ^^^^ it calls 'deleteUser()' in the first test to make sure the suite follows through correctly if the test user still exists ^^^^
+
+// fucntions for interacting with postgres for checkout tests to work
+const { deleteTestUser, insertOrder, deleteItems, deleteOrder } = require('./test-support/sup_queries');
+
 describe('API', () => {
     it('Sends OK status', async () => {
         const response = await request(app).get('/api/')
@@ -20,7 +26,9 @@ describe('CUSTOMERS', () => {
     // REGISTER CUSTOMER
     describe('POST CUSTOMER /api/register', () => {
         // log customer in and out for checking the database
-        it('Adds new cutomer to the database if supplied information is correct', () => {
+        it('Adds new cutomer to the database if supplied information is correct', async () => {
+            await deleteTestUser();
+
             let newCustomer = {
                 username: 'Revarz',
                 first_name: 'Selna',
@@ -1995,9 +2003,6 @@ describe('CARTS', () => {
 
 
 // CHECKOUT
-
-// fucntions for interacting with postgres for the tests to work
-const {insertOrder, deleteItems, deleteOrder} = require('./test-support/sup_queries');
 
 describe('CHECKOUT (ASSUMING ACCEPTED PAYMENT AND UPDATED STOCK QUANTITY)', () => {
     describe('* Unauthenticated requests *', () => {
