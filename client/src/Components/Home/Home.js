@@ -4,9 +4,22 @@ import homeSpinner from './homespinner.png';
 const Home = () => {
     return(
         <div data-testid='home' className='home' >
-            <img class='home-spinner' src={homeSpinner} />
+            <img className='cover-model2' src='https://i.imgur.com/4fd0iE0.png' />
+            <div className='home-intro' >
+                <h1>REVARZ</h1>
+                <p>THE FINEST STREETWEAR PLUG SINCE 2021</p>
+                <img className='home-spinner' src={homeSpinner} />
+            </div>
+            <img className='cover-model' src='https://i.imgur.com/1B7dvlr.png' />
         </div>
     );
 };
+
+/*
+<div className='home-info' >
+                    <p>Find Your New Style From Handpicked Collections</p>
+                    <p>Free Shipping On All Orders</p>
+                </div>
+*/
 
 export default Home;
