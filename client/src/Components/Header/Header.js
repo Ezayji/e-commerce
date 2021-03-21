@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import './Header.css';
-import Logo from './RVRZ.png';
+import Logo from '../../Images/RVRZ.png';
 import { Link } from 'react-router-dom';
 
 import { resetOrders } from '../../Redux/OrdersSlice';

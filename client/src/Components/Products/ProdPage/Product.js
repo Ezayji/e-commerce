@@ -3,8 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import './ProdPage.css';
 
-import Left from './arrow_png_left.png';
-import Right from './arrow_png_right.png';
+import Left from '../../../Images/arrow_png_left.png';
+import Right from '../../../Images/arrow_png_right.png';
 
 import { cartAdded } from '../../../Redux/CartSlice';
 import { addCartItem } from '../../../Services/Api/cart';

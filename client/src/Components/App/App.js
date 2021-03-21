@@ -12,6 +12,7 @@ import SingleOrder from '../Orders/SingleOrder/SingleOrder';
 import UpdatePw from '../Account/UpdatePw/UpdatePw';
 import SuccessPage from '../Checkout/SuccessPage/SuccessPage';
 import Footer from '../Footer/Footer';
+import NotFound from '../NotFound/NotFound';
 
 import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
@@ -36,6 +37,7 @@ function App() {
           <Route path='/checkout/success/:username/:order_id' exact render={(props) => <SuccessPage {...props} />} />
           <Route path='/orders/:username' exact render={(props) => <Orders {...props} /> } />
           <Route path='/orders/:username/order/:order_id' exact render={(props) => <SingleOrder {...props} /> } />
+          <Route component={NotFound} />
         </Switch>
         <Footer/>
       </div>

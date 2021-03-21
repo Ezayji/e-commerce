@@ -1,5 +1,5 @@
 import './Home.css'
-import homeSpinner from './homespinner.png';
+import homeSpinner from '../../Images/homespinner.png';
 
 const Home = () => {
     return(

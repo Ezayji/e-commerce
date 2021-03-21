@@ -315,4 +315,22 @@ describe('* <App /> *', () => {
     
     });
 
+    describe('-- 404 Routes --', () => {
+        it('Renders <NotFound />', async () => {
+            render(
+                <App />,
+                {
+                    initialState: user,
+                    path: '/notexistingpage'
+                }
+            );
+
+            await waitFor(() => {
+                expect(screen.getByText('Carhartt WIP')).toBeInTheDocument();
+            });
+
+            expect(screen.getByText('Sorry, Page Not Found')).toBeInTheDocument();
+        });
+    });
+
 });
