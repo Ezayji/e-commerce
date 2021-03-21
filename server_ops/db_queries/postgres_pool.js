@@ -5,12 +5,17 @@ if (process.env.NODE_ENV !== 'production') {
 // Initialize Postgres pool
 const Pool = require('pg').Pool;
 
-const devConfig = `postgresql://${process.env.PG_USER}:${process.env.PG_PW}@${process.env.PG_HOST}:${process.env.PG_PORT}/${process.env.PG_DB}`;
+const devConfig = { 
+    connectionString: `postgresql://${process.env.PG_USER}:${process.env.PG_PW}@${process.env.PG_HOST}:${process.env.PG_PORT}/${process.env.PG_DB}` 
+};
 
-const prodConfig = process.env.DATABASE_URL + '?ssl=true';
+const prodConfig = { 
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    } 
+};
 
-const pool = new Pool({
-    connectionString: process.env.NODE_ENV === 'production' ? prodConfig : devConfig
-});
+const pool = new Pool(process.env.NODE_ENV === 'production' ? prodConfig : devConfig);
 
 module.exports = pool;
