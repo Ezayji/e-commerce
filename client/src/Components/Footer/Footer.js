@@ -3,7 +3,7 @@ import Git from '../../Images/GitHub-Mark-32px.png';
 
 const Footer = () => {
     return(
-        <footer>
+        <footer className='footer' >
             <p>REVARZ™ 2021</p>
             <div className='credentials' >
                 <p>Powered by <a className='ezayji-link' href='https://github.com/Ezayji' target="_blank" rel="noreferrer noopener" >Ezayji</a></p>

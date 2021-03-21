@@ -10,7 +10,6 @@ initializePassport(passport);
 // * STRIPE.js *
 const {
        getFinalCart,
-       createPaymentIntent,
        createIntent } = require('./stripe-config');
 
 // * DB QUERIES *
@@ -139,12 +138,6 @@ apiRouter.delete('/cart/:username', checkAuthenticated, checkQueryItem, deleteFr
 
 
 // ----- CHECKOUT -----
-/*
-//     -- WITHOUT SERVERSIDE CONFIRMATION --
-
-// route for creating a checkout session
-apiRouter.post('/create-payment-intent/:username', checkAuthenticated, getFinalCart, createPaymentIntent);
-*/
 
 //     -- WITH SERVER SIDE CONFIRMATION --
 

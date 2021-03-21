@@ -4,6 +4,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const express = require('express');
 const app = express();
+const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const session = require('express-session');
@@ -36,9 +37,19 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+//app.use(express.static(path.join(__dirname, 'client/build')));
+// static content
+if(process.env.NODE_ENV === 'production'){
+    app.use(express.static(path.join(__dirname, 'client/build')));
+};
+
 // API ROUTER MOUNT
 const apiRouter = require('./server_ops/api');
 app.use('/api', apiRouter);
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client/build/index.html'));
+});
 
 // server 
 app.listen(PORT, () => {

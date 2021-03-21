@@ -172,7 +172,6 @@ const createIntent = async(req, res) => {
 
 module.exports = {
     getFinalCart,
-    createPaymentIntent,
     calculateAmmount,
     createIntent
 };
