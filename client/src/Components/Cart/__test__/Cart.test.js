@@ -30,7 +30,8 @@ describe('* <Cart /> (parent) * ', () => {
                 <Cart />,
                 { initialState: oneItemUser }
             );
-            expect(screen.getByText('White / Green')).toBeInTheDocument();
+            expect(screen.getByText('Color: White / Green')).toBeInTheDocument();
+            expect(screen.getByText('Size: L')).toBeInTheDocument();
             expect(screen.getByText('Stuzzy')).toBeInTheDocument();
             expect(screen.getByText('Stuzzy and Nike Insulated Pullover')).toBeInTheDocument();
             expect(screen.getByText('1')).toBeInTheDocument();
@@ -46,13 +47,15 @@ describe('* <Cart /> (parent) * ', () => {
                 { initialState: twoItemUser }
             );
 
-            expect(screen.getByText('White / Green')).toBeInTheDocument();
+            expect(screen.getByText('Color: White / Green')).toBeInTheDocument();
+            expect(screen.getByText('Size: L')).toBeInTheDocument();
             expect(screen.getByText('Stuzzy')).toBeInTheDocument();
             expect(screen.getByText('Stuzzy and Nike Insulated Pullover')).toBeInTheDocument();
             expect(screen.getByText('1')).toBeInTheDocument();
             expect(screen.getByText('€330')).toBeInTheDocument();
             
-            expect(screen.getByText('Tie Dye')).toBeInTheDocument();
+            expect(screen.getByText('Color: Tie Dye')).toBeInTheDocument();
+            expect(screen.getByText('Size: Universal')).toBeInTheDocument();
             expect(screen.getByText('RIPNDIP')).toBeInTheDocument();
             expect(screen.getByText('Lord Nermal Socks')).toBeInTheDocument();
             expect(screen.getByText('2')).toBeInTheDocument();
@@ -108,13 +111,14 @@ describe('* <Cart /> (parent) * ', () => {
             const remove = screen.getByTestId('remove-1');
             fireEvent.click(remove);
 
-            await waitForElementToBeRemoved(() => screen.queryByText('Tie Dye'));
+            await waitForElementToBeRemoved(() => screen.queryByText('Color: Tie Dye'));
 
             await waitFor(() => {
-                expect(screen.getByText('White / Green')).toBeInTheDocument();
+                expect(screen.getByText('Color: White / Green')).toBeInTheDocument();
             });
 
-            expect(screen.getByText('Stuzzy')).toBeInTheDocument();
+            expect(screen.getByText('Color: White / Green')).toBeInTheDocument();
+            expect(screen.getByText('Size: L')).toBeInTheDocument();
             expect(screen.getByText('Stuzzy and Nike Insulated Pullover')).toBeInTheDocument();
             expect(screen.getByText('1')).toBeInTheDocument();
             expect(screen.getByText('€330')).toBeInTheDocument();
@@ -171,13 +175,15 @@ describe('* <Cart /> (parent) * ', () => {
                 expect(screen.getByText('3')).toBeInTheDocument();
             });
             
-            expect(screen.getByText('White / Green')).toBeInTheDocument();
+            expect(screen.getByText('Color: White / Green')).toBeInTheDocument();
+            expect(screen.getByText('Size: L')).toBeInTheDocument();
             expect(screen.getByText('Stuzzy')).toBeInTheDocument();
             expect(screen.getByText('Stuzzy and Nike Insulated Pullover')).toBeInTheDocument();
             expect(screen.getByText('1')).toBeInTheDocument();
             expect(screen.getByText('€330')).toBeInTheDocument();
             
-            expect(screen.getByText('Tie Dye')).toBeInTheDocument();
+            expect(screen.getByText('Color: Tie Dye')).toBeInTheDocument();
+            expect(screen.getByText('Size: Universal')).toBeInTheDocument();
             expect(screen.getByText('RIPNDIP')).toBeInTheDocument();
             expect(screen.getByText('Lord Nermal Socks')).toBeInTheDocument();
             expect(screen.getByText('3')).toBeInTheDocument();
@@ -235,12 +241,14 @@ describe('* <Cart /> (parent) * ', () => {
                 expect(screen.getByText('Lord Nermal Socks')).toBeInTheDocument();
             });
             
-            expect(screen.getByText('White / Green')).toBeInTheDocument();
+            expect(screen.getByText('Color: White / Green')).toBeInTheDocument();
+            expect(screen.getByText('Size: L')).toBeInTheDocument();
             expect(screen.getByText('Stuzzy')).toBeInTheDocument();
             expect(screen.getByText('Stuzzy and Nike Insulated Pullover')).toBeInTheDocument();
             expect(screen.getByText('€330')).toBeInTheDocument();
             
-            expect(screen.getByText('Tie Dye')).toBeInTheDocument();
+            expect(screen.getByText('Color: Tie Dye')).toBeInTheDocument();
+            expect(screen.getByText('Size: Universal')).toBeInTheDocument();
             expect(screen.getByText('RIPNDIP')).toBeInTheDocument();
             expect(screen.getByText('Lord Nermal Socks')).toBeInTheDocument();
             expect(screen.getByText('€12')).toBeInTheDocument();
@@ -276,7 +284,8 @@ describe('* <Cart /> (parent) * ', () => {
                 expect(screen.getByText('Stuzzy and Nike Insulated Pullover')).toBeInTheDocument();
             });
 
-            expect(screen.getByText('White / Green')).toBeInTheDocument();
+            expect(screen.getByText('Color: White / Green')).toBeInTheDocument();
+            expect(screen.getByText('Size: L')).toBeInTheDocument();
             expect(screen.getByText('Stuzzy')).toBeInTheDocument();
             expect(screen.getByText('1')).toBeInTheDocument();
             expect(screen.getByText('€330')).toBeInTheDocument();
@@ -326,7 +335,8 @@ describe('* <CartItem /> *', () => {
     it('Renders without crashing and displays item details', () => {
         render(<CartItem item={item}  />);
 
-        expect(screen.getByText('White / Green')).toBeInTheDocument();
+        expect(screen.getByText('Color: White / Green')).toBeInTheDocument();
+        expect(screen.getByText('Size: L')).toBeInTheDocument();
         expect(screen.getByText('Stuzzy')).toBeInTheDocument();
         expect(screen.getByText('Stuzzy and Nike Insulated Pullover')).toBeInTheDocument();
         expect(screen.getByText('1')).toBeInTheDocument();

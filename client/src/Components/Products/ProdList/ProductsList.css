@@ -1,8 +1,22 @@
 /* products list div */
 
 .product-list{
-    width: 80%;
+    width: 70%;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
+}
+
+@media only screen and (max-width: 768px){
+    .product-list{
+        width: 60%;
+    }
+}
+
+@media only screen and (max-width: 480px){
+
+    .product-list{
+        width: 90%;
+    }
+
 }

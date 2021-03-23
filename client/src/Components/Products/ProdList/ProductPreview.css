@@ -2,7 +2,7 @@
 
 .prod-preview{
     width: 40vh;
-    max-width: 95%;
+    
     margin: 10px 0;
 }
 
@@ -40,6 +40,11 @@
 
 
 @media only screen and (max-width: 768px){
+
+    .prod-preview{
+        width: 100%;
+    }
+
     .preview-desc{
         visibility: visible;
     }

@@ -45,6 +45,10 @@
     margin-bottom: 8px;
 }
 
+.payment-item-price{
+    margin-left: 20px;
+}
+
 .payment-total{
     text-align: right;
     margin-top: 10px;
@@ -57,7 +61,6 @@
 }
 
 .payment-item-div p {
+    line-height: 1.2;
     margin-bottom: 10px;
 }
-
-

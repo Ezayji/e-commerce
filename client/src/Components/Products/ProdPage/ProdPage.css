@@ -114,7 +114,31 @@
     }
 
     .prod-info{
-        min-width: 80%;
+        min-width: 90%;
     }
 
+    .prod-info h2{
+        font-size: 2.2em;
+    }
+
+}
+
+@media only screen and (max-width: 320px){
+    .product{
+        flex-direction: column;
+        font-size: 0.9em;
+    }
+
+    .prod-image-div{
+        width: 90%;
+        margin-right: 0;
+    }
+
+    .prod-info{
+        min-width: 90%;
+    }
+
+    .prod-info h2{
+        font-size: 1.8em;
+    }
 }

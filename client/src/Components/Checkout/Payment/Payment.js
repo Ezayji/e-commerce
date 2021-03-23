@@ -89,8 +89,8 @@ const Payment = ({ total, profile, address, cart, onPrev, history, onPayment }) 
 
     const items = cart.map((item, i) => (
         <div className='payment-item-div' key={i} >
-            <p>{item.product_title}({item.color}) x{item.quantity}</p>
-            <p>€{item.quantity * item.unit_price_eur}</p>
+            <p>{item.product_title}({item.color}) {item.size} x {item.quantity}</p>
+            <p className='payment-item-price'>€{item.quantity * item.unit_price_eur}</p>
         </div>
     ));
     return(

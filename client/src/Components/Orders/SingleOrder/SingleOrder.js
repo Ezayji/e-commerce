@@ -31,7 +31,7 @@ const SingleOrder = ({ match, history }) => {
             history.push('/');
         };
 
-    }, []);
+    }, [ user ]);
 
     let heading = null;
     let products = null;

@@ -586,7 +586,7 @@ describe('* <Payment /> (child) *', () => {
         );
 
         expect(screen.getByText('ITEMS')).toBeInTheDocument();
-        expect(screen.getByText('Stuzzy and Nike Insulated Pullover(White / Green) x1')).toBeInTheDocument();
+        expect(screen.getByText('Stuzzy and Nike Insulated Pullover(White / Green) L x 1')).toBeInTheDocument();
         expect(screen.getByText('€330')).toBeInTheDocument();
         expect(screen.getByText('TOTAL: €330')).toBeInTheDocument();
         expect(screen.getByText('PAYMENT')).toBeInTheDocument();
@@ -602,9 +602,9 @@ describe('* <Payment /> (child) *', () => {
         );
 
         expect(screen.getByText('ITEMS')).toBeInTheDocument();
-        expect(screen.getByText('Stuzzy and Nike Insulated Pullover(White / Green) x1')).toBeInTheDocument();
+        expect(screen.getByText('Stuzzy and Nike Insulated Pullover(White / Green) L x 1')).toBeInTheDocument();
         expect(screen.getByText('€330')).toBeInTheDocument();
-        expect(screen.getByText('Lord Nermal Socks(Tie Dye) x2')).toBeInTheDocument();
+        expect(screen.getByText('Lord Nermal Socks(Tie Dye) Universal x 2')).toBeInTheDocument();
         expect(screen.getByText('€24')).toBeInTheDocument();
         expect(screen.getByText('TOTAL: €354')).toBeInTheDocument();
         expect(screen.getByText('PAYMENT')).toBeInTheDocument();

@@ -83,8 +83,9 @@
 
     .mob-dropdown-content{
         position: absolute;
-        background: linear-gradient(to right bottom, rgb(211, 241, 250), rgb(247, 204, 239), rgb(253, 207, 163));
-        width: 80%;
+        background: linear-gradient(to right bottom, rgb(221, 245, 253), rgb(248, 209, 241), rgb(252, 220, 191));
+        border: 2px solid rgba(0, 0, 0, 0.103);
+        width: 90%;
         border-radius: 10px;
         padding: 10px 0px;
         top: +50px;

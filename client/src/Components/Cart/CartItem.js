@@ -10,7 +10,8 @@ const CartItem = ({ item, onDecrement, onIncrement, onDelete, listKey }) => {
                 <div className='cart-desc' >
                     <h3>{item.product_title}</h3>
                     <p className='cart-brnd' >{item.manufacturer}</p>
-                    <p className='cart-clr' >{item.color}</p>
+                    <p className='cart-clr' >Size: {item.size}</p>
+                    <p>Color: {item.color}</p>
                     <p className='cart-prc' >€{item.unit_price_eur}</p>
                 </div>
                 <div className='cart-actions' >
