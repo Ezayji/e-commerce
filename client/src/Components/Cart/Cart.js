@@ -16,7 +16,8 @@ import Loader from '../Loader/Loader';
 // * STRIPE.js *
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
-const promise = loadStripe('pk_test_51IItmKB1uegguB7b2ReRKVdoa1Bojw5VxlWF9uuCwiYdY1Z3C8wpwI8kDau5SQ8qQN2nQdJXOvwvhODgssLH5RFn00LH75oIZw');
+import { publicKey } from '../../Services/config';
+const promise = loadStripe( publicKey );
 
 const Cart = ({ history }) => {
     const dispatch = useDispatch();

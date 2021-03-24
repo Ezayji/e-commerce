@@ -14,7 +14,8 @@ import Billing from '../Billing/Billing';
 import Payment from '../Payment/Payment';
 import SuccessPage from '../SuccessPage/SuccessPage';
 
-const promise = loadStripe('pk_test_51IItmKB1uegguB7b2ReRKVdoa1Bojw5VxlWF9uuCwiYdY1Z3C8wpwI8kDau5SQ8qQN2nQdJXOvwvhODgssLH5RFn00LH75oIZw');
+import { publicKey } from '../../../Services/config';
+const promise = loadStripe( publicKey );
 
 import { noAddressUser, savedAddressUser, notFetchedProfile, emptyCartUser, notLoggedIn, fullUserWOrders, twoItemCart, twoTotal, oneItemCart, oneTotal, profile, address } from './utils/customers';
 

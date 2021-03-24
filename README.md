@@ -25,8 +25,8 @@ Created By **Ezayji** in February - March 2021<br/>
      2. [Products Catalogue](#products-catalogue)
 
           * [Browse products by gender](#browse-products-by-gender)
-          * [Browse products by gender and category](#Browse-products-by-gender-and-category:)
-          * [Browse products by brand](#Browse-products-by-brand:)
+          * [Browse products by gender and category](#browse-products-by-gender-and-category)
+          * [Browse products by brand](#browse-products-by-brand)
           * [Click on an item from the products list to read about the details](#Click-on-an-item-from-the-products-list-to-read-about-the-details)
 
      3. [Cart](#cart)
@@ -37,7 +37,14 @@ Created By **Ezayji** in February - March 2021<br/>
 
      5. [Orders](#orders)
 
-* [Technical Information](#technical-information) 
+* [Technical Information](#technical-information)
+
+    1. [Languages and Libraries](#languages-and-libraries)
+    2. [Usage](#usage)
+
+        * [Setup](#setup)
+        * [Running Locally](#running-locally)
+        * [Test Suites](#test-suites)
 
 ---
 
@@ -359,23 +366,122 @@ Front page:
 
      Front-End Libraries:
 
-     * React
-     * Redux
-     * @reduxjs/toolkit
-     * Stripe.js
-     * react-stripe
-     * Axios
-     * i18n-iso-countries
+     * [React](https://reactjs.org/docs/getting-started.html)
+     * [Redux](https://redux.js.org/introduction/getting-started)
+     * [@reduxjs/toolkit](https://redux-toolkit.js.org/introduction/getting-started)
+     * [@stripe/stripe-js](https://www.npmjs.com/package/@stripe/stripe-js)
+     * [@stripe/react-stripe-js](https://www.npmjs.com/package/@stripe/react-stripe-js)
+     * [Axios](https://www.npmjs.com/package/axios)
+     * [i18n-iso-countries](https://www.npmjs.com/package/i18n-iso-countries)
 
      ---
 
      Back-End Libraries:
 
-     * Express.js
-     * Express-session
-     * Passport.js
-     * Stripe.js
-     * node-postgres
-     * bcrypt
+     * [Express.js](https://www.npmjs.com/package/express)
+     * [Express-session](https://www.npmjs.com/package/express-session)
+     * [Passport.js](https://www.npmjs.com/package/passport)
+     * [passport-local](https://www.npmjs.com/package/passport-local)
+     * [Stripe Node.js Library](https://www.npmjs.com/package/stripe)
+     * [node-postgres](https://www.npmjs.com/package/pg)
+     * [bcrypt](https://www.npmjs.com/package/bcrypt)
+
+---
 
 2. ### Usage
+
+    Prerequisites for running the project locally:
+
+    + [Node.js](https://nodejs.org/en/) locally installed.
+    + [PostgreSQL](https://www.postgresql.org/download/windows/) locally installed.
+    + Knowledge of interacting with PostgreSQL through a CLI or through GUI's like [Postbird](https://www.electronjs.org/apps/postbird) or [pgAdmin](https://www.pgadmin.org/) (Included with PostgreSQL).
+    + Free unique [API test keys](https://stripe.com/docs/keys#obtain-api-keys) obtained from Stripe
+
+    ---
+
+    #### Setup
+
+      1. Fork or download the repository.
+      2. Navigate to the **root folder** with a **CLI** and **install** the back-end **packages**.
+      ```
+        $ cd .../e-commerce
+      ```
+      ```
+        $ npm install
+      ```
+      3. Navigate to the **client folder** with a **CLI** and **install** the front-end **packages**.
+      ```
+        $ cd /client
+      ```
+      ```
+        $ npm install
+      ```
+      4. Create a **PostgreSQL database** and insert the commands from **"e-comerce.sql"**.
+      5. Create a **".env"** file in the **root directory** and add the following:
+      ```
+      SESSION_SECRET={Any randomly generated key or word}
+      PG_USER={Your PostgreSQL user}
+      PG_HOST=localhost
+      PG_DB={Name of the database that you created}
+      PG_PW={Your PostgreSQL password}
+      PG_PORT=5432
+      STRIPE_SECRET={Your stripe secret API key}
+      ```
+      6. Open the root folder in your **code editor** and select the file **"config.js"** located in **"/client/src/Services"**. Then replace the **"publicKey"** with your **Stripe API public key**.
+      >e-commerce/client/src/Services/config.js
+      ```javascript
+      export const publicKey='insert your Stripe public API key here'
+      ```
+      7. You're good to go, have fun!
+
+    ---
+
+    #### Running Locally
+
+      After a successful setup you can run the application using the following commands:
+
+      * Run the **whole app** from the **root folder** using a **CLI**.
+        ```
+        $ npm run dev
+        ```
+        *The app will be available at [http://localhost:3000/](http://localhost:3000/)* 
+
+      * Run only the **Front-End** from the **root folder** using a **CLI**.
+        ```
+        $ npm run client
+        ```
+        *The app will be available at [http://localhost:3000/](http://localhost:3000/)*
+      * Run only the **server** from the **root folder** using a **CLI**.
+        ```
+        $ npm run server
+        ```
+        *The app will be available at [http://localhost:5000/](http://localhost:5000/)*
+    ---
+
+    #### Test Suites
+
+    Server testing suite covers all the CRUD operations.<br/>
+    The suite is located in:
+    >e-commerce/tests/server-test.js
+    
+    There are also helper functions in a subfolder that help the suite with some PostgreSQL queries that need to be performed before some tests.
+
+    You can run the suite from the root directory using a CLI:
+    >Folder: e-commerce
+    ```
+    $ npm test
+    ```
+
+    ---
+
+    Front-End testing suites cover all the components functionality.<br/>
+    Every parent component has a subfolder that contains a test suite for itself and the child components that it uses.
+
+    You can run the suites from the 'client' folder using a CLI:
+    >Folder: e-commerce/client
+    ```
+    $ npm test
+    ```
+
+---
+
