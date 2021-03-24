@@ -64,14 +64,14 @@ The site is built keeping in mind the growing variety of products and brands to 
 REVARZ offers the ability to browse the store to both users and guests.<br />
 Checkouts and Cart related actions currently remain available only for registered users. 
 
-This project is created for learning purposes but with some configurations the shop could be turned into a real working product.<br/>
-```
-* Note that because this is a demo, 
-  you shouldn't enter your real credit card information 
-  for testing payment functionality. *
+This project is created for learning purposes but with a few configurations it could be turned into a real working product.<br/>
 
-* Please use "dummy" credit cards provided in the Checkout section instead. *
-```
+>* <span style='color: orange;' >Note that because this is a <strong>demo</strong>, 
+  you <strong>shouldn't enter</strong> your <strong>real</strong> credit <strong>card</strong> information 
+  for testing payment functionality. </span>*
+>
+> Please use "dummy" credit cards provided in the Checkout section instead.
+
 ---
 
 Front page:
@@ -91,187 +91,42 @@ Front page:
 
    * #### Register an account.
 
-     *This demo site doesn't send you any mail or text so you dont't have to enter the "real" phone and email.*
+     *<strong>This demo site doesn't send you any mail or text so you dont't have to enter the "real" phone and email.</strong>*
 
-     * On desktop:
-     ```
-     1. Click on "LOGIN" in the upper right corner.
-     2. Click on the text "CREATE ACCOUNT".
-     3. Fill the fields.
-     4. Click on "CREATE".
-     ```
 
-     * On mobile:
-     ```
-     1. Open the burger menu.
-     2. Click on "LOGIN".
-     3. -- ,, --
-     ```
-
-   * #### Log in as an user.
-
-     * On desktop:
-     ```
-     1. Click on "LOGIN" in the upper right corner.
-     2. Fill the "USERNAME" and "PASSWORD" fields.
-     3. Click on "SIGN IN".
-     ```
-     * On mobile:
-     ```
-     1. Open the burger menu.
-     2. Click on "LOGIN".
-     3. -- ,, --
-     ```
-
-   * #### Update account information.
-
-     * On desktop:
-     ```
-     1. Hover over your username in the top right corner.
-     2. Click on "ACNT".
-     3. Click on "CHNGE" under "MY ACNT".
-     4. Replace the neccessary fields.
-     5. Click on "SBMT".
-     ```
-     * On mobile:
-     ```
-     1. Click on the circle with the first letter of your username in the header.
-     2. -- ,, --
-     ```
-
-   * #### Add an address if no address is already added.
-
-     * On desktop:
-     ```
-     1. Hover over your username in the top right corner.
-     2. Click on "ACNT".
-     3. Fill the fields under "ADDRSS".
-     4. Click on "SBMT".
-     ```
-     * On mobile:
-     ```
-     1. Click on the circle with the first letter of your username in the header.
-     2. -- ,, --    
-     ```
-
-   * #### Update address info if there is an existing address.
-
-     * On desktop:
-     ```
-     1. Hover over your username in the top right corner.
-     2. Click on "ACNT".
-     3. Click on "CHNGE" under "ADDRSS".
-     4. Replace the neccessary fields.
-     5. Click on "SBMT".
-     ```
-     * On mobile:
-     ```
-     1. Click on the circle with the first letter of your username in the header.
-     2. -- ,, --    
-     ```
-
-   * #### Change account's password.
-
-     * On desktop:
-     ```
-     1. Hover over your username in the top right corner.
-     2. Click on "ACNT".
-     3. Click on "UPDT PW".
-     4. Fill the fields.
-     5. Click on "SUBMIT".
-     ```
-     * On mobile: 
-     ```
-     1. Click on the circle with the first letter of your username in the header.
-     2. -- ,, -- 
-     ```
+   * #### Update profile information.
 
    * #### Interact with cart.
 
-     * On desktop:
-     ```
-     1. Hover over your username in the top right corner.
-     2. Click on "CART".
-     ```
-     * On mobile:
-     ```
-     1. Click on the circle with the first letter of your username in the header.
-     2. -- ,, -- 
-     ```
-
    * #### Interact with orders.
-
-     * On Desktop:
-     ```
-     1. Hover over your username in the top right corner.
-     2. Click on "ORDRS".
-     ```
-     * On Mobile:
-     ```
-     1. Click on the circle with the first letter of your username in the header.
-     2. -- ,, -- 
-     ```
-
 ---
 
 2. ### Products Catalogue
 
    *You can browse the products catalogue as a guest or as an user.*
 
-   * #### Browse products by gender:
+   * #### Browse products by gender
 
-     + On desktop click on "MN" or "WMN"
-     + On mobile:
-     ```
-     1. Open the burger menu.
-     2. Click on "MN" or "WMN".
-     3. Select "ALL PRDCTS FR [ gender ] ".
-     ```
+   * #### Browse products by gender and category
 
-   * #### Browse products by gender and category:
-
-     + On desktop hover over "MN" or "WMN" and select a category.
-     + On mobile:
-     ```
-     1. Open the burger menu.
-     2. Click on "MN" or "WMN".
-     3. Select a category.
-     ```
-
-   * #### Browse products by brand:
-
-     + On desktop hover over "BRNDS" and select a brand.
-     + On mobile:
-     ```
-     1. Open the burger menu.
-     2. Click on "BRNDS".
-     3. Select a brand.
-     ```
-
-   * #### Click on an item from the products list to read about the details.
+   * #### Browse products by brand
+     
+   * #### Click on an item from the products list and take further action.
      *Product's page*
 
         ![Stussy jacket](https://i.imgur.com/06zoRZB.png)
 
      * Select a size and add the item to cart.
-     ```
-     * If logged in displays "ADD TO CART".
-     * If not logged in displays "LOG IN OR REGISTER".
-     ```
+     
+     >* If logged in displays "ADD TO CART".
+     >* A guest who's not logged in sees "LOG IN OR REGISTER".
+     
 ---
 
 3. ### Cart
      *(Only for logged in users)*
 
-   * #### Cart item includes:
-
-        + Thumbnail
-        + Title
-        + Brand
-        + Size
-        + Color
-        + Price
-        + Quantity
+   * #### Cart item:
         
         ![Cart preview](https://i.imgur.com/FSxUCzU.png)
 
@@ -290,11 +145,11 @@ Front page:
 
        ![Billing preview](https://i.imgur.com/D8O8ju7.png)
 
-       * Option to use existing or custom address if you have a saved address.
+       * You can use an existing address if you have saved one before.
 
             ![Use Existing Address](https://i.imgur.com/8yqB7bF.png)
 
-       * Option to save inserted address if no address is already saved.
+       * Option to save inserted address if you haven't saved one.
 
             ![Save Address](https://i.imgur.com/IvCyjk8.png)
 
@@ -302,23 +157,23 @@ Front page:
         * Address requirements:
 
             + All fields must be filled.
-            + For the sake of demo use, the entered address doesn't have to be a real world one but a **valid country must be entered**.
+            + A **valid country must be entered**.
 
     * #### Payment
 
         ![Payment preview](https://i.imgur.com/ptCzjjP.png)
 
         * Preview order items.
-        * **Test paying with three "dummy" credit cards:**
+        * <strong>Test paying with three "dummy" credit cards:</strong>
         
-            + 4242 4242 4242 4242 <-- **for successful payment**
-            + 4000 0027 6000 3184 <-- **for payment that requires 3D authentication**
-            + 4000 0000 0000 0002 <-- **for declined card error**
+            + 4242 4242 4242 4242 <-- **for successful payments**
+            + 4000 0027 6000 3184 <-- **for payments that requires 3D authentication**
+            + 4000 0000 0000 0002 <-- **for declined card errors**
 
         * Other card field requirements:
 
-            * Enter a date in the future.
-            * CVC and ZIP can be whatever as long as they are numeric values.
+            * **Enter a date in the future**.
+            * CVC and ZIP can be whatever as long as they are **numeric** values.
 
           *The confirm button doesn't work unless a valid credit card or one of the dummys is provided*
 
@@ -329,12 +184,12 @@ Front page:
 
    * #### View the list of completed orders:
 
-     + Order id, date, total and payment status per order preview line.
+     * Order id, date, total and payment status per order preview line.
 
-     ![Orders](https://i.imgur.com/0nDM7YJ.png)
-     ```
-     ORDR NR acts as a hyperlink to order details page.
-     ```
+     
+     
+     >ORDR NR acts as a hyperlink to the details page.
+     
    * #### View completed order details:
      
      + Delivery Address.
@@ -402,21 +257,19 @@ Front page:
     #### Setup
 
       1. Fork or download the repository.
-      2. Navigate to the **root folder** with a **CLI** and **install** the back-end **packages**.
-      ```
-        $ cd .../e-commerce
-      ```
-      ```
-        $ npm install
-      ```
-      3. Navigate to the **client folder** with a **CLI** and **install** the front-end **packages**.
-      ```
-        $ cd /client
-      ```
-      ```
-        $ npm install
-      ```
-      4. Create a **PostgreSQL database** and insert the commands from **"e-comerce.sql"**.
+      2. Navigate to the **root folder** with a **CLI** and install the **back-end** packages.
+      
+      >$ cd .../e-commerce
+      
+      >$ npm install
+      
+      3. install the **front-end** packages.
+      
+      >$ cd /client
+  
+      >$ npm install
+      
+      4. Create a **PostgreSQL database** and insert the commands from **"e-commerce.sql"**.
       5. Create a **".env"** file in the **root directory** and add the following:
       ```
       SESSION_SECRET={Any randomly generated key or word}
@@ -440,18 +293,18 @@ Front page:
 
       After a successful setup you can run the application using the following commands:
 
-      * Run the **whole app** from the **root folder** using a **CLI**.
+      * Run the **whole app**.
         ```
         $ npm run dev
         ```
         *The app will be available at [http://localhost:3000/](http://localhost:3000/)* 
 
-      * Run only the **Front-End** from the **root folder** using a **CLI**.
+      * Run only the **Front-End** .
         ```
         $ npm run client
         ```
         *The app will be available at [http://localhost:3000/](http://localhost:3000/)*
-      * Run only the **server** from the **root folder** using a **CLI**.
+      * Run only the **Server**.
         ```
         $ npm run server
         ```
@@ -461,21 +314,22 @@ Front page:
     #### Test Suites
 
     Server testing suite covers all the CRUD operations.<br/>
-    The suite is located in:
-    >e-commerce/tests/server-test.js
-    
-    There are also helper functions in a subfolder that help the suite with some PostgreSQL queries that need to be performed before some tests.
-
-    You can run the suite from the root directory using a CLI:
+    Run the **Server** suite from the root directory:
     >Folder: e-commerce
     ```
     $ npm test
     ```
 
+    The suite is located in:
+    >e-commerce/tests/server-test.js
+    
+    There are also helper functions in a subfolder that help the suite with some PostgreSQL queries that need to be performed before some actions.
+
+    
+
     ---
 
-    Front-End testing suites cover all the components functionality.<br/>
-    Every parent component has a subfolder that contains a test suite for itself and the child components that it uses.
+    **Front-End** testing suites covers the functionality of all components<br/>
 
     You can run the suites from the 'client' folder using a CLI:
     >Folder: e-commerce/client
@@ -483,5 +337,9 @@ Front page:
     $ npm test
     ```
 
+    *note that stripe related actions were manually tested.*
+
 ---
+
+  #### Database
 

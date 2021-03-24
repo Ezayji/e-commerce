@@ -32,9 +32,9 @@
         overscroll-behavior: contain;
         
         position: absolute;
-        top: 100px;
+        top: 80px;
         left: 0;
-        height: calc(100vh - 100px);
+        height: calc(100vh - 80px);
         width: 100%;
         
         transform: translateX(100%);
@@ -83,7 +83,7 @@
 
     .mob-dropdown-content{
         position: absolute;
-        background: linear-gradient(to right bottom, rgb(221, 245, 253), rgb(248, 209, 241), rgb(252, 220, 191));
+        background: white;
         border: 2px solid rgba(0, 0, 0, 0.103);
         width: 90%;
         border-radius: 10px;
@@ -103,23 +103,23 @@
         background-color: black;
         border-radius: 50%;
         color: white;
-        font-size: 2.5em;
+        font-size: 2.3em;
         text-align: center;
         cursor: pointer;
     }
 
     .mob-user-icon p {
         position: relative;
-        top: +4px;
+        top: +3px;
     }
 
     .mob-user-actions-wrapper{
         overscroll-behavior: contain;
         position: absolute;
-        top: 100px;
+        top: 80px;
         left: 0;
         width: 100%;
-        height: calc(100vh - 100px);
+        height: calc(100vh - 80px);
         z-index: 21;
         overflow: scroll;
         backdrop-filter: blur(30px)

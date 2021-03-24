@@ -7,7 +7,8 @@
     font-family: 'Teko';
     display: flex;
     z-index: 10;
-    background: linear-gradient(to right bottom, rgba(150, 193, 241, 0.5), rgba(236, 77, 228, 0.26), rgba(255, 123, 0, 0.192));
+    background: linear-gradient(to right bottom, rgba(197, 223, 253, 0.5), rgba(245, 94, 237, 0.26), rgba(255, 123, 0, 0.466));
+    
     border-radius: 0px 0 15px 15px;
 }
 
@@ -15,8 +16,8 @@
 /* LOGO */
 
 .logo img{
-    height: 100px;
-    width: 215px;
+    height: 65px;
+    width: 140px;
 }
 
 .logo {
@@ -146,11 +147,30 @@
     display: block;
 }
 
-@media only screen and (max-width: 768px){
+@media only screen and (max-width: 768px) and (min-width: 321px){
     
+    .header{
+        height: 80px;
+    }
+
     .logo img{
         height: 50px;
         width: 108px;
+    }
+    
+    .selection{
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 320px){
+    .header{
+        height: 80px;
+    }
+
+    .logo img{
+        height: 50px;
+        width: 115px;
     }
     
     .selection{
