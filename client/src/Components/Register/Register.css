@@ -1,7 +1,7 @@
 /* REGISTER FORM */
 
 .register_div{
-    min-height: calc(100vh - 175px);
+    min-height: calc(100vh - 100px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -34,4 +34,16 @@
 
 .register_sub:hover{
     background-color: rgba(0, 0, 0, 0.89);
+}
+
+@media only screen and (max-width: 768px){
+
+    .register_div{
+        min-height: calc(100vh - 80px);
+    }
+
+    .register_div p {
+        text-align: center;
+    }
+
 }

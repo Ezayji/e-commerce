@@ -36,24 +36,6 @@ function calculateAmmount(cart){
     return total_cents;
 };
 
-// -- WITHOUT SERVERSIDE CONFIRMATION --
-
-// CREATE PAYMENT INTENT AND RETURN CLIENT SECRET
-const createPaymentIntent = async (req, res) => {
-    const { cart } = res.locals;
-
-    const paymentIntent = await stripe.paymentIntents.create({
-        amount: calculateAmmount(cart),
-        currency: "eur"
-    });
-
-    res.send({
-        clientSecret: paymentIntent.client_secret
-    });
-};
-// ------------------------------------------------------------
-
-
 // *-- WITH SERVER SIDE CONFIRMATION --*
 
 // CREATE ORDER FOR CUSTOMER ON SUCCESS

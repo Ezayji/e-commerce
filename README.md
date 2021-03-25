@@ -34,6 +34,9 @@ Created By **Ezayji** in February - March 2021<br/>
         * [Checkout Routes](#checkout-routes)
         * [Order Routes](#order-routes)
 
+* [Inspiration](#inspiration)
+* [Licence](#licence)
+
 ---
 
 ## General Information
@@ -52,11 +55,9 @@ The site is built keeping in mind the growing variety of products and brands to 
 REVARZ offers the ability to browse the store to both users and guests.<br />
 Checkouts and Cart related actions currently remain available only for registered users. 
 
-This project is created for learning purposes but with a few configurations it could be turned into a real working product.<br/>
+This project is created for learning purposes but with a few configurations it could be turned into a working product.<br/>
 
-<span style='color: orange;' >Note that because this is a <strong>demo</strong>, 
-  you <strong>shouldn't enter</strong> your <strong>real</strong> credit <strong>card</strong> information 
-  for testing payment functionality. </span>
+**Note that because this is a demo, you shouldn't enter your real credit card information for testing payment functionality.**
 
 Please use "dummy" credit cards provided in the [Checkout](#checkout) section instead.
 
@@ -367,7 +368,7 @@ Front page:
             registered: new Date()
           }
           ```
-          Returns:
+          Responds:
             * 201 "Created" on success.
             * 400 "Bad request" if any info is missing or some field is not unique.
 
@@ -383,7 +384,7 @@ Front page:
           }
           ```
 
-          Returns:
+          Responds:
             * 404 if not registered.
             * 400 if wrong password is provided.
             * Successful response:
@@ -400,7 +401,7 @@ Front page:
         * GET **/api/auth**
 
           * Route for **checking** if the browser is authenticated.
-          * Return 400 if not authenticated.
+          * Responds 400 if not authenticated.
           * Successful response:
             ```javascript
             {
@@ -550,7 +551,7 @@ Front page:
           }
           ```
 
-        ---
+      ---
 
       * #### Product Routes
 
@@ -598,7 +599,7 @@ Front page:
             {
               id: 1,
               category_id: 2,
-              title: 'Product Title'
+              title: 'Product Title',
               unit_price_eur: 20,
               thumbnail_url: 'thumbnailUrl',
               manufacturer: 'Manufacturer Title'
@@ -626,7 +627,7 @@ Front page:
               {
                 id: 1,
                 category_id: 2,
-                title: 'Product 1 Title'
+                title: 'Product 1 Title',
                 unit_price_eur: 20,
                 thumbnail_url: 'thumbnailUrl',
                 manufacturer: 'Manufacturer Title'
@@ -647,12 +648,12 @@ Front page:
             product: {
               id: 1,
               category_id: 2,
-              title: 'Product Title'
+              title: 'Product Title',
               description: 'Product Description',
-              color: 'Color'
+              color: 'Color',
               unit_price_eur: 20,
-              gender: 'Gender'
-              material: 'Material'
+              gender: 'Gender',
+              material: 'Material',
               manufacturer: 'Manufacturer Title'
             },
             images: [
@@ -671,7 +672,7 @@ Front page:
           }
           ```
 
-        ---
+      ---
 
       * #### Cart Routes
 
@@ -777,19 +778,61 @@ Front page:
             }
             ```
 
-          ---
+      ---
 
       * #### Checkout Routes
         *Only authenticated users can interact with checkout routes.*<br/>
-        Current implementation sends a checkout request from the Front-End when the server confirms that the payment was successful.
+        Current implementation confirms the payment on the server and then tells the Front-End to send a POST request with the shippment_id for converting cart items into order items.
 
           * POST **/api/payment/**:username
+
+            * Route for creating and confirming payments.
+            * Expected request body:
+            ```javascript
+            {
+              payment_method_id: 'Created by stripe.createPaymentMethod()',
+              address: {
+                appartment_nr: 2,
+                street: 'Street',
+                city: 'City',
+                province: 'Province',
+                zip: 77777,
+                country: 'Country',
+                status: 'New',
+                check: false
+              },
+            }
+            ```
+            ```
+            check = true && status === 'Existing' if customer used their existing address
+
+            check = true && status === 'New' if addressless user wanted to save the used address
+
+            check = false && status === 'Existing' if customer with saved address used a custom address
+
+            check = false && status === 'New' if addressless user did not want to save the used address 
+            ```
+
+            * Responses:
+
+              * Body includes "**error**" property if payment encountered an error.
+              * Body includes "**requires_action: true**" if further authentication is needed.
+              * Body includes "**success: true**" and "**shippment_id**" if the payment was succesful.
 
           ---
 
           * POST **/api/cart/**:username/**checkout**
 
-          ---
+            * Route for converting cart items into order items
+            * Expected request body:
+            ```javascript
+            {
+              shippment_id: 1000000
+            }
+            ```
+            * ^^ Returned by previous route if the payment was successful. ^^
+
+      ---
 
       * #### Order Routes
         *Only authenticated users can interact with order routes.*
@@ -850,3 +893,13 @@ Front page:
 ---
 
 ## Licence
+
+MIT License
+
+Copyright (c) 2021 Ezayji
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
