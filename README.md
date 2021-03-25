@@ -12,29 +12,9 @@ Created By **Ezayji** in February - March 2021<br/>
 * [Features / User Guide](#features-/-user-guide)
 
      1. [User](#user)
-
-          * [Register an account](#register-an-account)
-          * [Log in as an user](#log-in-as-an-user)
-          * [Update account information](#update-account-information)
-          * [Add an address if no address is already added](#add-an-address-if-no-address-is-already-added)
-          * [Update address info if there is an existing address](#update-address-info-if-there-is-an-existing-address)
-          * [Change account's password](#change-account's-password)
-          * [Interact with cart](#interact-with-cart)
-          * [Interact with orders](#interact-with-orders)
-
      2. [Products Catalogue](#products-catalogue)
-
-          * [Browse products by gender](#browse-products-by-gender)
-          * [Browse products by gender and category](#browse-products-by-gender-and-category)
-          * [Browse products by brand](#browse-products-by-brand)
-          * [Click on an item from the products list to read about the details](#Click-on-an-item-from-the-products-list-to-read-about-the-details)
-
      3. [Cart](#cart)
      4. [Checkout](#checkout)
-
-          * [Billing](#billing)
-          * [Payment](#payment)
-
      5. [Orders](#orders)
 
 * [Technical Information](#technical-information)
@@ -45,6 +25,14 @@ Created By **Ezayji** in February - March 2021<br/>
         * [Setup](#setup)
         * [Running Locally](#running-locally)
         * [Test Suites](#test-suites)
+    3. [Database](#database)
+    4. [Server Routes](#server-routes)
+
+        * [User Routes](#user-routes)
+        * [Product Routes](#product-routes)
+        * [Cart Routes](#cart-routes)
+        * [Checkout Routes](#checkout-routes)
+        * [Order Routes](#order-routes)
 
 ---
 
@@ -66,11 +54,11 @@ Checkouts and Cart related actions currently remain available only for registere
 
 This project is created for learning purposes but with a few configurations it could be turned into a real working product.<br/>
 
->* <span style='color: orange;' >Note that because this is a <strong>demo</strong>, 
+<span style='color: orange;' >Note that because this is a <strong>demo</strong>, 
   you <strong>shouldn't enter</strong> your <strong>real</strong> credit <strong>card</strong> information 
-  for testing payment functionality. </span>*
->
-> Please use "dummy" credit cards provided in the Checkout section instead.
+  for testing payment functionality. </span>
+
+Please use "dummy" credit cards provided in the [Checkout](#checkout) section instead.
 
 ---
 
@@ -78,11 +66,11 @@ Front page:
 
 * On desktop:
 
-     ![Home page on desktop](https://i.imgur.com/6oeggHW.png)
+     ![Home page on desktop](https://i.imgur.com/Ux66G3D.png)
 
 * On mobile:
 
-     ![Home Page On Mobile](https://i.imgur.com/SdOAqoi.png)
+     ![Home Page On Mobile](https://i.imgur.com/S78JO2L.png)
 
 ---
 
@@ -167,7 +155,7 @@ Front page:
         * <strong>Test paying with three "dummy" credit cards:</strong>
         
             + 4242 4242 4242 4242 <-- **for successful payments**
-            + 4000 0027 6000 3184 <-- **for payments that requires 3D authentication**
+            + 4000 0027 6000 3184 <-- **for payments that require 3D authentication**
             + 4000 0000 0000 0002 <-- **for declined card errors**
 
         * Other card field requirements:
@@ -175,7 +163,7 @@ Front page:
             * **Enter a date in the future**.
             * CVC and ZIP can be whatever as long as they are **numeric** values.
 
-          *The confirm button doesn't work unless a valid credit card or one of the dummys is provided*
+          *The confirm button won't work unless a valid credit card or one of the dummys is provided*
 
 ---
 
@@ -329,9 +317,9 @@ Front page:
 
     ---
 
-    **Front-End** testing suites covers the functionality of all components<br/>
+    **Front-End** testing suites cover the functionality of all components<br/>
 
-    You can run the suites from the 'client' folder using a CLI:
+    You can run the suites from the 'client' folder:
     >Folder: e-commerce/client
     ```
     $ npm test
@@ -341,5 +329,524 @@ Front page:
 
 ---
 
-  #### Database
+  3. ### Database
 
+      Schema:
+
+      ![Database Schema](https://i.imgur.com/q0gSPRl.png)
+
+      * Each customer must have an unique id, username, email and phone. All columns except address related ones must be filled.
+
+      * Cart items are tracked in the table "cart" with a foreign key "customer_username". 
+  
+      * Ordered items are tracked in the table "order_item" with a foreign key "shippment_id".
+
+      * The server creates a shippment after a successful checkout and then the Front-End sends a "POST" request to convert tracked cart items to order items.
+ 
+      * For the sake of demo use no quantity is removed from stock. That could be implemented by adding a query function to the server side payment confirmation route.
+
+---
+
+  4. ### Server Routes
+
+      * #### User Routes
+
+        *Only an authenticated user can access their information.*
+
+        * POST **/api/register**
+
+          Expected request body:
+          ```javascript
+          {
+            username: 'userName',
+            first_name: 'firstName',
+            last_name: 'lastName',
+            email: 'email',
+            phone: '+44 5559 95943',
+            password: 'password',
+            registered: new Date()
+          }
+          ```
+          Returns:
+            * 201 "Created" on success.
+            * 400 "Bad request" if any info is missing or some field is not unique.
+
+        ---
+
+        * POST **/api/login**
+
+          * Expected request body:
+          ```javascript
+          {
+            username: 'userName',
+            password: 'password'
+          }
+          ```
+
+          Returns:
+            * 404 if not registered.
+            * 400 if wrong password is provided.
+            * Successful response:
+            ```javascript
+            {
+              user: {
+                username: 'userName'
+              }
+            }
+            ```
+
+        ---
+
+        * GET **/api/auth**
+
+          * Route for **checking** if the browser is authenticated.
+          * Return 400 if not authenticated.
+          * Successful response:
+            ```javascript
+            {
+              user: {
+                username: 'userName'
+              }
+            }
+            ```
+
+        ---
+
+        * GET **/api/logout**
+
+          * Ends the authenticated session.
+          * Responds 200 "OK" on success.
+
+        ---
+
+        * GET **/api/customer_un/**:username
+
+          * Route for recieving customer profile info.
+          * An username must be provided in params.
+          * Returns 400 if the request is not authenticated.
+          * Successful response:
+          ```javascript
+          {
+            id: 55, // id that was generated by the server
+            username: 'userName',
+            first_name: 'firstName',
+            last_name: 'lastName',
+            email: 'email',
+            phone: '+44 5559 95943',
+            registered: "2021-03-20T22:00:00.000Z"
+          }
+          ```
+
+        ---
+
+        * GET **/api/customer_address/**:username
+
+          * Route for recieving customer address.
+          * An username must be provided in params.
+          * Returns 400 if the request is not authenticated.
+          * Successful responses:
+          ```javascript
+          {
+            username: 'username',
+            appartment_nr: '1',
+            street: 'Street',
+            city: 'City',
+            province: 'Province',
+            zip: 77777,
+            country: 'Country'
+          }
+          ```
+
+          or
+
+          ```javascript
+          {
+            username: 'username',
+            appartment_nr: null,
+            street: null,
+            city: null,
+            province: null,
+            zip: null,
+            country: null
+          }
+          ```
+
+          >*If no address is saved all values except the username will be null*
+
+        ---
+
+        * PUT **/api/customer_un/**:username
+
+          * Route for updating customer profile info.
+          * An username must be provided in params.
+          * Username can't be updated.
+          * Responds 400 if the sent email or phone is not unique or the request is not authenticated.
+          * Expected request body:
+          ```javascript
+          {
+            first_name: 'newFirstName', // all fields 
+            last_name: 'newLastName',   // don't have to be
+            email: 'newEmail',          // new
+            phone: '+44 6666 66666',
+          }
+          ```
+          * Successful response:
+          ```javascript
+          {
+            id: 55,
+            username: 'userName',
+            first_name: 'newFirstName',
+            last_name: 'newLastName',
+            email: 'newEmail',
+            phone: '+44 6666 66666',
+            registered: "2021-03-20T22:00:00.000Z"
+          }
+          ```
+
+        ---
+
+        * PUT **/api/customer_un/**:username/**password**
+
+          * Route for updating customer's password.
+          * Responds 400 if the provided old password is incorrect or the request is not authenticated.
+          * Expected request body:
+          ```javascript
+          {
+            password: 'oldPassword',
+            new_password: 'newPassword'
+          }
+          ```
+          * Successful response is 200 "OK".
+
+        ---
+
+        * PUT **/api/customer_address/**:username
+          
+          * Route for updating customer address.
+          * An username must be provided in params.
+          * Responds 400 if the request is not authenticated.
+          * Expected request body:
+          ```javascript
+          {
+            appartment_nr: 1,       
+            street: 'newStreet',
+            city: 'newCity',
+            province: 'newProvince',
+            zip: 75607,             
+            country: 'newCountry'
+          }
+          // all fields don't have to be new
+          ```
+          * Successful response:
+          ```javascript
+          {
+            username: 'username',
+            appartment_nr: '1',
+            street: 'newStreet',
+            city: 'newCity',
+            province: 'newProvince',
+            zip: 75607,             
+            country: 'newCountry'
+          }
+          ```
+
+        ---
+
+      * #### Product Routes
+
+        *No authentication is needed for product routes*
+
+        * GET **/api/manufacturers**
+
+          * Route for recieving available manufacturers
+          * Successful response:
+          ```javascript
+          [
+            {
+              id: 1,
+              title: 'Manufacturer 1 Title'
+            },
+            ...
+          ]
+          ```
+
+        ---
+
+        * GET **/api/categories**
+
+          * Route for recieving available categories.
+          * Successful response:
+          ```javascript
+          [
+            {
+              id: 1,
+              title: 'Category 1 Title'
+            },
+            ...
+          ]
+          ```
+
+        ---
+
+        * GET **/api/products?gender=**${gender}**&category=**${category_id}
+
+          * Provide **only** a **gender query** to get the products for a specific **gender** ( men / women ).
+          * Provide **gender** and **category ID queries** to get **category products** for a specific **gender**.
+          * Successful response:
+          ```javascript
+          [
+            {
+              id: 1,
+              category_id: 2,
+              title: 'Product Title'
+              unit_price_eur: 20,
+              thumbnail_url: 'thumbnailUrl',
+              manufacturer: 'Manufacturer Title'
+            },
+            ...
+          ]
+          ```
+
+        ---
+
+        * GET **/api/manufacturers**/manufacturer_id
+
+          * Route for products by manufacturer.
+          * Provide a manufacturer ID in params.
+          * Successful response:
+          ```javascript
+          {
+            manufacturer: {
+              id: 1,
+              title: 'Brand Name',
+              description: 'Brand Description',
+              logo_url: 'Logo URL'
+            },
+            products: [
+              {
+                id: 1,
+                category_id: 2,
+                title: 'Product 1 Title'
+                unit_price_eur: 20,
+                thumbnail_url: 'thumbnailUrl',
+                manufacturer: 'Manufacturer Title'
+              }
+              ...
+            ]
+          }
+          ```
+
+        ---
+
+        * GET **/api/products/**:product_id
+
+          * Route for product details.
+          * Successful response:
+          ```javascript
+          {
+            product: {
+              id: 1,
+              category_id: 2,
+              title: 'Product Title'
+              description: 'Product Description',
+              color: 'Color'
+              unit_price_eur: 20,
+              gender: 'Gender'
+              material: 'Material'
+              manufacturer: 'Manufacturer Title'
+            },
+            images: [
+              {
+                url: 'url 1'
+              },
+              ...
+            ],
+            sizes: [
+              {
+                size: 'size 1',
+                quantity: 2
+              },
+              ...
+            ]
+          }
+          ```
+
+        ---
+
+      * #### Cart Routes
+
+        *Only authenticated users can interact with cart routes.*
+
+          * POST **/api/cart/**:username
+
+            * Route for posting a cart item.
+            * Expected request body:
+            ```javascript
+            {
+              product_id: 1,
+              quantity: 1,
+              size: 'Size'
+            }
+            ```
+            * Successful response:
+            ```javascript
+            {
+              products: [
+                {
+                  cart_id: 1,
+                  product_id: 1,
+                  quantity: 1,
+                  size: 'Size',
+                  product_title: 'Product 1 Title',
+                  manufacturer: 'Manufacturer Title',
+                  color: 'Color',
+                  unit_price_eur: 50,
+                  thumbnail_url: 'Product Thumbnail URL'
+                }
+                ...
+              ]
+              total: 555
+            }
+            ```
+
+          ---
+
+          * PUT **/api/cart/**:username
+
+            * Route for updating the quantity of a product in cart
+            * Expected request body:
+            ```javascript
+            {
+              product_id: 1,
+              quantity: 2,
+              size: 'Size'
+            }
+            ```
+            * Successful response:
+            ```javascript
+            {
+              products: [
+                {
+                  cart_id: 1,
+                  product_id: 1,
+                  quantity: 2,
+                  size: 'Size',
+                  product_title: 'Product 1 Title',
+                  manufacturer: 'Manufacturer Title',
+                  color: 'Color',
+                  unit_price_eur: 50,
+                  thumbnail_url: 'Product Thumbnail URL'
+                }
+                ...
+              ]
+              total: 605
+            }
+            ```
+
+          ---
+
+          * DELETE **/api/cart/**:username/**product_id=**[Product ID]**&size=**[Size]
+
+            * Username, Product ID and Size must be provided in params and query.
+            * If Size includes "/" replace it with "_".
+            * Successful response is 204.
+
+          ---
+
+          * GET **/api/cart/**:username
+
+            * Route for recieving current cart items with total price.
+            * Successful response:
+            ```javascript
+            {
+              products: [
+                {
+                  cart_id: 1,
+                  product_id: 1,
+                  quantity: 2,
+                  size: 'Size',
+                  product_title: 'Product 1 Title',
+                  manufacturer: 'Manufacturer Title',
+                  color: 'Color',
+                  unit_price_eur: 50,
+                  thumbnail_url: 'Product Thumbnail URL'
+                }
+                ...
+              ]
+              total: 605
+            }
+            ```
+
+          ---
+
+      * #### Checkout Routes
+        *Only authenticated users can interact with checkout routes.*<br/>
+        Current implementation sends a checkout request from the Front-End when the server confirms that the payment was successful.
+
+          * POST **/api/payment/**:username
+
+          ---
+
+          * POST **/api/cart/**:username/**checkout**
+
+          ---
+
+      * #### Order Routes
+        *Only authenticated users can interact with order routes.*
+
+          * GET **/api/orders/**:username
+
+            * Route for recieving all successful orders.
+            * Successful response:
+            ```javascript
+            [
+              {
+                id: 10012,
+                date_utc: "2021-03-25T14:20:05.130Z",
+                total_eur: 50,
+                payment: true
+              },
+              ...
+            ]
+            ```
+
+          ---
+
+          * GET **/api/orders/**:username/:order_id
+
+            * Route for recieving order details.
+            * Successful response:
+            ```javascript
+            {
+              id: 10012,
+              date_utc: "2021-03-25T14:20:05.130Z",
+              total_eur: 101,
+              payment: true,
+              to_appartment: '33',
+              to_street: 'Street',
+              to_city: 'City',
+              to_province: 'Province',
+              to_zip: 77777,
+              to_country: 'Country',
+              products: [
+                {
+                  product_id: 6,
+                  quantity: 1,
+                  size: 'Size',
+                  unit_price_eur: 50,
+                  product_title: 'Product Title',
+                  manufacturer: 'Manufacturer Title',
+                  color: 'Color' 
+                },
+                ...
+              ]
+            }
+            ```
+
+---
+
+## Inspiration
+
+---
+
+## Licence

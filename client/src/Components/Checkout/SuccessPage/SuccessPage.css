@@ -2,26 +2,35 @@
 
 .success-page{
     width: 100%;
-    min-height: calc(100vh - 175px);
+    min-height: calc(100vh - 100px);
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.success-page p, .success-page h2{
-    font-family: 'Bentham';
-}
-
 .success-page h2{
+    font-family: 'Bentham';
     font-size: 3em;
+    margin-bottom: 20px;
 }
 
 .success-page p{
-    font-size: 2em;
+    font-size: 1.2em;
 }
 
 /* SUCCESS MESSAGE DIV */
 
 .success-message{
     text-align: center;
+}
+
+@media only screen and (max-width: 768px){
+    .success-page{
+        min-height: calc(100vh - 80px);
+    }
+
+    .success-page h2{
+        font-size: 2.5em;
+    }
+
 }

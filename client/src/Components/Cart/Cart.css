@@ -4,8 +4,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: calc(100vh - 175px);
-    margin-bottom: 50px;
+    min-height: calc(100vh - 100px);
 }
 
 .cart h2{
@@ -22,6 +21,7 @@
 
 .cart-checkout{
     margin-top: 10px;
+    margin-bottom: 50px;
     width: 50%;
     display: flex;
     flex-direction: column;
@@ -121,13 +121,22 @@
 }
 
 @media only screen and (min-width: 769px) and (max-width: 1200px){
+    
+    .cart {
+        min-height: calc(100vh - 80px);
+    }
+
     .cart-item, .cart-checkout{
         width: 90%;
     }
 }
 
 @media only screen and (max-width: 768px){
-    
+
+    .cart {
+        min-height: calc(100vh - 80px);
+    }
+
     .cart h3{
         font-size: 1em;
     }

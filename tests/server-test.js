@@ -284,13 +284,6 @@ describe('CUSTOMERS', () => {
                 .get('/api/logout')
                 .expect(200)
         });
-/*
-        it('It returns 400 if customer is not authenticated', () => {
-            return server
-                .get('/api/logout')
-                .expect(400);
-        });
-*/
     });
 
 
@@ -372,7 +365,6 @@ describe('CUSTOMERS', () => {
                 email: 'selnaknewemail@testapi.com',
                 phone: '+372 99999999',
             }
-            //password: 'karnaz123'
             
             return server
                 .get('/api/logout')
@@ -400,7 +392,6 @@ describe('CUSTOMERS', () => {
                     email: 'selnaknewemail@testapi.com',
                     phone: '+372 99999999',
                 }
-                //password: 'karnaz123'
 
                 return server
                     .post('/api/login')
@@ -439,31 +430,9 @@ describe('CUSTOMERS', () => {
                                 expect(user.phone).to.eql(updatedCustomer.phone);
                             });
                     });
-                    /*
-                    .then(() => {
-                        return server
-                        .get('/api/logout')
-                        .expect(200)
-                    });
-                    */
+                    
             });
-/*
-            it('User can log in with the new hashed password', () => {
-                const user = {
-                    username: 'Revarz',
-                    password: 'karnaz123'
-                };
 
-                return server
-                    .post('/api/login')
-                    .send(user)
-                    .expect(200, {
-                        user: {
-                            username: 'Revarz'
-                        }
-                    });
-            });
-*/
             it('Returns 400 if updated email already exists in the database', () => {
                 const updatedCustomer = {
                     first_name: 'Selna',
@@ -471,7 +440,7 @@ describe('CUSTOMERS', () => {
                     email: 'akoppel2@gmail.com',
                     phone: '+372 77777777',
                 }
-                //password: 'karnaz123'
+                
 
                 return server
                     .put('/api/customer_un/Revarz')
@@ -486,7 +455,6 @@ describe('CUSTOMERS', () => {
                     email: 'selnaknewemail2@testapi.com',
                     phone: '+372 53494198',
                 };
-                //password: 'karnaz123'
 
                 return server
                     .put('/api/customer_un/Revarz')
@@ -520,7 +488,6 @@ describe('CUSTOMERS', () => {
                     email: '',
                     phone: '',
                 };
-                //password: 'karnaz123'
 
                 return server
                     .put('/api/customer_un/Revarz')
@@ -548,7 +515,6 @@ describe('CUSTOMERS', () => {
                     email: 'selnaknewemail@testapi.com',
                     phone: '+372 99999999',
                 };
-                //password: 'karnaz123'
 
                 return server
                     .put('/api/customer_un/Ezayji')

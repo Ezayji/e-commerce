@@ -1,7 +1,7 @@
 /* NOT FOUND DIV */
 
 .not-found{
-    height: calc(100vh - 175px);
+    height: calc(100vh - 100px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -16,9 +16,9 @@
     border: 2px solid rgba(0, 0, 0, 0.116);
 }
 
-@media only screen and (min-width: 381px){
+@media only screen and (min-width: 381px) and (max-width: 768px) {
     .not-found{
-        height: calc(100vh - 175px);
+        height: calc(100vh - 130px);
         display: flex;
         justify-content: center;
         align-items: center;
@@ -29,7 +29,7 @@
 
 @media only screen and (max-width: 380px){
     .not-found{
-        height: calc(100vh - 175px);
+        height: calc(100vh - 80px);
         display: flex;
         justify-content: center;
         align-items: center;

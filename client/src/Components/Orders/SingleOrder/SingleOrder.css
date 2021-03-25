@@ -7,11 +7,12 @@
 /* SINGLE ORDER DIV */
 
 .single-order{
-    min-height: calc(100vh - 175px);
+    min-height: calc(100vh - 150px);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-bottom: 50px;
 }
 
 .single-order h2{
@@ -69,4 +70,12 @@
 
 .order-item p, .order-address p {
     margin-bottom: 5px;
+}
+
+@media only screen and (max-width: 768px){
+
+    .single-order{
+        min-height: calc(100vh - 130px);
+    }
+
 }

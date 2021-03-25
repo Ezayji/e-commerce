@@ -2,7 +2,7 @@
 
 .pw-change{
     width: 100%;
-    height: calc(100vh - 175px);
+    height: calc(100vh - 100px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -59,6 +59,11 @@
 /* PW CHANGE MEDIA QUERY */
 
 @media only screen and (max-width: 768px){
+
+    .pw-change{
+        height: calc(100vh - 80px);
+    }
+
     .pw-change form{
         min-width: 80%;
     }
