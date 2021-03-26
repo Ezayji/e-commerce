@@ -349,6 +349,8 @@ Front page:
 
       ![Database Schema](https://i.imgur.com/q0gSPRl.png)
 
+      * **All passwords are hashed with bcrypt by the server and are not visible as plain text.**
+
       * Each customer must have an unique id, username, email and phone. All columns except address related ones must be filled.
 
       * Cart items are tracked in the table "cart" with a foreign key "customer_username". 
