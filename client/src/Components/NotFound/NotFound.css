@@ -1,14 +1,5 @@
 /* NOT FOUND DIV */
 
-.not-found{
-    height: calc(100vh - 100px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-family: 'Bentham';
-    font-size: 2em;
-}
-
 .not-found p{
     background: linear-gradient(to right bottom, rgba(150, 193, 241, 0.5), rgba(236, 77, 228, 0.26), rgba(255, 123, 0, 0.192));
     padding: 10px;
@@ -16,9 +7,20 @@
     border: 2px solid rgba(0, 0, 0, 0.116);
 }
 
+@media only screen and (min-width: 769px){
+    .not-found{
+        height: calc(100vh - 100px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Bentham';
+        font-size: 2em;
+    }
+}
+
 @media only screen and (min-width: 381px) and (max-width: 768px) {
     .not-found{
-        height: calc(100vh - 130px);
+        height: calc(100vh - 80px);
         display: flex;
         justify-content: center;
         align-items: center;

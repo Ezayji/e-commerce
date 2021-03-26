@@ -25,8 +25,9 @@ Created By **Ezayji** in February - March 2021<br/>
         * [Setup](#setup)
         * [Running Locally](#running-locally)
         * [Test Suites](#test-suites)
-    3. [Database](#database)
-    4. [Server Routes](#server-routes)
+    3. [Status](#status)
+    4. [Database](#database)
+    5. [Server Routes](#server-routes)
 
         * [User Routes](#user-routes)
         * [Product Routes](#product-routes)
@@ -78,29 +79,29 @@ Front page:
 ## Features / User Guide
 1. ### User 
 
-   * #### Register an account.
+   * Register an account.
 
      *<strong>This demo site doesn't send you any mail or text so you dont't have to enter the "real" phone and email.</strong>*
 
 
-   * #### Update profile information.
+   * Update profile information.
 
-   * #### Interact with cart.
+   * Interact with cart.
 
-   * #### Interact with orders.
+   * Interact with orders.
 ---
 
 2. ### Products Catalogue
 
    *You can browse the products catalogue as a guest or as an user.*
 
-   * #### Browse products by gender
+   * Browse products by gender
 
-   * #### Browse products by gender and category
+   * Browse products by gender and category
 
-   * #### Browse products by brand
+   * Browse products by brand
      
-   * #### Click on an item from the products list and take further action.
+   * Click on an item from the products list and take further action.
      *Product's page*
 
         ![Stussy jacket](https://i.imgur.com/06zoRZB.png)
@@ -115,14 +116,14 @@ Front page:
 3. ### Cart
      *(Only for logged in users)*
 
-   * #### Cart item:
+   * Cart item:
         
         ![Cart preview](https://i.imgur.com/FSxUCzU.png)
 
      
-   * #### Change item quantity in cart based on availability by clicking on "-" or "+".
-   * #### Remove an item from cart by clicking on "REMOVE ITEM".
-   * #### Procceed to checkout by clicking on "CHECKOUT".
+   * Change item quantity in cart based on availability by clicking on "-" or "+".
+   * Remove an item from cart by clicking on "REMOVE ITEM".
+   * Procceed to checkout by clicking on "CHECKOUT".
      
 ---
 
@@ -171,7 +172,7 @@ Front page:
 5. ### Orders
      *(Only for logged in users)*
 
-   * #### View the list of completed orders:
+   * View the list of completed orders:
 
      * Order id, date, total and payment status per order preview line.
 
@@ -179,7 +180,7 @@ Front page:
      
      >ORDR NR acts as a hyperlink to the details page.
      
-   * #### View completed order details:
+   * View completed order details:
      
      + Delivery Address.
      + Items + details.
@@ -330,7 +331,19 @@ Front page:
 
 ---
 
-  3. ### Database
+  3. ### Status
+
+      The current application state is suitable for demo use and supports the addition of products and brands.
+      For real use, the server must also change stock quantity after a successful checkout which could be implemented by adding an extra query to the server payment confirmation route. Also the "forgot password" function should be implemented for real usage and e-mail confirmations should be sent after registering.
+
+      Next steps for the demo:
+      
+      * Admin view.
+      * OAuth login with Google. 
+
+---
+
+  4. ### Database
 
       Schema:
 
@@ -348,7 +361,7 @@ Front page:
 
 ---
 
-  4. ### Server Routes
+  5. ### Server Routes
 
       * #### User Routes
 
@@ -889,6 +902,10 @@ Front page:
 ---
 
 ## Inspiration
+
+This project was created as an assignement from Codecademy and inspired by the creative clothing brands featured in the catalogue.
+
+It's a little step in my journey of becoming a real developer and this project could be improved a lot in the future.
 
 ---
 
